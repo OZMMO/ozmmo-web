@@ -1,3 +1,4 @@
+import { authRoutes, DEFAULT_LOGIN_REDIRECT, publicRoutes } from "@/routes";
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -40,12 +41,23 @@ export const updateSession = async (request: NextRequest) => {
     const user = await supabase.auth.getUser();
 
     // protected routes
-    if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
-      return NextResponse.redirect(new URL("/sign-in", request.url));
+    // if (request.nextUrl.pathname.startsWith("/protected") && user.error) {
+    //   return NextResponse.redirect(new URL("/sign-in", request.url));
+    // }
+
+    console.log(request.nextUrl.pathname);
+    // auth routes
+    if (authRoutes.includes(request.nextUrl.pathname) && user.error) {
+      return response
     }
 
+    // public routes
+    if (!publicRoutes.includes(request.nextUrl.pathname) && user.error) {
+      return NextResponse.redirect(new URL("/sign-in", request.url));
+    }
+    
     if (request.nextUrl.pathname === "/" && !user.error) {
-      return NextResponse.redirect(new URL("/protected", request.url));
+      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, request.url));
     }
 
     return response;

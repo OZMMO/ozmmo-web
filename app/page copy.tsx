@@ -1,6 +1,3 @@
-import HeaderAuth from '@/components/header-auth'
-import { EnvVarWarning } from '@/components/env-var-warning'
-import { hasEnvVars } from '@/utils/supabase/check-env-vars'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -8,17 +5,6 @@ export default function Home() {
   return (
     <>
       <main className="bg-background">
-        <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-          <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-            <div className="flex gap-5 items-center font-semibold">
-              <Link href={"/"}>OZMMO</Link>
-              {/* <div className="flex items-center gap-2">
-                <DeployButton />
-              </div> */}
-            </div>
-            {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
-          </div>
-        </nav>
         {/* Hero Section */}
         <section className="container mx-auto px-4 py-5 flex items-center">
           <div className="w-1/2 pr-12">
