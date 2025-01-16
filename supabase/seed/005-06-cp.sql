@@ -10077,16 +10077,16 @@ VALUES
 ,('98514', 'ZAC' ,'005',NULL)
 
 -- Insertar en la tabla final usando JOINS
-INSERT INTO tbl_codigos_postales (codigo_postal, id_estado, id_municipio, id_localidad)
+INSERT INTO sat.tbl_codigos_postales (codigo_postal, estado_id, id_municipio, id_localidad)
 SELECT 
     t.codigo_postal,
-    e.id as id_estado,
+    e.id as estado_id,
     m.id as id_municipio,
     l.id as id_localidad
 FROM temp_cp6 t
-LEFT JOIN tbl_estados e ON e.codigo = t.codigo_estado
-LEFT JOIN tbl_municipios m ON m.codigo = t.codigo_municipio AND m.id_estado = e.id
-LEFT JOIN tbl_localidades l ON l.codigo = t.codigo_localidad AND l.id_estado = e.id;
+LEFT JOIN sat.tbl_estados e ON e.codigo = t.codigo_estado
+LEFT JOIN sat.tbl_municipios m ON m.codigo = t.codigo_municipio AND m.estado_id = e.id
+LEFT JOIN sat.tbl_localidades l ON l.codigo = t.codigo_localidad AND l.estado_id = e.id;
 
 -- Limpiar tabla temporal
 DROP TABLE temp_cp6;
