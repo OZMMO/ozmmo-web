@@ -1,8 +1,25 @@
 -- Create schema if not exists
 CREATE SCHEMA IF NOT EXISTS catalogos;
 
--- Set search path
--- SET search_path TO catalogos, public;
+-- Otorgar permisos al usuario anónimo (auth.anon) para el schema catalogos
+GRANT USAGE ON SCHEMA catalogos TO anon;
+GRANT USAGE ON SCHEMA catalogos TO authenticated;
+GRANT USAGE ON SCHEMA catalogos TO service_role;
+
+-- Otorgar permisos para todas las tablas existentes en el schema
+GRANT ALL ON ALL TABLES IN SCHEMA catalogos TO anon;
+GRANT ALL ON ALL TABLES IN SCHEMA catalogos TO authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA catalogos TO service_role;
+
+-- Otorgar permisos para futuras tablas (importante para migraciones)
+ALTER DEFAULT PRIVILEGES IN SCHEMA catalogos
+GRANT ALL ON TABLES TO anon;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA catalogos
+GRANT ALL ON TABLES TO authenticated;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA catalogos
+GRANT ALL ON TABLES TO service_role;
 
 
 -- Create enum types
@@ -17,13 +34,13 @@ CREATE TABLE IF NOT EXISTS catalogos.tbl_empresas (
     nombre_comercial VARCHAR(255),
     curp VARCHAR(18),
     tipo_contribuyente catalogos.tipo_contribuyente NOT NULL,
-    regimen_fiscal VARCHAR(3) NOT NULL,
+    regimen_fiscal VARCHAR(3) NULL,
     correo_electronico VARCHAR(255) NOT NULL,
     telefono VARCHAR(20),
     representante_legal VARCHAR(255),
-    certificado_csd TEXT NOT NULL,
-    llave_privada_csd TEXT NOT NULL,
-    contrasena_csd VARCHAR(255) NOT NULL,
+    certificado_csd TEXT NULL,
+    llave_privada_csd TEXT NULL,
+    contrasena_csd VARCHAR(255) NULL,
     fecha_registro TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     estatus BOOLEAN DEFAULT true,
     

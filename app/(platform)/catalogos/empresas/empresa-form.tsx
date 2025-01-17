@@ -50,8 +50,8 @@ export function EmpresaForm() {
       rfc: "",
       razon_social: "",
       nombre_comercial: "",
-      curp: "",
-      tipo_contribuyente: "Moral",
+      curp: null,
+      tipo_contribuyente: "Física",
       regimen_fiscal: "",
       correo_electronico: "",
       telefono: "",
@@ -65,8 +65,8 @@ export function EmpresaForm() {
   const tipoContribuyente = form.watch("tipo_contribuyente")
 
   async function onSubmit(data: EmpresaFormValues) {
+    console.log({data})
     const supabase = createClient()
-    
     const { error } = await supabase
       .schema('catalogos')
       .from('tbl_empresas')
@@ -247,7 +247,7 @@ export function EmpresaForm() {
               )}
             />
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="certificado_csd"
               render={({ field }) => (
@@ -287,7 +287,7 @@ export function EmpresaForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
 
             <SheetFooter className="mt-4">
               <Button 
