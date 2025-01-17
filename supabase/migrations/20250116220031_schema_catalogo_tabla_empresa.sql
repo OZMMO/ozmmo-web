@@ -21,6 +21,8 @@ GRANT ALL ON TABLES TO authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA catalogos
 GRANT ALL ON TABLES TO service_role;
 
+-- Después de crear la tabla, agregar este permiso
+GRANT USAGE, SELECT ON SEQUENCE catalogos.tbl_empresas_id_seq TO authenticated;
 
 -- Create enum types
 CREATE TYPE catalogos.tipo_contribuyente AS ENUM ('Física', 'Moral');
