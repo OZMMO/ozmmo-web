@@ -24,7 +24,7 @@ INSERT INTO auth.users (
   'authenticated',
   'aabreu@ozmmo.com',
   -- '$2a$10$PxKHx.eLjqbXTEKVL4CQWOYqFAlKNkxzGy3h8sCw3M5YQjVtKi6Vy', -- password: desarrollo123
-  '$2a$10$Ye2ReXYnuF.mEzr5kt7PxuPTwikbFa0mW2zqjGs9dNy2uXmGc9kEy', -- password: 123123123
+  '$2a$10$612eMIVX2hT5RxFcK0Ly9ONOdagrs9R96.05RwkxKcOZGVkQhe/A6', -- password: 123123123
   current_timestamp,
   current_timestamp,
   current_timestamp,
@@ -44,7 +44,7 @@ INSERT INTO auth.users (
   'authenticated',
   'jroman@ozmmo.com',
   -- '$2a$10$PxKHx.eLjqbXTEKVL4CQWOYqFAlKNkxzGy3h8sCw3M5YQjVtKi6Vy', -- password: desarrollo123
-  '$2a$10$Ye2ReXYnuF.mEzr5kt7PxuPTwikbFa0mW2zqjGs9dNy2uXmGc9kEy', -- password: 123123123
+  '$2a$10$612eMIVX2hT5RxFcK0Ly9ONOdagrs9R96.05RwkxKcOZGVkQhe/A6', -- password: 123123123
   current_timestamp,
   current_timestamp,
   current_timestamp,
