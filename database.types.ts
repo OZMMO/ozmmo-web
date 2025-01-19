@@ -687,7 +687,7 @@ export type Database = {
         }
         Relationships: []
       }
-      tbl_sucursal: {
+      tbl_sucursales: {
         Row: {
           codigo: string | null
           correo_electronico: string
@@ -702,7 +702,7 @@ export type Database = {
         Insert: {
           codigo?: string | null
           correo_electronico: string
-          empresa_id: number
+          empresa_id?: number
           estatus?: boolean | null
           fecha_registro?: string | null
           id?: number
@@ -723,7 +723,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_sucursal_empresa_id_fkey"
+            foreignKeyName: "tbl_sucursales_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
             referencedRelation: "tbl_empresas"

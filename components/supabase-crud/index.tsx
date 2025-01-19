@@ -115,7 +115,6 @@ export function SupabaseCRUD<T extends { id: string | number }, TInfoExtra>({
 
   const handleCreate = async (formData: T) => {
     try {
-      console.log({formData})
       const result = await actions.create(formData);
       if (result.error) throw result.error;
       toast.success('Item created successfully!');
@@ -131,6 +130,7 @@ export function SupabaseCRUD<T extends { id: string | number }, TInfoExtra>({
   };
 
   const handleUpdate = async (formData: T) => {
+    console.log('update', {formData})
     try {
       const result = await actions.update(formData);
       if (result.error) throw result.error;
@@ -182,6 +182,7 @@ export function SupabaseCRUD<T extends { id: string | number }, TInfoExtra>({
   };
 
   const onEdit = (item: T) => {
+    console.log('edit', {item})
     if (redirectMode) {
       router.push(`${path}/${String(item[columns[0].key])}`);
     } else {
@@ -227,6 +228,7 @@ export function SupabaseCRUD<T extends { id: string | number }, TInfoExtra>({
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Actions</TableHead>
               {columns.map((column) => (
                 <TableHead
                   key={String(column.key)}
@@ -251,7 +253,6 @@ export function SupabaseCRUD<T extends { id: string | number }, TInfoExtra>({
                   </div>
                 </TableHead>
               ))}
-              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
