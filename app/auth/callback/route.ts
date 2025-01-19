@@ -1,3 +1,4 @@
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -20,5 +21,5 @@ export async function GET(request: Request) {
   }
 
   // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/protected`);
+  return NextResponse.redirect(`${origin}${DEFAULT_LOGIN_REDIRECT}`);
 }

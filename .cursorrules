@@ -36,6 +36,6 @@ Backend and Database
   - Tables: prefix tbl, plural, lowercase, snake_case
   - Columns: lowercase, snake_case
   - Functions: prefix fn, lowercase, snake_case
-  - Indexes: prefix idx, lowercase, snake_case
+  - Indexes: prefix idx, {schema}, lowercase, snake_case
   - Views: prefix vw, lowercase, snake_case
   - Policies: prefix pol, lowercase, snake_case
