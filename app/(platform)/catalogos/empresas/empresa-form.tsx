@@ -50,7 +50,7 @@ export function EmpresaForm() {
       rfc: "",
       razon_social: "",
       nombre_comercial: "",
-      curp: null,
+      curp: "",
       tipo_contribuyente: "Física",
       regimen_fiscal: "",
       correo_electronico: "",
@@ -182,7 +182,12 @@ export function EmpresaForm() {
                   <FormItem>
                     <FormLabel>CURP</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej: XAXX010101HDFXXX01" maxLength={18} {...field} />
+                      <Input 
+                        placeholder="Ej: XAXX010101HDFXXX01" 
+                        maxLength={18} 
+                        {...field} 
+                        value={field.value || ''} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

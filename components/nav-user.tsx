@@ -40,7 +40,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
 
-  const fallback =  (user.user_metadata.name ? user.user_metadata.name?.charAt(0)+user.user_metadata.name?.charAt(1) : user.user_metadata.email?.charAt(0)+user.user_metadata.email?.charAt(1)).toUpperCase()
+  const fallback =  (user.user_metadata.name ? user.user_metadata.name?.charAt(0)+user.user_metadata.name?.charAt(1) : user.user_metadata.email?.charAt(0)+user.user_metadata.email?.charAt(1))?.toUpperCase()
   return (
     <SidebarMenu>
       <SidebarMenuItem>

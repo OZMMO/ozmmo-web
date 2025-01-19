@@ -21,9 +21,6 @@ GRANT ALL ON TABLES TO authenticated;
 ALTER DEFAULT PRIVILEGES IN SCHEMA catalogos
 GRANT ALL ON TABLES TO service_role;
 
--- Después de crear la tabla, agregar este permiso
-GRANT USAGE, SELECT ON SEQUENCE catalogos.tbl_empresas_id_seq TO authenticated;
-
 -- Create enum types
 CREATE TYPE catalogos.tipo_contribuyente AS ENUM ('Física', 'Moral');
 
@@ -54,6 +51,9 @@ CREATE TABLE IF NOT EXISTS catalogos.tbl_empresas (
     CONSTRAINT chk_catalogos_empresas_regimen_fiscal CHECK (LENGTH(regimen_fiscal) = 3),
     CONSTRAINT chk_catalogos_empresas_correo_electronico CHECK (correo_electronico ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
 );
+
+-- Después de crear la tabla, agregar este permiso
+GRANT USAGE, SELECT ON SEQUENCE catalogos.tbl_empresas_id_seq TO authenticated;
 
 -- Create indexes
 CREATE INDEX idx_empresas_rfc ON catalogos.tbl_empresas (rfc);

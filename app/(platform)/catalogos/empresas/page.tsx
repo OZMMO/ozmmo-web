@@ -1,5 +1,3 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 import { DataTable } from './data-table'
 import { columns } from './columns'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,9 +8,12 @@ export const dynamic = 'force-dynamic'
 
 async function getEmpresas() {
   const supabase = await createClient()
+
+  const schema = 'catalogos', tabla = 'tbl_empresas';
+
   const { data: empresas, error } = await supabase
-    .schema('catalogos')
-    .from('tbl_empresas')
+    .schema(schema)
+    .from(tabla)
     .select('*')
     .order('razon_social', { ascending: true })
 
