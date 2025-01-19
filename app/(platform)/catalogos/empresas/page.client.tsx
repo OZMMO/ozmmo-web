@@ -33,6 +33,7 @@ interface PageProps {
   paginationParams: IPageSearchPaginationParams;
 }
 
+
 export default function EmpresasClientPage({ payload, paginationParams }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false)

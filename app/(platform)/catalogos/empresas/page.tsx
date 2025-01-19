@@ -5,12 +5,19 @@ import EmpresasClientPage from "./page.client";
 export const dynamic = 'force-dynamic'
 
 interface PageProps {
-  searchParams: IPageSearchPaginationParams;
+  searchParams: Promise<IPageSearchPaginationParams>;
 }
-export default async function SucursalesPage({ searchParams }: PageProps) {
+
+
+export default async function SucursalesPage({searchParams}: PageProps) {
   const supabase = await createClient();
+  
   const dataSearchParams = await searchParams;
-  const { page = 1, pageSize = 10, query = '' } = dataSearchParams;
+  const page = dataSearchParams?.page || '1';
+  const pageSize = dataSearchParams?.pageSize || '10';
+  const query = dataSearchParams?.query || '';
+  
+  // const { page = '1', pageSize = 10, query = '' } = dataSearchParams;
   const offset = (Number(page) - 1) * Number(pageSize);
   const { data: empresas, error, count: countData } = await supabase
     .schema('catalogos')
@@ -37,6 +44,6 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
       totalCount: count || 0,
       totalPages: totalPages
     }}
-    paginationParams={dataSearchParams}
+    paginationParams={dataSearchParams as IPageSearchPaginationParams}
   />;
 }

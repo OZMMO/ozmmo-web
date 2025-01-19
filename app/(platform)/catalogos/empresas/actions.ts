@@ -3,10 +3,8 @@
 import { ActionState } from "@/components/supabase-crud";
 import { Empresa } from "@/lib/db/catalogos/empresa.model";
 import { createClient } from "@/utils/supabase/server";
-import Router from "next/router";
 
 export const createServer = async (data: Empresa): Promise<ActionState<Empresa>> => {
-  // Implement create logic
   const supabase = await createClient()
 
   if (!data.curp) {
@@ -23,18 +21,15 @@ export const createServer = async (data: Empresa): Promise<ActionState<Empresa>>
     return { error }
   }
 
-  return { data }; // Return an ActionState object
+  return { data }; 
 }
 
 export const updateServer = async (data: Empresa): Promise<ActionState<Empresa>> => {
-  console.log('update', {data});
-
   const supabase = await createClient()
 
   if (!data.curp) {
     data.curp = null
   }
-
 
   const { error } = await supabase
     .schema('catalogos')
@@ -47,11 +42,10 @@ export const updateServer = async (data: Empresa): Promise<ActionState<Empresa>>
     return { error }
   }
 
-  return { data }; // Return an ActionState object
+  return { data };
 }
 
 export const deleteServer = async (data: Empresa): Promise<ActionState<Empresa>> => {
-  // Implement delete logic
   const supabase = await createClient()
     
   const { error } = await supabase
@@ -65,5 +59,5 @@ export const deleteServer = async (data: Empresa): Promise<ActionState<Empresa>>
     return { error }
   }
 
-  return { data }; // Return an ActionState object
+  return { data }; 
 }

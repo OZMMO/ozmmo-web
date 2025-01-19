@@ -12,14 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-  SheetFooter,
-} from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -28,10 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useState } from "react"
-import { createClient } from '@/utils/supabase/client'
-import { useRouter } from "next/navigation"
-import { Plus } from "lucide-react"
 import { empresaFormSchema } from "./schemas"
 import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
@@ -39,12 +27,10 @@ type EmpresaFormValues = z.infer<typeof empresaFormSchema>
 
 interface EmpresaFormProps {
   initialData?: Empresa | null,
-  onSubmit: (data: EmpresaFormValues) => void
+  onSubmit: (data: Empresa) => void
 }
 
 export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
-  const router = useRouter()
-  
   const form = useForm<EmpresaFormValues>({
     resolver: zodResolver(empresaFormSchema),
     defaultValues: {
@@ -66,27 +52,10 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
 
   const tipoContribuyente = form.watch("tipo_contribuyente")
 
-  // async function onSubmitLocal(data: EmpresaFormValues) {
-  //   console.log({data})
-  //   const supabase = createClient()
-  //   const { error } = await supabase
-  //     .schema('catalogos')
-  //     .from('tbl_empresas')
-  //     .insert([data])
-
-  //   if (error) {
-  //     console.error('Error:', error)
-  //     return
-  //   }
-
-  //   form.reset()
-  //   router.refresh()
-  // }
-
   const handleSubmit = (data: EmpresaFormValues) => {
     console.log({data})
     data.id = initialData?.id || 0
-    onSubmit(data)
+    onSubmit(data as Empresa)
   }
 
   return (

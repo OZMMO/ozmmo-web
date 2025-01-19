@@ -5,7 +5,7 @@ import EmpresasClientPage from "./page.client";
 export const dynamic = 'force-dynamic'
 
 interface PageProps {
-  searchParams: IPageSearchPaginationParams;
+  searchParams: Promise<IPageSearchPaginationParams>;
 }
 export default async function SucursalesPage({ searchParams }: PageProps) {
   const supabase = await createClient();
