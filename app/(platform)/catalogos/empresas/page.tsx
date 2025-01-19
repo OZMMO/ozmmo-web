@@ -1,44 +1,42 @@
-import { DataTable } from './data-table'
-import { columns } from './columns'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { createClient } from '@/utils/supabase/server'
-import { EmpresaForm } from './empresa-form'
+import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
+import { createClient } from "@/utils/supabase/server";
+import EmpresasClientPage from "./page.client";
 
 export const dynamic = 'force-dynamic'
 
-async function getEmpresas() {
-  const supabase = await createClient()
-
-  const schema = 'catalogos', tabla = 'tbl_empresas';
-
-  const { data: empresas, error } = await supabase
-    .schema(schema)
-    .from(tabla)
-    .select('*')
+interface PageProps {
+  searchParams: IPageSearchPaginationParams;
+}
+export default async function SucursalesPage({ searchParams }: PageProps) {
+  const supabase = await createClient();
+  const dataSearchParams = await searchParams;
+  const { page = 1, pageSize = 10, query = '' } = dataSearchParams;
+  const offset = (Number(page) - 1) * Number(pageSize);
+  const { data: empresas, error, count: countData } = await supabase
+    .schema('catalogos')
+    .from('tbl_empresas')
+    .select('*', { count: 'exact' })
+    .or(`razon_social.ilike.%${query}%,codigo.ilike.%${query}%,nombre_comercial.ilike.%${query}%,rfc.ilike.%${query}%`)
     .order('razon_social', { ascending: true })
+    .range(offset, offset + Number(pageSize) - 1)
+
+    
+  let count = countData || 0;
 
   if (error) {
-    console.error('Error:', error)
-    throw new Error('No se pudieron cargar las empresas')
+    console.error('Error fetching data:', error);
+    return <div>Error fetching data</div>;
   }
 
-  return empresas
-}
+  // Calculate total pages by dividing total count by page size and rounding up
+  const totalPages = count <= Number(pageSize) ? 1 : Math.ceil(count / Number(pageSize));
 
-export default async function EmpresasPage() {
-  const empresas = await getEmpresas()
-
-  return (
-    <div className="container mx-auto py-10">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Catálogo de Empresas</CardTitle>
-          <EmpresaForm />
-        </CardHeader>
-        <CardContent>
-          <DataTable columns={columns} data={empresas} />
-        </CardContent>
-      </Card>
-    </div>
-  )
+  return <EmpresasClientPage 
+    payload={{
+      data: empresas,
+      totalCount: count || 0,
+      totalPages: totalPages
+    }}
+    paginationParams={dataSearchParams}
+  />;
 }

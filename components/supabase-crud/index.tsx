@@ -24,13 +24,33 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 import { Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils';
-import { createClient } from '@/utils/supabase/client';
-import { Database } from '@/database.types';
+import TablePagination from '../tables/table-pagination';
 
-interface Column<T> {
+// Placeholder type definitions
+// Replace these with actual definitions as needed
+
+type ModelType = string; // Example placeholder
+
+export type ActionState<T> = {
+  error?: Error;
+  data?: T;
+};
+
+type FieldErrors<T> = Record<keyof T, string[]>;
+
+export interface Column<T> {
   key: keyof T;
   label: string;
   sortable?: boolean;
@@ -38,122 +58,69 @@ interface Column<T> {
   render?: (value: T[keyof T]) => React.ReactNode;
 }
 
-interface CRUDProps<T> {
+interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
   columns: Column<T>[];
-  tableName: keyof Database[keyof Database]["Tables"] | string;
-  schema?: keyof Database;
+  data: T[];  // Cambiamos a datos serializados
+  jsClassName?: ModelType;
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+  actions: {
+    create: (data: T) => Promise<ActionState<T>>;
+    update: (data: T) => Promise<ActionState<T>>;
+    delete: (data: T) => Promise<ActionState<T>>;
+  };
   formComponent: React.ComponentType<{
-    initialData?: T | null;
-    onSubmit: (data: T) => void;
-    errors?: Record<string, string[]>;
+    initialData?: T
+    onSubmit: (data: T) => void
+    errors?: FieldErrors<T>
+    infoExtra?: TInfoExtra
   }>;
   searchable?: boolean;
-  formClassName?: string;
   path?: string;
-  idField: keyof T;
-  searchFields?: (keyof T)[];
-  redirectMode?: boolean;
-  pageSize?: number;
+  formClassName?: string;
+  infoExtra?: TInfoExtra;
+  redirectMode?: boolean;  
 }
 
-export default function SupabaseCRUD<T extends Record<string, any>>({
+export function SupabaseCRUD<T extends { id: string | number }, TInfoExtra>({
   columns,
-  tableName,
-  schema,
+  data,
+  jsClassName,
+  totalCount,
+  totalPages,
+  currentPage,
+  pageSize,
+  actions,
   formComponent: FormComponent,
   searchable = true,
   formClassName,
   path,
-  idField,
-  searchFields = [],
-  redirectMode = false,
-  pageSize = 10
-}: CRUDProps<T>) {
-  const supabase = createClient();
+  infoExtra,
+  redirectMode = false
+}: CRUDProps<T, TInfoExtra>) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  
-  const [data, setData] = useState<T[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+
   const [isOpenNew, setIsOpenNew] = useState(false);
   const [editItem, setEditItem] = useState<T | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | number | null>(null);
-  const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [errors, setErrors] = useState<FieldErrors<T>>({} as FieldErrors<T>);
 
-  const currentPage = Number(searchParams.get('page')) || 1;
   const query = searchParams.get('query') || '';
-  const orderByColumn = searchParams.get('orderByColumn') as keyof T || idField;
+  const orderByColumn = searchParams.get('orderByColumn') as keyof T || columns[0].key;
   const orderDirection = (searchParams.get('orderDirection') || 'asc') as 'asc' | 'desc';
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    try {
-
-
-  const schema = 'catalogos', tabla = 'tbl_empresas';
-
-  const { data: empresas, error:adfsdf } = await supabase
-    .schema(schema)
-    .from(tableName)
-    .select('*')
-    .order('razon_social', { ascending: true })
-
-      // const client = schema ? supabase.schema(schema) : supabase;
-      // let query = client
-      //   .from(tableName as string)
-      //   .select('*', { count: 'exact' });
-
-      let query = null;
-      if (schema) {
-        query = supabase.schema(schema).from('tbl_empresas').select('*', { count: 'exact' });
-      } else {
-        query = supabase.from(tabla).select('*', { count: 'exact' });
-      }
-      // Add search conditions if query exists and searchFields are provided
-      if (searchParams.get('query') && searchFields.length > 0) {
-        const searchConditions = searchFields.map(field => 
-          `${String(field)}.ilike.%${searchParams.get('query')}%`
-        );
-        query = query.or(searchConditions.join(','));
-      }
-
-      // Add ordering
-      query = query
-        .order(String(orderByColumn), { ascending: orderDirection === 'asc' })
-        .range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
-
-      const { data: results, count, error } = await query;
-
-      if (error) throw error;
-
-      setData(results as T[]);
-      setTotalCount(count || 0);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error('Failed to fetch data');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [currentPage, query, orderByColumn, orderDirection]);
 
   const handleCreate = async (formData: T) => {
     try {
-      const client = schema ? supabase.schema(schema) : supabase;
-      const { error } = await client
-        .from(tableName as string)
-        .insert([formData]);
-
-      if (error) throw error;
-
+      console.log({formData})
+      const result = await actions.create(formData);
+      if (result.error) throw result.error;
       toast.success('Item created successfully!');
       setIsOpenNew(false);
-      fetchData();
+      router.refresh()
     } catch (error: any) {
       console.error('Error creating item:', error);
       toast.error(error.message);
@@ -165,17 +132,11 @@ export default function SupabaseCRUD<T extends Record<string, any>>({
 
   const handleUpdate = async (formData: T) => {
     try {
-      const client = schema ? supabase.schema(schema) : supabase;
-      const { error } = await client
-        .from(tableName)
-        .update(formData)
-        .eq(String(idField), formData[idField]);
-
-      if (error) throw error;
-
+      const result = await actions.update(formData);
+      if (result.error) throw result.error;
       toast.success('Item updated successfully!');
       setEditItem(null);
-      fetchData();
+      router.refresh()  
     } catch (error: any) {
       console.error('Error updating item:', error);
       toast.error(error.message);
@@ -186,18 +147,12 @@ export default function SupabaseCRUD<T extends Record<string, any>>({
   };
 
   const handleDelete = async (item: T) => {
-    setIsDeleting(String(item[idField]));
+    setIsDeleting(String(item));
     try {
-      const client = schema ? supabase.schema(schema) : supabase;
-      const { error } = await client
-        .from(tableName as string)
-        .delete()
-        .eq(String(idField), item[idField]);
-
-      if (error) throw error;
-
+      const result = await actions.delete(item);
+      if (result.error) throw result.error;
       toast.success('Item deleted successfully!');
-      fetchData();
+      router.refresh()
     } catch (error: any) {
       console.error('Error deleting item:', error);
       toast.error(error.message);
@@ -228,13 +183,11 @@ export default function SupabaseCRUD<T extends Record<string, any>>({
 
   const onEdit = (item: T) => {
     if (redirectMode) {
-      router.push(`${path}/${String(item[idField])}`);
+      router.push(`${path}/${String(item[columns[0].key])}`);
     } else {
       setEditItem(item);
     }
   };
-
-  const totalPages = Math.ceil(totalCount / pageSize);
 
   const renderCellContent = (item: T, column: Column<T>) => {
     if (column.render) {
@@ -302,19 +255,8 @@ export default function SupabaseCRUD<T extends Record<string, any>>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {isLoading ? (
-              <TableRow>
-                <TableCell colSpan={columns.length + 1} className="text-center">
-                  Loading...
-                </TableCell>
-              </TableRow>
-            ) : data.map((item) => (
-              <TableRow key={String(item[idField])}>
-                {columns.map((column) => (
-                  <TableCell key={`${String(item[idField])}-${String(column.key)}`}>
-                    {renderCellContent(item, column)}
-                  </TableCell>
-                ))}
+            {data.map((item: T) => (
+              <TableRow key={String(item[columns[0].key])}>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Button variant="outline" size="icon" onClick={() => onEdit(item)}>
@@ -322,63 +264,78 @@ export default function SupabaseCRUD<T extends Record<string, any>>({
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon">
+                        <Button variant="destructive" size="icon" title="Eliminar registro">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent>
+                      <AlertDialogContent className="border-red-200">
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogTitle>¿Eliminar registro?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete this item
-                            and remove its data from our servers.
+                            Esta acción no se puede deshacer. Se eliminará permanentemente este registro
+                            y todos sus datos relacionados de nuestros servidores.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => handleDelete(item)}
-                            disabled={isDeleting === String(item[idField])}
+                            disabled={isDeleting === String(item[columns[0].key])}
+                            className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
                           >
-                            {isDeleting === String(item[idField]) ? 'Deleting...' : 'Delete'}
+                            {isDeleting === String(item[columns[0].key]) ? 'Eliminando...' : 'Eliminar'}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
                 </TableCell>
+                {columns.map((column) => (
+                  <TableCell key={`${String(item[columns[0].key])}-${String(column.key)}`}>
+                    {renderCellContent(item, column)}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-
       <Sheet open={isOpenNew} onOpenChange={setIsOpenNew}>
-        <SheetContent className={cn('w-[400px] sm:w-[540px]', formClassName)}>
+        <SheetContent className={cn('w-[400px] sm:w-[540px] overflow-y-auto', formClassName)}>
           <SheetHeader>
             <SheetTitle>Add new</SheetTitle>
           </SheetHeader>
-          <FormComponent
-            onSubmit={handleCreate}
-            errors={errors}
-          />
+          <div className="py-4">
+            <FormComponent
+              onSubmit={handleCreate}
+              errors={errors}
+              infoExtra={infoExtra}
+            />
+          </div>
         </SheetContent>
       </Sheet>
 
       <Sheet open={editItem !== null} onOpenChange={(open) => !open && setEditItem(null)}>
-        <SheetContent className={cn('w-[400px] sm:w-[540px]', formClassName)}>
+        <SheetContent className={cn('w-[400px] sm:w-[540px] overflow-y-auto', formClassName)}>
           <SheetHeader>
             <SheetTitle>Editing</SheetTitle>
           </SheetHeader>
-          <FormComponent
-            initialData={editItem}
-            onSubmit={handleUpdate}
-            errors={errors}
-          />
+          <div className="py-4">
+            <FormComponent
+              initialData={editItem || undefined}
+              onSubmit={handleUpdate}
+              errors={errors}
+              infoExtra={infoExtra}
+            />
+          </div>
+          {/* <SheetFooter>
+            <Button type="button" variant="outline" onClick={() => setEditItem(null)}>Cancelar</Button>
+            <Button type="submit">Guardar</Button>
+          </SheetFooter> */}
         </SheetContent>
       </Sheet>
 
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <div>
           Showing {Math.min((currentPage - 1) * pageSize + 1, totalCount)} to {Math.min(currentPage * pageSize, totalCount)} of {totalCount} entries
         </div>
@@ -404,7 +361,13 @@ export default function SupabaseCRUD<T extends Record<string, any>>({
             Next
           </Button>
         </div>
-      </div>
+      </div> */}
+      <TablePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalCount}
+        itemsPerPage={pageSize}
+      />
     </div>
   );
 }
