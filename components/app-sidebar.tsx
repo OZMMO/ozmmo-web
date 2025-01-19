@@ -124,6 +124,14 @@ const data = {
             { title: "Dashboard", url: "/inventario/equipos/dashboard" },
             { title: "Alertas Stock", url: "/inventario/equipos/alertas" }
           ]
+        },
+        {
+          title: "Bodegas",
+          url: "/catalogos/bodega",
+          items: [
+            { title: "CRUD", url: "/catalogos/sucursales/crud" },
+            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" }
+          ]
         }
       ]
     },

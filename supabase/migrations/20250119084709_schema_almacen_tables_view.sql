@@ -1,14 +1,82 @@
+create schema if not exists almacen; 
+
+-- Otorgar permisos al usuario anónimo (auth.anon) para el schema catalogos
+GRANT USAGE ON SCHEMA almacen TO anon;
+GRANT USAGE ON SCHEMA almacen TO authenticated;
+GRANT USAGE ON SCHEMA almacen TO service_role;
+
+-- Otorgar permisos para todas las tablas existentes en el schema
+GRANT ALL ON ALL TABLES IN SCHEMA almacen TO anon;
+GRANT ALL ON ALL TABLES IN SCHEMA almacen TO authenticated;
+GRANT ALL ON ALL TABLES IN SCHEMA almacen TO service_role;
+
+-- Otorgar permisos para futuras tablas (importante para migraciones)
+ALTER DEFAULT PRIVILEGES IN SCHEMA almacen
+GRANT ALL ON TABLES TO anon;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA almacen
+GRANT ALL ON TABLES TO authenticated;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA almacen
+GRANT ALL ON TABLES TO service_role;
+
 -- Tabla de bodegas
 CREATE TABLE almacen.tbl_bodega (
     id SERIAL PRIMARY KEY,
     codigo VARCHAR(20) UNIQUE NOT NULL,
-    descripcion VARCHAR(255),
-    empresa_id INTEGER,
-    sucursal_id INTEGER,
+    descripcion VARCHAR(255) NOT NULL,
+    empresa_id INTEGER REFERENCES catalogos.tbl_empresas(id),
+   -- sucursal_id INTEGER,
     esta_activo BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+    CONSTRAINT uk_almacen_bodega_codigo UNIQUE (codigo)
 );
+
+-- Después de crear la tabla, agregar este permiso
+GRANT USAGE, SELECT ON SEQUENCE almacen.tbl_bodega_id_seq TO authenticated;
+
+-- Create indexes
+CREATE INDEX idx_bodega_codigo ON almacen.tbl_bodega (codigo);
+CREATE INDEX idx_bodega_descripcion ON almacen.tbl_bodega (descripcion);
+CREATE INDEX idx_bodega_empresa ON almacen.tbl_bodega (empresa_id);
+CREATE INDEX idx_bodega_esta_activo ON almacen.tbl_bodega (esta_activo);
+-- Enable Row Level Security
+ALTER TABLE almacen.tbl_bodega ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS policies
+CREATE POLICY "pol_bodega_select" ON almacen.tbl_bodega
+    FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "pol_bodega_insert" ON almacen.tbl_bodega
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (true);
+
+CREATE POLICY "pol_bodega_update" ON almacen.tbl_bodega
+    FOR UPDATE
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Create function to handle empresa updates
+CREATE OR REPLACE FUNCTION almacen.fn_update_bodega_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.fecha_registro = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for updating timestamp
+CREATE TRIGGER trg_update_bodega_timestamp
+    BEFORE UPDATE ON almacen.tbl_bodega
+    FOR EACH ROW
+    EXECUTE FUNCTION almacen.fn_update_bodega_timestamp();
+
 
 -- Tabla de unidades de medida
 CREATE TABLE almacen.tbl_unidades_medida (
@@ -210,8 +278,6 @@ ALTER TABLE almacen.tbl_lotes_ubicaciones ENABLE ROW LEVEL SECURITY;
 ALTER TABLE almacen.tbl_trazabilidad_lotes ENABLE ROW LEVEL SECURITY;
 
 -- Crear políticas de seguridad
-CREATE POLICY "pol_bodega_select" ON almacen.tbl_bodega 
-    FOR SELECT TO authenticated USING (true);
 
 CREATE POLICY "pol_unidades_medida_select" ON almacen.tbl_unidades_medida 
     FOR SELECT TO authenticated USING (true);
@@ -251,4 +317,28 @@ CREATE POLICY "pol_lotes_ubicaciones_select" ON almacen.tbl_lotes_ubicaciones
     FOR SELECT TO authenticated USING (true);
 
 CREATE POLICY "pol_trazabilidad_lotes_select" ON almacen.tbl_trazabilidad_lotes 
-    FOR SELECT TO authenticated USING (true); 
+    FOR SELECT TO authenticated USING (true);
+
+
+
+
+-- Crear vista para bodegas con información de empresa y sucursal
+CREATE OR REPLACE VIEW almacen.vw_bodegas AS
+SELECT 
+    b.id,
+    b.codigo,
+    b.descripcion,
+    b.empresa_id,
+    COALESCE(e.nombre_comercial , 'Sin empresa') as empresa_nombre,
+    --b.sucursal_id,
+    --isnull(s.nombre, '') as sucursal_nombre,
+    b.esta_activo,
+    b.created_at,
+    b.updated_at
+FROM 
+    almacen.tbl_bodega b
+    LEFT JOIN catalogos.tbl_empresas e ON b.empresa_id = e.id;
+    --LEFT JOIN catalogos.tbl_sucursales s ON b.sucursal_id = s.id
+
+-- Permisos de la vista
+GRANT SELECT ON almacen.vw_bodegas TO authenticated; 
