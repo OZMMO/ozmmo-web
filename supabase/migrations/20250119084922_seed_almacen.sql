@@ -1,5 +1,5 @@
 -- Seed para tipos de movimiento
-INSERT INTO almacen.tbl_cat_tipos_movimiento (nombre, categoria, descripcion, esta_activo, created_at, updated_at)
+INSERT INTO almacen_tbl_cat_tipos_movimiento (nombre, categoria, descripcion, esta_activo, created_at, updated_at)
 VALUES
     ('Recepción de Compra', 'Entrada', 'Ingreso de mercancía desde un proveedor', true, NOW(), NOW()),
     ('Devolución de Cliente', 'Entrada', 'Productos devueltos por un cliente tras una venta', true, NOW(), NOW()),
@@ -11,7 +11,7 @@ VALUES
     ('Pérdida por Daño', 'Ajuste', 'Reducción por productos dañados o defectuosos', true, NOW(), NOW());
 
 -- Seed para estados de lote
-INSERT INTO almacen.tbl_cat_estados_lote (nombre, descripcion, esta_activo, created_at, updated_at)
+INSERT INTO almacen_tbl_cat_estados_lote (nombre, descripcion, esta_activo, created_at, updated_at)
 VALUES
     ('Activo', 'Lote disponible para uso', true, NOW(), NOW()),
     ('Bloqueado', 'Lote en revisión o cuarentena', true, NOW(), NOW()),
@@ -20,7 +20,7 @@ VALUES
     ('Dañado', 'Lote con productos deteriorados', true, NOW(), NOW());
 
 -- Seed para estados de ubicación
-INSERT INTO almacen.tbl_cat_estado_ubicacion (descripcion, disponible, esta_activo, created_at, updated_at)
+INSERT INTO almacen_tbl_cat_estado_ubicacion (descripcion, disponible, esta_activo, created_at, updated_at)
 VALUES
     ('Disponible', true, true, NOW(), NOW()),
     ('Ocupado', false, true, NOW(), NOW()),
@@ -29,7 +29,7 @@ VALUES
     ('Reservado', false, true, NOW(), NOW());
 
 -- Seed para unidades de medida
-INSERT INTO almacen.tbl_unidades_medida (nombre, abreviatura, esta_activo, created_at, updated_at)
+INSERT INTO almacen_tbl_unidades_medida (nombre, abreviatura, esta_activo, created_at, updated_at)
 VALUES
     ('Unidad', 'UN', true, NOW(), NOW()),
     ('Kilogramo', 'KG', true, NOW(), NOW()),
