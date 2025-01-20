@@ -83,6 +83,9 @@ dependencies:
   sonner:
     specifier: ^1.7.2
     version: 1.7.2(react-dom@18.3.1)(react@18.3.1)
+  type-fest:
+    specifier: ^4.32.0
+    version: 4.32.0
   zod:
     specifier: ^3.24.1
     version: 3.24.1
@@ -2250,6 +2253,11 @@ packages:
 
   /tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+    dev: false
+
+  /type-fest@4.32.0:
+    resolution: {integrity: sha512-rfgpoi08xagF3JSdtJlCwMq9DGNDE0IMh3Mkpc1wUypg9vPi786AiqeBBKcqvIkq42azsBM85N490fyZjeUftw==}
+    engines: {node: '>=16'}
     dev: false
 
   /typescript@5.7.2:

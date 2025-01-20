@@ -3,9 +3,9 @@ DO $$
 DECLARE
     mexico_id int4;
 BEGIN
-    SELECT id INTO mexico_id FROM sat.tbl_paises WHERE clave_pais = 'MEX';
+    SELECT id INTO mexico_id FROM sat_tbl_paises WHERE clave_pais = 'MEX';
 
-    INSERT INTO sat.tbl_estados (clave_estado, descripcion, pais_id, esta_activo, created_at, updated_at)
+    INSERT INTO sat_tbl_estados (clave_estado, descripcion, pais_id, esta_activo, created_at, updated_at)
     VALUES 
         ('AGU', 'AGUASCALIENTES', mexico_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('BCN', 'BAJA CALIFORNIA', mexico_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

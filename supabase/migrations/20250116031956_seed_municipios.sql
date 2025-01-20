@@ -5,8 +5,8 @@ DECLARE
 BEGIN
     -- Insertar municipios para cada estado
     -- AGUASCALIENTES
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'AGU';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'AGU';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'AGUASCALIENTES', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ASIENTOS', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -21,8 +21,8 @@ BEGIN
         ('011', 'SAN FRANCISCO DE LOS ROMO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- BAJA CALIFORNIA
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'BCN';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'BCN';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ENSENADA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'MEXICALI', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -31,8 +31,8 @@ BEGIN
         ('005', 'PLAYAS DE ROSARITO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- BAJA CALIFORNIA SUR
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'BCS';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'BCS';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'COMONDÚ', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'MULEGÉ', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -42,8 +42,8 @@ BEGIN
 
     --agrega los municipios para el estado de campeche
     -- CAMPECHE
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'CAM';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'CAM';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'CALKINÍ', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'CAMPECHE', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -58,8 +58,8 @@ BEGIN
         ('011', 'CANDELARIA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- CHIHUAHUA
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'CHH';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'CHH';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'AHUMADA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ALDAMA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -130,8 +130,8 @@ BEGIN
         ('067', 'VALLE DE ZARAGOZA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- CHIAPAS
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'CHP';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'CHP';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ACACOYAGUA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ACALA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -258,8 +258,8 @@ BEGIN
         ('124', 'MEZCALAPA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- CIUDAD DE MÉXICO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'CMX';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'CMX';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('002', 'AZCAPOTZALCO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('003', 'COYOACÁN', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -279,8 +279,8 @@ BEGIN
         ('017', 'VENUSTIANO CARRANZA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- COAHUILA
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'COA';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'COA';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ABASOLO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ACUÑA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -322,8 +322,8 @@ BEGIN
         ('038', 'ZARAGOZA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- COLIMA
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'COL';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'COL';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ARMERÍA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'COLIMA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -337,8 +337,8 @@ BEGIN
         ('010', 'VILLA DE ÁLVAREZ', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- DURANGO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'DUR';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'DUR';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'CANATLÁN', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'CANELAS', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -381,14 +381,14 @@ BEGIN
         ('039', 'NUEVO IDEAL', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- EXTRANJERO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'EX';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'EX';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('571', 'EXTRANJERO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- GUERRERO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'GRO';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'GRO';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ACAPULCO DE JUÁREZ', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'AHUACUOTZINGO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -473,8 +473,8 @@ BEGIN
         ('081', 'ILIATENCO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- GUANAJUATO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'GUA';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'GUA';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ABASOLO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ACÁMBARO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -546,8 +546,8 @@ BEGIN
         ('068', 'SAN IGNACIO CERRO GORDO', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- JALISCO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'JAL';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'JAL';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ACATIC', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ACATLÁN DE JUÁREZ', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -676,8 +676,8 @@ BEGIN
         ('125', 'SAN MARTÍN DE BOLAÑOS', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
     -- ESTADO DE MÉXICO
-    SELECT id INTO estado_id FROM sat.tbl_estados WHERE clave_estado = 'MEX';
-    INSERT INTO sat.tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
+    SELECT id INTO estado_id FROM sat_tbl_estados WHERE clave_estado = 'MEX';
+    INSERT INTO sat_tbl_municipios (clave_municipio, descripcion, estado_id, esta_activo, created_at, updated_at)
     VALUES 
         ('001', 'ACAMBAY DE RUÍZ CASTAÑEDA', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
         ('002', 'ACOLMAN', estado_id, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

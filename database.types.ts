@@ -628,9 +628,34 @@ export type Database = {
       [_ in never]: never
     }
   }
-  catalogos: {
+  graphql_public: {
     Tables: {
-      tbl_empresas: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+  public: {
+    Tables: {
+      catalogos_tbl_empresas: {
         Row: {
           certificado_csd: string | null
           codigo: string
@@ -647,7 +672,7 @@ export type Database = {
           representante_legal: string | null
           rfc: string
           telefono: string | null
-          tipo_contribuyente: Database["catalogos"]["Enums"]["tipo_contribuyente"]
+          tipo_contribuyente: Database["public"]["Enums"]["catalogos_tipo_contribuyente"]
         }
         Insert: {
           certificado_csd?: string | null
@@ -665,7 +690,7 @@ export type Database = {
           representante_legal?: string | null
           rfc: string
           telefono?: string | null
-          tipo_contribuyente: Database["catalogos"]["Enums"]["tipo_contribuyente"]
+          tipo_contribuyente: Database["public"]["Enums"]["catalogos_tipo_contribuyente"]
         }
         Update: {
           certificado_csd?: string | null
@@ -683,11 +708,11 @@ export type Database = {
           representante_legal?: string | null
           rfc?: string
           telefono?: string | null
-          tipo_contribuyente?: Database["catalogos"]["Enums"]["tipo_contribuyente"]
+          tipo_contribuyente?: Database["public"]["Enums"]["catalogos_tipo_contribuyente"]
         }
         Relationships: []
       }
-      tbl_sucursales: {
+      catalogos_tbl_sucursales: {
         Row: {
           codigo: string | null
           correo_electronico: string
@@ -723,73 +748,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_sucursales_empresa_id_fkey"
+            foreignKeyName: "catalogos_tbl_sucursales_empresa_id_fkey"
             columns: ["empresa_id"]
             isOneToOne: false
-            referencedRelation: "tbl_empresas"
+            referencedRelation: "catalogos_tbl_empresas"
             referencedColumns: ["id"]
           },
         ]
       }
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      tipo_contribuyente: "Física" | "Moral"
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-  public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-  sat: {
-    Tables: {
-      tbl_codigos_postales: {
+      sat_tbl_codigos_postales: {
         Row: {
           codigo_postal: string
           created_at: string | null
@@ -822,29 +789,29 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_codigos_postales_estado_id_fkey"
+            foreignKeyName: "sat_tbl_codigos_postales_estado_id_fkey"
             columns: ["estado_id"]
             isOneToOne: false
-            referencedRelation: "tbl_estados"
+            referencedRelation: "sat_tbl_estados"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "tbl_codigos_postales_localidad_id_fkey"
+            foreignKeyName: "sat_tbl_codigos_postales_localidad_id_fkey"
             columns: ["localidad_id"]
             isOneToOne: false
-            referencedRelation: "tbl_localidades"
+            referencedRelation: "sat_tbl_localidades"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "tbl_codigos_postales_municipio_id_fkey"
+            foreignKeyName: "sat_tbl_codigos_postales_municipio_id_fkey"
             columns: ["municipio_id"]
             isOneToOne: false
-            referencedRelation: "tbl_municipios"
+            referencedRelation: "sat_tbl_municipios"
             referencedColumns: ["id"]
           },
         ]
       }
-      tbl_colonias: {
+      sat_tbl_colonias: {
         Row: {
           clave_colonia: string
           codigo_postal_id: number | null
@@ -874,15 +841,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_colonias_codigo_postal_id_fkey"
+            foreignKeyName: "sat_tbl_colonias_codigo_postal_id_fkey"
             columns: ["codigo_postal_id"]
             isOneToOne: false
-            referencedRelation: "tbl_codigos_postales"
+            referencedRelation: "sat_tbl_codigos_postales"
             referencedColumns: ["id"]
           },
         ]
       }
-      tbl_estados: {
+      sat_tbl_estados: {
         Row: {
           clave_estado: string
           created_at: string | null
@@ -912,15 +879,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_estados_pais_id_fkey"
+            foreignKeyName: "sat_tbl_estados_pais_id_fkey"
             columns: ["pais_id"]
             isOneToOne: false
-            referencedRelation: "tbl_paises"
+            referencedRelation: "sat_tbl_paises"
             referencedColumns: ["id"]
           },
         ]
       }
-      tbl_localidades: {
+      sat_tbl_localidades: {
         Row: {
           clave_localidad: string | null
           created_at: string | null
@@ -950,15 +917,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_localidades_estado_id_fkey"
+            foreignKeyName: "sat_tbl_localidades_estado_id_fkey"
             columns: ["estado_id"]
             isOneToOne: false
-            referencedRelation: "tbl_estados"
+            referencedRelation: "sat_tbl_estados"
             referencedColumns: ["id"]
           },
         ]
       }
-      tbl_municipios: {
+      sat_tbl_municipios: {
         Row: {
           clave_municipio: string
           created_at: string | null
@@ -988,15 +955,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "tbl_municipios_estado_id_fkey"
+            foreignKeyName: "sat_tbl_municipios_estado_id_fkey"
             columns: ["estado_id"]
             isOneToOne: false
-            referencedRelation: "tbl_estados"
+            referencedRelation: "sat_tbl_estados"
             referencedColumns: ["id"]
           },
         ]
       }
-      tbl_paises: {
+      sat_tbl_paises: {
         Row: {
           clave_pais: string
           created_at: string | null
@@ -1031,7 +998,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      catalogos_tipo_contribuyente: "Física" | "Moral"
     }
     CompositeTypes: {
       [_ in never]: never

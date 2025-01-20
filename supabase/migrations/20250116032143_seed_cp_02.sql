@@ -21223,16 +21223,16 @@ VALUES
 
 
 -- Insertar en la tabla final usando JOINS
-INSERT INTO sat.tbl_codigos_postales (codigo_postal, estado_id, municipio_id, localidad_id)
+INSERT INTO sat_tbl_codigos_postales (codigo_postal, estado_id, municipio_id, localidad_id)
 SELECT 
     t.codigo_postal,
     e.id as estado_id,
     m.id as municipio_id,
     l.id as localidad_id
 FROM temp_cp2 t
-LEFT JOIN sat.tbl_estados e ON e.clave_estado = t.codigo_estado
-LEFT JOIN sat.tbl_municipios m ON m.clave_municipio = t.codigo_municipio AND m.estado_id = e.id
-LEFT JOIN sat.tbl_localidades l ON l.clave_localidad = t.codigo_localidad AND l.estado_id = e.id;
+LEFT JOIN sat_tbl_estados e ON e.clave_estado = t.codigo_estado
+LEFT JOIN sat_tbl_municipios m ON m.clave_municipio = t.codigo_municipio AND m.estado_id = e.id
+LEFT JOIN sat_tbl_localidades l ON l.clave_localidad = t.codigo_localidad AND l.estado_id = e.id;
 
 -- Limpiar tabla temporal
 DROP TABLE temp_cp2;
