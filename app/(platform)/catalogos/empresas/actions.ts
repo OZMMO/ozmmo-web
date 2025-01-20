@@ -12,8 +12,7 @@ export const createServer = async (data: Empresa): Promise<ActionState<Empresa>>
   }
 
   const { error } = await supabase
-    .schema('catalogos')
-    .from('tbl_empresas')
+    .from('catalogos_tbl_empresas')
     .insert([data])
 
   if (error) {
@@ -32,8 +31,7 @@ export const updateServer = async (data: Empresa): Promise<ActionState<Empresa>>
   }
 
   const { error } = await supabase
-    .schema('catalogos')
-    .from('tbl_empresas')
+    .from('catalogos_tbl_empresas')
     .update(data)
     .eq('id', data.id)
 
@@ -49,8 +47,7 @@ export const deleteServer = async (data: Empresa): Promise<ActionState<Empresa>>
   const supabase = await createClient()
     
   const { error } = await supabase
-    .schema('catalogos')
-    .from('tbl_empresas')
+    .from('catalogos_tbl_empresas')
     .delete()
     .eq('id', data.id)
 

@@ -12,7 +12,7 @@ import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
 const columns: Column<Sucursal>[] = [
   { 
-    key: 'tbl_empresas', label: 'Empresa', sortable: true, 
+    key: 'catalogos_tbl_empresas', label: 'Empresa', sortable: true, 
     render: (value) => {
       const codigo: string = typeof value === 'object' && value !== null && 'codigo' in value ? value.codigo : '';
       const razon_social: string = typeof value === 'object' && value !== null && 'razon_social' in value ? value.razon_social : '';
@@ -21,8 +21,8 @@ const columns: Column<Sucursal>[] = [
   { key: 'codigo', label: 'Código', sortable: true },
   { key: 'nombre', label: 'Nombre', sortable: true },
   { key: 'responsable', label: 'Responsable', sortable: true },
-  { key: 'correo_electronico', label: 'Correo', sortable: true },
-  { key: 'telefono', label: 'Teléfono', sortable: true },
+  // { key: 'correo_electronico', label: 'Correo', sortable: true },
+  // { key: 'telefono', label: 'Teléfono', sortable: true },
   { key: 'estatus', label: 'Estatus', sortable: true, render: (value) => value ? 'Activo' : 'Inactivo' }
 ];
 

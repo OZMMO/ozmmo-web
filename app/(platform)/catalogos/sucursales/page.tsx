@@ -14,11 +14,10 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
   const { page = 1, pageSize = 10 } = dataSearchParams;
   const offset = (Number(page) - 1) * Number(pageSize);
   const { data: sucursales, error, count: countData } = await supabase
-    .schema('catalogos')
-    .from('tbl_sucursales')
+    .from('catalogos_tbl_sucursales')
     .select(`
       *,
-      tbl_empresas (
+      catalogos_tbl_empresas (
         codigo,
         razon_social
       )
@@ -27,8 +26,7 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
     .range(offset, offset + Number(pageSize) - 1)
 
   const { data: empresas, error: errorEmpresas } = await supabase
-    .schema('catalogos')
-    .from('tbl_empresas')
+    .from('catalogos_tbl_empresas')
     .select('*')
     .filter('estatus', 'eq', true)
     .order('codigo', { ascending: true })

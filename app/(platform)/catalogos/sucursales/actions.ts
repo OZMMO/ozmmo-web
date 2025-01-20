@@ -9,8 +9,7 @@ export const createSucursal = async (data: Sucursal) : Promise<ActionState<Sucur
 
   console.log({data})
   const { error } = await supabase
-    .schema('catalogos')
-    .from('tbl_sucursales')
+    .from('catalogos_tbl_sucursales')
     .insert([data])
 
   if (error) {
@@ -25,8 +24,7 @@ export const updateSucursal = async (data: Sucursal) : Promise<ActionState<Sucur
   const supabase = await createClient()
 
   const { error } = await supabase
-    .schema('catalogos')
-    .from('tbl_sucursales')
+    .from('catalogos_tbl_sucursales')
     .update(data)
     .eq('id', data.id)
 
@@ -42,8 +40,7 @@ export const deleteSucursal = async (data: Sucursal) : Promise<ActionState<Sucur
   const supabase = await createClient()
 
   const { error } = await supabase
-    .schema('catalogos')
-    .from('tbl_sucursales')
+    .from('catalogos_tbl_sucursales')
     .delete()
     .eq('id', data.id)
 

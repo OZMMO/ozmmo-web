@@ -1,5 +1,5 @@
 -- Seed para la tabla de países (solo México)
-INSERT INTO sat.tbl_paises (clave_pais, descripcion, esta_activo, created_at, updated_at)
+INSERT INTO sat_tbl_paises (clave_pais, descripcion, esta_activo, created_at, updated_at)
 VALUES (
     'MEX',                -- clave ISO 3166-1 alpha-3
     'México',             -- nombre oficial
