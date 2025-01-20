@@ -1,13 +1,13 @@
 'use client';
-import {SupabaseCRUD, Column} from '@/components/supabase-crud';
+import {CRUD, Column} from '@/components/crud';
 import { useEffect, useState } from 'react';
 import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interface';
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createServer, deleteServer, updateServer } from './actions';
 import { EmpresaForm } from './empresa-form';
-import { Empresa } from '@/lib/db/catalogos/empresa.model';
+// import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
-const columns: Column<Empresa>[] = [
+const columns: Column<any>[] = [
   // { key: 'id', label: 'ID', sortable: true },
   { key: 'codigo', label: 'Código', sortable: true },
   { key: 'razon_social', label: 'Razón Social', sortable: true },
@@ -29,7 +29,7 @@ const columns: Column<Empresa>[] = [
 ];
 
 interface PageProps {
-  payload: IResponseModel<Empresa[]>;
+  payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
 }
 
@@ -47,7 +47,7 @@ export default function EmpresasClientPage({ payload, paginationParams }: PagePr
   }
 
   return (
-    <SupabaseCRUD<Empresa, null>
+    <CRUD<any, null>
       columns={columns}
       data={data}
       totalCount={totalCount}

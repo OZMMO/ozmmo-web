@@ -14,18 +14,15 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Toaster } from "sonner";
-import { createClient } from "@/utils/supabase/server"
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
+import { auth } from '@/auth';
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  const user = session?.user;
 
   if (!user) {
     return null;
   }
-  
 
   return (
     <SidebarProvider>

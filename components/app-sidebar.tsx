@@ -26,8 +26,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { createClient } from "@/utils/supabase/server"
-import { User } from "@supabase/supabase-js"
+import { User } from "next-auth"
 
 // This is sample data.
 const data = {
@@ -266,7 +265,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

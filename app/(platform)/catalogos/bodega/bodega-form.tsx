@@ -21,15 +21,15 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { bodegaFormSchema } from "./schemas"
-import { Bodega } from "@/lib/db/catalogos/bodega.model"
+// import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { BodegaInfoExtra } from "./page.client"
 
 type BodegaFormValues = z.infer<typeof bodegaFormSchema>
 
 interface BodegaFormProps {
-  initialData?: Bodega | null,
-  infoExtra?: BodegaInfoExtra,
-  onSubmit: (data: Bodega) => void
+  initialData?: any | null,
+  infoExtra?: any,
+  onSubmit: (data: any) => void
 }
 
 export function BodegaForm({ initialData,infoExtra, onSubmit }: BodegaFormProps) {
@@ -53,7 +53,7 @@ console.log(form)
       id: initialData?.id || 0,
       empresa_id: data.empresa_id ? Number(data.empresa_id) : null
     };
-    onSubmit(formData as Bodega);
+      onSubmit(formData);
   }
 
   return (
@@ -105,7 +105,7 @@ console.log(form)
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {infoExtra?.catalogoEmpresas?.map((empresa) => (
+                    {infoExtra?.catalogoEmpresas?.map((empresa: any) => (
                       <SelectItem key={empresa.id} value={empresa.id.toString() }>{empresa.codigo}-{empresa.razon_social}</SelectItem>
                     ))}
                   </SelectContent>
