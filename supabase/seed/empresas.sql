@@ -1,6 +1,6 @@
 
 -- Insertar datos de prueba en la tabla empresas
-INSERT INTO catalogos.tbl_empresas (
+INSERT INTO catalogos_tbl_empresas (
   codigo,
   rfc,
   razon_social,

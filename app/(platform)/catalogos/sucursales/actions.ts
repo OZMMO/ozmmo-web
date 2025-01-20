@@ -1,19 +1,53 @@
 'use server';
-export const createServer = async <T>(data: T) => {
-  // Implement create logic
 
-  console.log('create', {data});
+import { createClient } from "@/utils/supabase/server";
+import { Sucursal } from "@/lib/db/catalogos/sucursal.model";
+import { ActionState } from "@/components/supabase-crud";
+
+export const createSucursal = async (data: Sucursal) : Promise<ActionState<Sucursal>> => {
+  const supabase = await createClient()
+
+  console.log({data})
+  const { error } = await supabase
+    .from('catalogos_tbl_sucursales')
+    .insert([data])
+
+  if (error) {
+    console.error('Error:', error)
+    return { error }
+  }
+
   return { data }; // Return an ActionState object
 }
 
-export const updateServer = async <T>(data: T) => {
-  // Implement update logic
-  console.log('update', {data});
+export const updateSucursal = async (data: Sucursal) : Promise<ActionState<Sucursal>> => {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('catalogos_tbl_sucursales')
+    .update(data)
+    .eq('id', data.id)
+
+  if (error) {
+    console.error('Error:', error)
+    return { error }
+  }
+
   return { data }; // Return an ActionState object
 }
 
-export const deleteServer = async <T>(data: T) => {
-  // Implement delete logic
-  console.log('delete', {data});
-  return { data }; // Return an ActionState object
+export const deleteSucursal = async (data: Sucursal) : Promise<ActionState<Sucursal>> => {
+  const supabase = await createClient()
+
+  const { error } = await supabase
+    .from('catalogos_tbl_sucursales')
+    .delete()
+    .eq('id', data.id)
+
+  if (error) {
+    console.error('Error:', error)
+    return { error }
+  }
+
+  return { data };
 }
