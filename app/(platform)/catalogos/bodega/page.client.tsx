@@ -5,22 +5,16 @@ import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interf
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createServer, deleteServer, updateServer } from './actions';
 import { BodegaForm } from './bodega-form';
+import { Bodega } from '@/lib/db';
   // import { Bodega } from '@/lib/db/catalogos/bodega.model';
   // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
-const columns: Column<any>[] = [
+const columns: Column<Bodega>[] = [
   // { key: 'id', label: 'ID', sortable: true },
   { key: 'codigo', label: 'Código', sortable: true },
   { key: 'descripcion', label: 'Descripción', sortable: true },
-  { 
-    key: 'tbl_empresas', label: 'Empresa', sortable: true, 
-        render: (value) => {
-        const codigo: string = typeof value === 'object' && value !== null && 'codigo' in value ? value.codigo : '';
-        const razon_social: string = typeof value === 'object' && value !== null && 'razon_social' in value ? value.razon_social : '';
-        return <div>{codigo} - {razon_social}</div>
-        } 
-    },
-    { key: 'esta_activo', label: 'Estatus', sortable: true, render: (value) => value ? 'Activo' : 'Inactivo' }
+  { key: 'empresa', label: 'Empresa', sortable: true },
+  { key: 'estatus', label: 'Estatus', sortable: true, render: (value) => value ? 'Activo' : 'Inactivo' }
 ];
 
 interface PageProps {
@@ -46,7 +40,7 @@ export default function BodegasClientPage({ payload, paginationParams, catalogoE
   }
 
   return (
-    <CRUD<any, BodegaInfoExtra>
+    <CRUD<Bodega, BodegaInfoExtra>
       columns={columns}
       data={data}
       totalCount={totalCount}

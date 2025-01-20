@@ -6,3 +6,5 @@ export * from './criteria/criteria-sqlserver.model';
 export * from './security/account.model';
 export * from './security/session.model';
 export * from './security/user.model';
+export * from './catalogos/bodegas/bodega.model';
+export * from './catalogos/bodegas/bodega';

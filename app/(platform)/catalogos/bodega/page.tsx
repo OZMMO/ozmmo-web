@@ -1,63 +1,53 @@
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import BodegasClientPage from "./page.client";
+import { auth } from "@/auth";
+import { Bodega, Empresa } from "@/lib/db";
+import { CriteriaSqlServer, BodegaModel, EmpresaModel } from "@/lib/db";
 // import { Empresa } from "@/lib/db/catalogos/empresa.model";
 export const dynamic = 'force-dynamic'
 
 interface PageProps {
-  searchParams: Promise<IPageSearchPaginationParams>;
+  searchParams: IPageSearchPaginationParams;
 }
 
 
 export default async function BodegasPage({searchParams}: PageProps) {
   
-  const dataSearchParams = await searchParams;
-  const page = dataSearchParams?.page || '1';
-  const pageSize = dataSearchParams?.pageSize || '10';
-  const query = dataSearchParams?.query || '';
-  
-  // const { page = '1', pageSize = 10, query = '' } = dataSearchParams;
-  const offset = (Number(page) - 1) * Number(pageSize);
-  // const { data: bodegas, error, count: countData } = await sql
-  //   .from('almacen_tbl_bodega')
-  //     .select(`
-  //       *,
-  //       catalogos_tbl_empresas (
-  //         codigo,
-  //         razon_social
-  //       )
-  //     `, { count: 'exact' })
-  //   .or(`descripcion.ilike.%${query}%,codigo.ilike.%${query}%`)
-  //   .order('codigo', { ascending: true })
-  //   .range(offset, offset + Number(pageSize) - 1)
+  const session = await auth();
+  const userId = session?.user.id as string
 
-  // const { data: empresas, error: errorEmpresas } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .select('*')
-  //   .filter('estatus', 'eq', true)
-  //   .order('codigo', { ascending: true })
-  //   .returns<Empresa[]>()
+  const bodegaModel = new BodegaModel();
+    
+  const criteria1 = new CriteriaSqlServer<Bodega>();    
+  criteria1.addConditition('UserId', userId);
+  const {data: dataBodegas } = await bodegaModel.findMany(criteria1);
 
-//console.log(empresas)
+  const empresaModel = new EmpresaModel();
+    
+  const criteriaEmpresa = new CriteriaSqlServer<Empresa>();    
+  criteriaEmpresa.addConditition('UserId', userId);
+  const {data: dataEmpresas } = await empresaModel.findMany(criteriaEmpresa);
 
-  // let count = countData || 0;
+  // Crear criteria desde searchParams
+  const criteria = new CriteriaSqlServer<Bodega>();
+  criteria.addConditition('page', Number(searchParams.page) || 1);
+  criteria.addConditition('pageSize', Number(searchParams.pageSize) || 10);
+  criteria.addConditition('query', searchParams.query || '');
+  criteria.addConditition('orderByColumn', searchParams.orderByColumn || 'Name');
+  criteria.addConditition('orderDirection', searchParams.orderDirection || 'asc');
+  criteria.addConditition('UserId', userId);
 
-  // if (error) {
-  //   console.error('Error fetching data:', error);
-  //   return <div>Error fetching data</div>;
-  // }
+  const { data, totalCount, totalPages } = await bodegaModel.findMany(criteria);
 
-  // Calculate total pages by dividing total count by page size and rounding up
-  // const totalPages = count <= Number(pageSize) ? 1 : Math.ceil(count / Number(pageSize));
-
-  // return <BodegasClientPage 
-  //   payload={{
-  //     data: bodegas,
-  //     totalCount: count || 0,
-  //     totalPages: totalPages
-  //   }}
-  //   paginationParams={dataSearchParams}
-  //   catalogoEmpresas={empresas || []}
-  // />;
+  return <BodegasClientPage 
+    payload={{
+      data: data,
+      totalCount: totalCount || 0,
+      totalPages: totalPages
+    }}
+    paginationParams={searchParams}
+    catalogoEmpresas={dataEmpresas}
+  />;
 
   return <div>Bodegas</div>;
 }

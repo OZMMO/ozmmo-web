@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -20,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { bodegaFormSchema } from "./schemas"
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { BodegaInfoExtra } from "./page.client"
@@ -33,27 +35,35 @@ interface BodegaFormProps {
 }
 
 export function BodegaForm({ initialData,infoExtra, onSubmit }: BodegaFormProps) {
+  const [empresa_id_state, setEmpresaIdState] = useState(initialData?.empresa_id || 0);
+
+  const handleStringToInt = (value: string) => {
+    setEmpresaIdState(parseInt(value))
+  }
+
   const form = useForm<BodegaFormValues>({
     resolver: zodResolver(bodegaFormSchema),
     defaultValues: {
       codigo: initialData?.codigo || "",
       descripcion: initialData?.descripcion || "",
       empresa_id: initialData?.empresa_id || 0,
-      //sucursal_id: initialData?.sucursal_id || 0,
-      //esta_activo: initialData?.esta_activo || true,
+      empresa: initialData?.empresa || "",
+      sucursal_id: initialData?.sucursal_id || 0,
+      sucursal: initialData?.sucursal || "",
+      estatus: initialData?.estatus || true,
      
     },
   })
-console.log(form)
+
  // const tipoContribuyente = form.watch("tipo_contribuyente")
 
   const handleSubmit = (data: BodegaFormValues) => {
-    const formData = {
-      ...data,
-      id: initialData?.id || 0,
-      empresa_id: data.empresa_id ? Number(data.empresa_id) : null
-    };
-      onSubmit(formData);
+
+      console.log({data})
+      data.id = initialData?.id || 0;
+      data.empresa_id = empresa_id_state ? Number(empresa_id_state) : null;
+      data.sucursal_id = data.sucursal_id ? Number(data.sucursal_id) : null;
+      onSubmit(data as any)
   }
 
   return (
@@ -88,8 +98,6 @@ console.log(form)
             </FormItem>
           )}
         />
-
-         
         </div>
           <div className="grid grid-cols-1 gap-4">
           <FormField
@@ -98,7 +106,7 @@ console.log(form)
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Empresa - Razón Social</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+                <Select onValueChange={setEmpresaIdState} defaultValue={field.value?.toString()}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar Empresa" />
@@ -115,6 +123,27 @@ console.log(form)
             )}
           />
 
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+          <FormField
+              control={form.control}
+              name="estatus"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value || false}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Estatus
+                    </FormLabel>
+                  </div>
+                </FormItem>
+              )}
+            />
           </div>
         <Button type="submit">Guardar</Button>
       </form>

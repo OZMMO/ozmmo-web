@@ -1,58 +1,25 @@
 'use server';
 
 import { ActionState } from "@/components/crud";
-// import { Bodega } from "@/lib/db/catalogos/bodega.model";
+import { Bodega, BodegaModel } from "@/lib/db";
 
-export const createServer = async (data: any): Promise<ActionState<any>> => {
-  // const dataBodega = {
-  //   codigo: data.codigo || '',
-  //   descripcion: data.descripcion || '',
-  //   empresa_id: data.empresa_id || 0,
-  //   esta_activo: data.esta_activo || true
-  // }
-  // const { error } = await sql
-  //   .from('almacen_tbl_bodega')
-  //   .insert([dataBodega])
+export const createServer = async (data: Bodega): Promise<ActionState<any>> => {
+  const model = new BodegaModel();  
+  const result = await model.create(data);
 
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data }; 
+  return { data: result }; 
 }
 
-export const updateServer = async (data: any): Promise<ActionState<any>> => {
-  // const dataBodega = {
-  //   codigo: data.codigo || '',
-  //   descripcion: data.descripcion || '',
-  //   empresa_id: data.empresa_id || 0,
-  //   esta_activo: data.esta_activo || true
-  // }
-  
-  // const { error } = await sql
-  //   .from('almacen_tbl_bodega')
-  //   .update(dataBodega)
-  //   .eq('id', data.id)
+export const updateServer = async (data: Bodega): Promise<ActionState<any>> => {
+  const model = new BodegaModel();  
+  const result = await model.update(data);
 
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data };
+  return { data: result }; 
 }
 
-export const deleteServer = async (data: any): Promise<ActionState<any>> => {
-  // const { error } = await sql
-  //   .from('almacen_tbl_bodega')
-  //   .delete()
-  //   .eq('id', data.id)
+export const deleteServer = async (data: Bodega): Promise<ActionState<any>> => {
+  const model = new BodegaModel();  
+  const result = await model.delete(data);
 
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data }; 
+  return { data: result }; 
 }
