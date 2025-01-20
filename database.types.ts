@@ -7,636 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  almacen: {
-    Tables: {
-      tbl_bodega: {
-        Row: {
-          codigo: string
-          created_at: string | null
-          descripcion: string
-          empresa_id: number | null
-          esta_activo: boolean | null
-          id: number
-          updated_at: string | null
-        }
-        Insert: {
-          codigo: string
-          created_at?: string | null
-          descripcion: string
-          empresa_id?: number | null
-          esta_activo?: boolean | null
-          id?: number
-          updated_at?: string | null
-        }
-        Update: {
-          codigo?: string
-          created_at?: string | null
-          descripcion?: string
-          empresa_id?: number | null
-          esta_activo?: boolean | null
-          id?: number
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      tbl_cat_estado_ubicacion: {
-        Row: {
-          created_at: string | null
-          descripcion: string
-          disponible: boolean | null
-          esta_activo: boolean | null
-          id: number
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          descripcion: string
-          disponible?: boolean | null
-          esta_activo?: boolean | null
-          id?: number
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          descripcion?: string
-          disponible?: boolean | null
-          esta_activo?: boolean | null
-          id?: number
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      tbl_cat_estados_lote: {
-        Row: {
-          created_at: string | null
-          descripcion: string | null
-          esta_activo: boolean | null
-          id: number
-          nombre: string
-          updated_at: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          descripcion?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre: string
-          updated_at?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          descripcion?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      tbl_cat_tipos_movimiento: {
-        Row: {
-          categoria: string | null
-          created_at: string | null
-          descripcion: string | null
-          esta_activo: boolean | null
-          id: number
-          nombre: string
-          updated_at: string | null
-        }
-        Insert: {
-          categoria?: string | null
-          created_at?: string | null
-          descripcion?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre: string
-          updated_at?: string | null
-        }
-        Update: {
-          categoria?: string | null
-          created_at?: string | null
-          descripcion?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      tbl_detalle_recepciones: {
-        Row: {
-          cantidad: number | null
-          created_at: string | null
-          esta_activo: boolean | null
-          id: number
-          producto_id: number | null
-          recepcion_id: number | null
-          ubicacion_id: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          cantidad?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          producto_id?: number | null
-          recepcion_id?: number | null
-          ubicacion_id?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          cantidad?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          producto_id?: number | null
-          recepcion_id?: number | null
-          ubicacion_id?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_detalle_recepciones_producto_id_fkey"
-            columns: ["producto_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_productos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_detalle_recepciones_recepcion_id_fkey"
-            columns: ["recepcion_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_recepciones"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_detalle_recepciones_ubicacion_id_fkey"
-            columns: ["ubicacion_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_ubicaciones"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_lista_materiales: {
-        Row: {
-          cantidad_necesaria: number | null
-          created_at: string | null
-          esta_activo: boolean | null
-          id: number
-          nota: string | null
-          producto_id: number | null
-          unidad_medida_id: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          cantidad_necesaria?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nota?: string | null
-          producto_id?: number | null
-          unidad_medida_id?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          cantidad_necesaria?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nota?: string | null
-          producto_id?: number | null
-          unidad_medida_id?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_lista_materiales_producto_id_fkey"
-            columns: ["producto_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_productos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_lista_materiales_unidad_medida_id_fkey"
-            columns: ["unidad_medida_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_unidades_medida"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_lotes: {
-        Row: {
-          cantidad_disponible: number | null
-          cantidad_inicial: number | null
-          codigo_lote: string
-          created_at: string | null
-          esta_activo: boolean | null
-          estado_lote_id: number | null
-          fecha_expiracion: string | null
-          fecha_fabricacion: string | null
-          id: number
-          producto_id: number | null
-          recepcion_id: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          cantidad_disponible?: number | null
-          cantidad_inicial?: number | null
-          codigo_lote: string
-          created_at?: string | null
-          esta_activo?: boolean | null
-          estado_lote_id?: number | null
-          fecha_expiracion?: string | null
-          fecha_fabricacion?: string | null
-          id?: number
-          producto_id?: number | null
-          recepcion_id?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          cantidad_disponible?: number | null
-          cantidad_inicial?: number | null
-          codigo_lote?: string
-          created_at?: string | null
-          esta_activo?: boolean | null
-          estado_lote_id?: number | null
-          fecha_expiracion?: string | null
-          fecha_fabricacion?: string | null
-          id?: number
-          producto_id?: number | null
-          recepcion_id?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_lotes_estado_lote_id_fkey"
-            columns: ["estado_lote_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_cat_estados_lote"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_lotes_producto_id_fkey"
-            columns: ["producto_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_productos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_lotes_recepcion_id_fkey"
-            columns: ["recepcion_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_recepciones"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_lotes_ubicaciones: {
-        Row: {
-          cantidad: number | null
-          created_at: string | null
-          esta_activo: boolean | null
-          id: number
-          lote_id: number | null
-          ubicacion_id: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          cantidad?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          lote_id?: number | null
-          ubicacion_id?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          cantidad?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          lote_id?: number | null
-          ubicacion_id?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_lotes_ubicaciones_lote_id_fkey"
-            columns: ["lote_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_lotes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_lotes_ubicaciones_ubicacion_id_fkey"
-            columns: ["ubicacion_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_ubicaciones"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_productos: {
-        Row: {
-          codigo: string
-          codigo_proveedor: string
-          created_at: string | null
-          descripcion: string | null
-          es_ensamble: boolean | null
-          esta_activo: boolean | null
-          id: number
-          peso: number | null
-          unidad_medida_id: number | null
-          updated_at: string | null
-          volumen: number | null
-        }
-        Insert: {
-          codigo: string
-          codigo_proveedor: string
-          created_at?: string | null
-          descripcion?: string | null
-          es_ensamble?: boolean | null
-          esta_activo?: boolean | null
-          id?: number
-          peso?: number | null
-          unidad_medida_id?: number | null
-          updated_at?: string | null
-          volumen?: number | null
-        }
-        Update: {
-          codigo?: string
-          codigo_proveedor?: string
-          created_at?: string | null
-          descripcion?: string | null
-          es_ensamble?: boolean | null
-          esta_activo?: boolean | null
-          id?: number
-          peso?: number | null
-          unidad_medida_id?: number | null
-          updated_at?: string | null
-          volumen?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_productos_unidad_medida_id_fkey"
-            columns: ["unidad_medida_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_unidades_medida"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_proveedores: {
-        Row: {
-          contacto: string | null
-          created_at: string | null
-          direccion: string | null
-          email: string | null
-          esta_activo: boolean | null
-          id: number
-          nombre: string
-          telefono: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          contacto?: string | null
-          created_at?: string | null
-          direccion?: string | null
-          email?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre: string
-          telefono?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          contacto?: string | null
-          created_at?: string | null
-          direccion?: string | null
-          email?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre?: string
-          telefono?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      tbl_recepciones: {
-        Row: {
-          completado: boolean | null
-          created_at: string | null
-          esta_activo: boolean | null
-          fecha_recepcion: string | null
-          id: number
-          proveedor_id: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          completado?: boolean | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          fecha_recepcion?: string | null
-          id?: number
-          proveedor_id?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          completado?: boolean | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          fecha_recepcion?: string | null
-          id?: number
-          proveedor_id?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_recepciones_proveedor_id_fkey"
-            columns: ["proveedor_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_proveedores"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_trazabilidad_lotes: {
-        Row: {
-          cantidad: number | null
-          created_at: string | null
-          esta_activo: boolean | null
-          id: number
-          lote_id: number | null
-          notas: string | null
-          producto_id: number | null
-          referencia_movimiento: string | null
-          tipo_movimiento_id: number | null
-          ubicacion_destino_id: number | null
-          ubicacion_origen_id: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          cantidad?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          lote_id?: number | null
-          notas?: string | null
-          producto_id?: number | null
-          referencia_movimiento?: string | null
-          tipo_movimiento_id?: number | null
-          ubicacion_destino_id?: number | null
-          ubicacion_origen_id?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          cantidad?: number | null
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          lote_id?: number | null
-          notas?: string | null
-          producto_id?: number | null
-          referencia_movimiento?: string | null
-          tipo_movimiento_id?: number | null
-          ubicacion_destino_id?: number | null
-          ubicacion_origen_id?: number | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_trazabilidad_lotes_lote_id_fkey"
-            columns: ["lote_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_lotes"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_trazabilidad_lotes_producto_id_fkey"
-            columns: ["producto_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_productos"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_trazabilidad_lotes_tipo_movimiento_id_fkey"
-            columns: ["tipo_movimiento_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_cat_tipos_movimiento"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_trazabilidad_lotes_ubicacion_destino_id_fkey"
-            columns: ["ubicacion_destino_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_ubicaciones"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "tbl_trazabilidad_lotes_ubicacion_origen_id_fkey"
-            columns: ["ubicacion_origen_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_ubicaciones"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_ubicaciones: {
-        Row: {
-          capacidad_maxima: number | null
-          codigo: string
-          created_at: string | null
-          descripcion: string | null
-          esta_activo: boolean | null
-          estado_ubicacion_id: number | null
-          id: number
-          updated_at: string | null
-        }
-        Insert: {
-          capacidad_maxima?: number | null
-          codigo: string
-          created_at?: string | null
-          descripcion?: string | null
-          esta_activo?: boolean | null
-          estado_ubicacion_id?: number | null
-          id?: number
-          updated_at?: string | null
-        }
-        Update: {
-          capacidad_maxima?: number | null
-          codigo?: string
-          created_at?: string | null
-          descripcion?: string | null
-          esta_activo?: boolean | null
-          estado_ubicacion_id?: number | null
-          id?: number
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "tbl_ubicaciones_estado_ubicacion_id_fkey"
-            columns: ["estado_ubicacion_id"]
-            isOneToOne: false
-            referencedRelation: "tbl_cat_estado_ubicacion"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      tbl_unidades_medida: {
-        Row: {
-          abreviatura: string
-          created_at: string | null
-          esta_activo: boolean | null
-          id: number
-          nombre: string
-          updated_at: string | null
-        }
-        Insert: {
-          abreviatura: string
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre: string
-          updated_at?: string | null
-        }
-        Update: {
-          abreviatura?: string
-          created_at?: string | null
-          esta_activo?: boolean | null
-          id?: number
-          nombre?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-    }
-    Views: {
-      vw_bodegas: {
-        Row: {
-          codigo: string | null
-          created_at: string | null
-          descripcion: string | null
-          empresa_id: number | null
-          empresa_nombre: string | null
-          esta_activo: boolean | null
-          id: number | null
-          updated_at: string | null
-        }
-        Relationships: []
-      }
-    }
-    Functions: {
-      [_ in never]: never
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   catalogos: {
     Tables: {
       tbl_empresas: {
@@ -737,10 +107,623 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      almacen_tbl_bodega: {
+        Row: {
+          codigo: string
+          created_at: string | null
+          descripcion: string
+          empresa_id: number | null
+          esta_activo: boolean | null
+          id: number
+          updated_at: string | null
+        }
+        Insert: {
+          codigo: string
+          created_at?: string | null
+          descripcion: string
+          empresa_id?: number | null
+          esta_activo?: boolean | null
+          id?: number
+          updated_at?: string | null
+        }
+        Update: {
+          codigo?: string
+          created_at?: string | null
+          descripcion?: string
+          empresa_id?: number | null
+          esta_activo?: boolean | null
+          id?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      almacen_tbl_cat_estado_ubicacion: {
+        Row: {
+          created_at: string | null
+          descripcion: string
+          disponible: boolean | null
+          esta_activo: boolean | null
+          id: number
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          descripcion: string
+          disponible?: boolean | null
+          esta_activo?: boolean | null
+          id?: number
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          descripcion?: string
+          disponible?: boolean | null
+          esta_activo?: boolean | null
+          id?: number
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      almacen_tbl_cat_estados_lote: {
+        Row: {
+          created_at: string | null
+          descripcion: string | null
+          esta_activo: boolean | null
+          id: number
+          nombre: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          descripcion?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          descripcion?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      almacen_tbl_cat_tipos_movimiento: {
+        Row: {
+          categoria: string | null
+          created_at: string | null
+          descripcion: string | null
+          esta_activo: boolean | null
+          id: number
+          nombre: string
+          updated_at: string | null
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre: string
+          updated_at?: string | null
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string | null
+          descripcion?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      almacen_tbl_detalle_recepciones: {
+        Row: {
+          cantidad: number | null
+          created_at: string | null
+          esta_activo: boolean | null
+          id: number
+          producto_id: number | null
+          recepcion_id: number | null
+          ubicacion_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cantidad?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          producto_id?: number | null
+          recepcion_id?: number | null
+          ubicacion_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cantidad?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          producto_id?: number | null
+          recepcion_id?: number | null
+          ubicacion_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_detalle_recepciones_producto_id_fkey"
+            columns: ["producto_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_productos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_detalle_recepciones_recepcion_id_fkey"
+            columns: ["recepcion_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_recepciones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_detalle_recepciones_ubicacion_id_fkey"
+            columns: ["ubicacion_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_ubicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_lista_materiales: {
+        Row: {
+          cantidad_necesaria: number | null
+          created_at: string | null
+          esta_activo: boolean | null
+          id: number
+          nota: string | null
+          producto_id: number | null
+          unidad_medida_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cantidad_necesaria?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nota?: string | null
+          producto_id?: number | null
+          unidad_medida_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cantidad_necesaria?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nota?: string | null
+          producto_id?: number | null
+          unidad_medida_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_lista_materiales_producto_id_fkey"
+            columns: ["producto_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_productos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_lista_materiales_unidad_medida_id_fkey"
+            columns: ["unidad_medida_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_unidades_medida"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_lotes: {
+        Row: {
+          cantidad_disponible: number | null
+          cantidad_inicial: number | null
+          codigo_lote: string
+          created_at: string | null
+          esta_activo: boolean | null
+          estado_lote_id: number | null
+          fecha_expiracion: string | null
+          fecha_fabricacion: string | null
+          id: number
+          producto_id: number | null
+          recepcion_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cantidad_disponible?: number | null
+          cantidad_inicial?: number | null
+          codigo_lote: string
+          created_at?: string | null
+          esta_activo?: boolean | null
+          estado_lote_id?: number | null
+          fecha_expiracion?: string | null
+          fecha_fabricacion?: string | null
+          id?: number
+          producto_id?: number | null
+          recepcion_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cantidad_disponible?: number | null
+          cantidad_inicial?: number | null
+          codigo_lote?: string
+          created_at?: string | null
+          esta_activo?: boolean | null
+          estado_lote_id?: number | null
+          fecha_expiracion?: string | null
+          fecha_fabricacion?: string | null
+          id?: number
+          producto_id?: number | null
+          recepcion_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_lotes_estado_lote_id_fkey"
+            columns: ["estado_lote_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_cat_estados_lote"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_lotes_producto_id_fkey"
+            columns: ["producto_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_productos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_lotes_recepcion_id_fkey"
+            columns: ["recepcion_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_recepciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_lotes_ubicaciones: {
+        Row: {
+          cantidad: number | null
+          created_at: string | null
+          esta_activo: boolean | null
+          id: number
+          lote_id: number | null
+          ubicacion_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cantidad?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          lote_id?: number | null
+          ubicacion_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cantidad?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          lote_id?: number | null
+          ubicacion_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_lotes_ubicaciones_lote_id_fkey"
+            columns: ["lote_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_lotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_lotes_ubicaciones_ubicacion_id_fkey"
+            columns: ["ubicacion_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_ubicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_productos: {
+        Row: {
+          codigo: string
+          codigo_proveedor: string
+          created_at: string | null
+          descripcion: string | null
+          es_ensamble: boolean | null
+          esta_activo: boolean | null
+          id: number
+          peso: number | null
+          unidad_medida_id: number | null
+          updated_at: string | null
+          volumen: number | null
+        }
+        Insert: {
+          codigo: string
+          codigo_proveedor: string
+          created_at?: string | null
+          descripcion?: string | null
+          es_ensamble?: boolean | null
+          esta_activo?: boolean | null
+          id?: number
+          peso?: number | null
+          unidad_medida_id?: number | null
+          updated_at?: string | null
+          volumen?: number | null
+        }
+        Update: {
+          codigo?: string
+          codigo_proveedor?: string
+          created_at?: string | null
+          descripcion?: string | null
+          es_ensamble?: boolean | null
+          esta_activo?: boolean | null
+          id?: number
+          peso?: number | null
+          unidad_medida_id?: number | null
+          updated_at?: string | null
+          volumen?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_productos_unidad_medida_id_fkey"
+            columns: ["unidad_medida_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_unidades_medida"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_proveedores: {
+        Row: {
+          contacto: string | null
+          created_at: string | null
+          direccion: string | null
+          email: string | null
+          esta_activo: boolean | null
+          id: number
+          nombre: string
+          telefono: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          contacto?: string | null
+          created_at?: string | null
+          direccion?: string | null
+          email?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre: string
+          telefono?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          contacto?: string | null
+          created_at?: string | null
+          direccion?: string | null
+          email?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre?: string
+          telefono?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      almacen_tbl_recepciones: {
+        Row: {
+          completado: boolean | null
+          created_at: string | null
+          esta_activo: boolean | null
+          fecha_recepcion: string | null
+          id: number
+          proveedor_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          completado?: boolean | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          fecha_recepcion?: string | null
+          id?: number
+          proveedor_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          completado?: boolean | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          fecha_recepcion?: string | null
+          id?: number
+          proveedor_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_recepciones_proveedor_id_fkey"
+            columns: ["proveedor_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_proveedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_trazabilidad_lotes: {
+        Row: {
+          cantidad: number | null
+          created_at: string | null
+          esta_activo: boolean | null
+          id: number
+          lote_id: number | null
+          notas: string | null
+          producto_id: number | null
+          referencia_movimiento: string | null
+          tipo_movimiento_id: number | null
+          ubicacion_destino_id: number | null
+          ubicacion_origen_id: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cantidad?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          lote_id?: number | null
+          notas?: string | null
+          producto_id?: number | null
+          referencia_movimiento?: string | null
+          tipo_movimiento_id?: number | null
+          ubicacion_destino_id?: number | null
+          ubicacion_origen_id?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cantidad?: number | null
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          lote_id?: number | null
+          notas?: string | null
+          producto_id?: number | null
+          referencia_movimiento?: string | null
+          tipo_movimiento_id?: number | null
+          ubicacion_destino_id?: number | null
+          ubicacion_origen_id?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_trazabilidad_lotes_lote_id_fkey"
+            columns: ["lote_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_lotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_trazabilidad_lotes_producto_id_fkey"
+            columns: ["producto_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_productos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_trazabilidad_lotes_tipo_movimiento_id_fkey"
+            columns: ["tipo_movimiento_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_cat_tipos_movimiento"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_trazabilidad_lotes_ubicacion_destino_id_fkey"
+            columns: ["ubicacion_destino_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_ubicaciones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "almacen_tbl_trazabilidad_lotes_ubicacion_origen_id_fkey"
+            columns: ["ubicacion_origen_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_ubicaciones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_ubicaciones: {
+        Row: {
+          capacidad_maxima: number | null
+          codigo: string
+          created_at: string | null
+          descripcion: string | null
+          esta_activo: boolean | null
+          estado_ubicacion_id: number | null
+          id: number
+          updated_at: string | null
+        }
+        Insert: {
+          capacidad_maxima?: number | null
+          codigo: string
+          created_at?: string | null
+          descripcion?: string | null
+          esta_activo?: boolean | null
+          estado_ubicacion_id?: number | null
+          id?: number
+          updated_at?: string | null
+        }
+        Update: {
+          capacidad_maxima?: number | null
+          codigo?: string
+          created_at?: string | null
+          descripcion?: string | null
+          esta_activo?: boolean | null
+          estado_ubicacion_id?: number | null
+          id?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "almacen_tbl_ubicaciones_estado_ubicacion_id_fkey"
+            columns: ["estado_ubicacion_id"]
+            isOneToOne: false
+            referencedRelation: "almacen_tbl_cat_estado_ubicacion"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      almacen_tbl_unidades_medida: {
+        Row: {
+          abreviatura: string
+          created_at: string | null
+          esta_activo: boolean | null
+          id: number
+          nombre: string
+          updated_at: string | null
+        }
+        Insert: {
+          abreviatura: string
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre: string
+          updated_at?: string | null
+        }
+        Update: {
+          abreviatura?: string
+          created_at?: string | null
+          esta_activo?: boolean | null
+          id?: number
+          nombre?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      almacen_vw_bodegas: {
+        Row: {
+          codigo: string | null
+          created_at: string | null
+          descripcion: string | null
+          empresa_id: number | null
+          empresa_nombre: string | null
+          esta_activo: boolean | null
+          id: number | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

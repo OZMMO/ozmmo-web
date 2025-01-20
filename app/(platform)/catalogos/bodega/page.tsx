@@ -20,11 +20,10 @@ export default async function BodegasPage({searchParams}: PageProps) {
   // const { page = '1', pageSize = 10, query = '' } = dataSearchParams;
   const offset = (Number(page) - 1) * Number(pageSize);
   const { data: bodegas, error, count: countData } = await supabase
-    .schema('almacen')
-    .from('tbl_bodega')
+    .from('almacen_tbl_bodega')
     .select(`
         *,
-        tbl_empresas (
+        catalogos_tbl_empresas (
           codigo,
           razon_social
         )
@@ -34,8 +33,7 @@ export default async function BodegasPage({searchParams}: PageProps) {
     .range(offset, offset + Number(pageSize) - 1)
 
   const { data: empresas, error: errorEmpresas } = await supabase
-    .schema('catalogos')
-    .from('tbl_empresas')
+    .from('catalogos_tbl_empresas')
     .select('*')
     .filter('estatus', 'eq', true)
     .order('codigo', { ascending: true })

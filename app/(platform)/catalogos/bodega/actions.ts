@@ -13,8 +13,7 @@ export const createServer = async (data: Bodega): Promise<ActionState<Bodega>> =
     esta_activo: data.esta_activo || true
   }
   const { error } = await supabase
-    .schema('almacen')
-    .from('tbl_bodega')
+    .from('almacen_tbl_bodega')
     .insert([dataBodega])
 
   if (error) {
@@ -35,8 +34,7 @@ export const updateServer = async (data: Bodega): Promise<ActionState<Bodega>> =
   }
   
   const { error } = await supabase
-    .schema('almacen')
-    .from('tbl_bodega')
+    .from('almacen_tbl_bodega')
     .update(dataBodega)
     .eq('id', data.id)
 
@@ -52,8 +50,7 @@ export const deleteServer = async (data: Bodega): Promise<ActionState<Bodega>> =
   const supabase = await createClient()
     
   const { error } = await supabase
-    .schema('almacen')
-    .from('tbl_bodega')
+    .from('almacen_tbl_bodega')
     .delete()
     .eq('id', data.id)
 
