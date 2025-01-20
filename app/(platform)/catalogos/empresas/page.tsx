@@ -1,48 +1,47 @@
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import EmpresasClientPage from "./page.client";
+import { auth } from "@/auth";
+import { Empresa } from "@/lib/db";
+import { CriteriaSqlServer, EmpresaModel } from "@/lib/db";
 
 export const dynamic = 'force-dynamic'
 
 interface PageProps {
-  searchParams: Promise<IPageSearchPaginationParams>;
+  searchParams: IPageSearchPaginationParams;
 }
 
 
 export default async function SucursalesPage({searchParams}: PageProps) {
   
-  const dataSearchParams = await searchParams;
-  const page = dataSearchParams?.page || '1';
-  const pageSize = dataSearchParams?.pageSize || '10';
-  const query = dataSearchParams?.query || '';
-  
-  // const { page = '1', pageSize = 10, query = '' } = dataSearchParams;
-  const offset = (Number(page) - 1) * Number(pageSize);
-  //  const { data: empresas, error, count: countData } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .select('*', { count: 'exact' })
-  //   .or(`razon_social.ilike.%${query}%,codigo.ilike.%${query}%,nombre_comercial.ilike.%${query}%,rfc.ilike.%${query}%`)
-  //   .order('razon_social', { ascending: true })
-  //   .range(offset, offset + Number(pageSize) - 1)
+  const session = await auth();
+  const userId = session?.user.id as string
 
+  const empresaModel = new EmpresaModel();
     
-  // let count = countData || 0;
+  const criteria1 = new CriteriaSqlServer<Empresa>();    
+  criteria1.addConditition('UserId', userId);
+  const {data: dataEmpresas } = await empresaModel.findMany(criteria1);
 
-  // if (error) {
-  //   console.error('Error fetching data:', error);
-  //   return <div>Error fetching data</div>;
-  // }
 
-  // Calculate total pages by dividing total count by page size and rounding up
-  // const totalPages = count <= Number(pageSize) ? 1 : Math.ceil(count / Number(pageSize));
+  // Crear criteria desde searchParams
+  const criteria = new CriteriaSqlServer<Empresa>();
+  criteria.addConditition('page', Number(searchParams.page) || 1);
+  criteria.addConditition('pageSize', Number(searchParams.pageSize) || 10);
+  criteria.addConditition('query', searchParams.query || '');
+  criteria.addConditition('orderByColumn', searchParams.orderByColumn || 'Name');
+  criteria.addConditition('orderDirection', searchParams.orderDirection || 'asc');
+  criteria.addConditition('UserId', userId);
 
-  // return <EmpresasClientPage 
-  //   payload={{
-  //     data: empresas,
-  //     totalCount: count || 0,
-  //     totalPages: totalPages
-  //   }}
-  //   paginationParams={dataSearchParams as IPageSearchPaginationParams}
-  // />;
+  const { data, totalCount, totalPages } = await empresaModel.findMany(criteria);
+
+  return <EmpresasClientPage 
+    payload={{
+      data: data,
+      totalCount: totalCount || 0,
+      totalPages: totalPages
+    }}
+    paginationParams={searchParams}
+  />;
 
   return <div>Empresas</div>;
 }

@@ -1,25 +1,15 @@
 'use server';
 
 import { ActionState } from "@/components/crud";
-// import { Empresa } from "@/lib/db/catalogos/empresa.model";
+import { Empresa, EmpresaModel } from "@/lib/db";
 
-export const createServer = async (data: any): Promise<ActionState<any>> => {
+export const createServer = async (data: Empresa): Promise<ActionState<any>> => {
 
-  // if (!data.curp) {
-  //   data.curp = null
-  // }
+  const model = new EmpresaModel();
+  const result = await model.create(data);
 
-  // const { error } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .insert([data])
-
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data }; 
-}
+  return { data: result }; 
+} 
 
 export const updateServer = async (data: any): Promise<ActionState<any>> => {
 

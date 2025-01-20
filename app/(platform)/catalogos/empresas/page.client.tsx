@@ -5,9 +5,10 @@ import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interf
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createServer, deleteServer, updateServer } from './actions';
 import { EmpresaForm } from './empresa-form';
+import { Empresa } from '@/lib/db';
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
-const columns: Column<any>[] = [
+const columns: Column<Empresa>[] = [
   // { key: 'id', label: 'ID', sortable: true },
   { key: 'codigo', label: 'Código', sortable: true },
   { key: 'razon_social', label: 'Razón Social', sortable: true },
@@ -23,7 +24,7 @@ const columns: Column<any>[] = [
   //     value && typeof value !== 'boolean' ? new Date(value.toString()).toLocaleDateString() : ''
   // },
   { key: 'estatus', label: 'Estatus', sortable: true,
-    render: (value: string | number | boolean | null) => 
+    render: (value: string | number | boolean | Date | undefined) => 
       value ? 'Activo' : 'Inactivo'
    }
 ];
@@ -47,7 +48,7 @@ export default function EmpresasClientPage({ payload, paginationParams }: PagePr
   }
 
   return (
-    <CRUD<any, null>
+    <CRUD<Empresa, null>
       columns={columns}
       data={data}
       totalCount={totalCount}
