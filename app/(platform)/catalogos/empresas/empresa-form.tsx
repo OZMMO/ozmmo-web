@@ -21,13 +21,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { empresaFormSchema } from "./schemas"
-import { Empresa } from "@/lib/db/catalogos/empresa.model"
+// import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
 type EmpresaFormValues = z.infer<typeof empresaFormSchema>
 
 interface EmpresaFormProps {
-  initialData?: Empresa | null,
-  onSubmit: (data: Empresa) => void
+  initialData?: any | null,
+  onSubmit: (data: any) => void
 }
 
 export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
@@ -55,7 +55,7 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
   const handleSubmit = (data: EmpresaFormValues) => {
     console.log({data})
     data.id = initialData?.id || 0
-    onSubmit(data as Empresa)
+    onSubmit(data as any)
   }
 
   return (

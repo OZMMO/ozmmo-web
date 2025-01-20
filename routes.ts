@@ -5,6 +5,10 @@
  */
 export const publicRoutes = [
   "/",
+  "/auth/new-verification",
+  "/api/webhook",
+  "/api/cron",
+  "/api/cron/employees-history",
 ];
 
 /**
@@ -13,9 +17,11 @@ export const publicRoutes = [
  * @type {string[]}
  */
 export const authRoutes = [
-  "/sign-in",
-  "/sign-up",
-  "/forgot-password"
+  "/auth/login",
+  "/auth/register",
+  "/auth/error",
+  "/auth/reset",
+  "/auth/new-password"
 ];
 
 /**

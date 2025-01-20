@@ -1,60 +1,56 @@
 'use server';
 
-import { ActionState } from "@/components/supabase-crud";
-import { Empresa } from "@/lib/db/catalogos/empresa.model";
-import { createClient } from "@/utils/supabase/server";
+import { ActionState } from "@/components/crud";
+// import { Empresa } from "@/lib/db/catalogos/empresa.model";
 
-export const createServer = async (data: Empresa): Promise<ActionState<Empresa>> => {
-  const supabase = await createClient()
+export const createServer = async (data: any): Promise<ActionState<any>> => {
 
-  if (!data.curp) {
-    data.curp = null
-  }
+  // if (!data.curp) {
+  //   data.curp = null
+  // }
 
-  const { error } = await supabase
-    .from('catalogos_tbl_empresas')
-    .insert([data])
+  // const { error } = await sql
+  //   .from('catalogos_tbl_empresas')
+  //   .insert([data])
 
-  if (error) {
-    console.error('Error:', error)
-    return { error }
-  }
+  // if (error) {
+  //   console.error('Error:', error)
+  //   return { error }
+  // }
 
   return { data }; 
 }
 
-export const updateServer = async (data: Empresa): Promise<ActionState<Empresa>> => {
-  const supabase = await createClient()
+export const updateServer = async (data: any): Promise<ActionState<any>> => {
 
   if (!data.curp) {
     data.curp = null
   }
 
-  const { error } = await supabase
-    .from('catalogos_tbl_empresas')
-    .update(data)
-    .eq('id', data.id)
+  // const { error } = await sql
+  //   .from('catalogos_tbl_empresas')
+  //   .update(data)
+  //   .eq('id', data.id)
 
-  if (error) {
-    console.error('Error:', error)
-    return { error }
-  }
+  // if (error) {
+  //   console.error('Error:', error)
+  //   return { error }
+  // }
 
   return { data };
 }
 
-export const deleteServer = async (data: Empresa): Promise<ActionState<Empresa>> => {
-  const supabase = await createClient()
-    
-  const { error } = await supabase
-    .from('catalogos_tbl_empresas')
-    .delete()
-    .eq('id', data.id)
+export const deleteServer = async (data: any): Promise<ActionState<any>> => {
 
-  if (error) {
-    console.error('Error:', error)
-    return { error }
-  }
+  // const { error } = await sql
+  //   .from('catalogos_tbl_empresas')
+  //   .delete()
+  //   .eq('id', data.id)
+
+  // if (error) {
+  //   console.error('Error:', error)
+  //   return { error }
+  // }
 
   return { data }; 
 }

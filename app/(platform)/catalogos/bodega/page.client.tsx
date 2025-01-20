@@ -1,14 +1,14 @@
 'use client';
-import {SupabaseCRUD, Column} from '@/components/supabase-crud';
+import {CRUD, Column} from '@/components/crud';
 import { useEffect, useState } from 'react';
 import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interface';
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createServer, deleteServer, updateServer } from './actions';
 import { BodegaForm } from './bodega-form';
-import { Bodega } from '@/lib/db/catalogos/bodega.model';
-import { Empresa } from '@/lib/db/catalogos/empresa.model';
+  // import { Bodega } from '@/lib/db/catalogos/bodega.model';
+  // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
-const columns: Column<Bodega>[] = [
+const columns: Column<any>[] = [
   // { key: 'id', label: 'ID', sortable: true },
   { key: 'codigo', label: 'Código', sortable: true },
   { key: 'descripcion', label: 'Descripción', sortable: true },
@@ -24,13 +24,13 @@ const columns: Column<Bodega>[] = [
 ];
 
 interface PageProps {
-  payload: IResponseModel<Bodega[]>;
+  payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
-  catalogoEmpresas: Empresa[];
+  catalogoEmpresas: any[];
 }
 
 export interface BodegaInfoExtra {
-    catalogoEmpresas: Empresa[]
+    catalogoEmpresas: any[]
   }
 
 export default function BodegasClientPage({ payload, paginationParams, catalogoEmpresas }: PageProps) {
@@ -46,7 +46,7 @@ export default function BodegasClientPage({ payload, paginationParams, catalogoE
   }
 
   return (
-    <SupabaseCRUD<Bodega, BodegaInfoExtra>
+    <CRUD<any, BodegaInfoExtra>
       columns={columns}
       data={data}
       totalCount={totalCount}

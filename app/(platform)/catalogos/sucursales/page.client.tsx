@@ -1,16 +1,16 @@
 'use client';
 
 // Example usage in your page component:
-import {SupabaseCRUD, Column} from '@/components/supabase-crud';
+import {CRUD, Column} from '@/components/crud';
 import { useEffect, useState } from 'react';
 import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interface';
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createSucursal, deleteSucursal, updateSucursal } from './actions';
-import { Sucursal } from '@/lib/db/catalogos/sucursal.model';
+// import { Sucursal } from '@/lib/db/catalogos/sucursal.model';
 import { SucursalForm } from './sucursal-form';
-import { Empresa } from '@/lib/db/catalogos/empresa.model';
+// import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
-const columns: Column<Sucursal>[] = [
+const columns: Column<any>[] = [
   { 
     key: 'catalogos_tbl_empresas', label: 'Empresa', sortable: true, 
     render: (value) => {
@@ -27,13 +27,13 @@ const columns: Column<Sucursal>[] = [
 ];
 
 interface PageProps {
-  payload: IResponseModel<Sucursal[]>;
+  payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
-  catalogoEmpresas: Empresa[];
+  catalogoEmpresas: any[];
 }
 
 export interface SucursalInfoExtra {
-  catalogoEmpresas: Empresa[]
+  catalogoEmpresas: any[]
 }
 
 export default function SucursalesClientPage({ payload, paginationParams, catalogoEmpresas }: PageProps) {
@@ -49,7 +49,7 @@ export default function SucursalesClientPage({ payload, paginationParams, catalo
   }
 
   return (
-    <SupabaseCRUD<Sucursal, SucursalInfoExtra>
+    <CRUD<any, any>
       columns={columns}
       data={data}
       totalCount={totalCount}

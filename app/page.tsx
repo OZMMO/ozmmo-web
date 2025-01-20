@@ -1,6 +1,4 @@
 import HeaderAuth from '@/components/header-auth'
-import { EnvVarWarning } from '@/components/env-var-warning'
-import { hasEnvVars } from '@/utils/supabase/check-env-vars'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -16,7 +14,7 @@ export default function Home() {
                 <DeployButton />
               </div> */}
             </div>
-            {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+            <HeaderAuth />
           </div>
         </nav>
         {/* Hero Section */}
