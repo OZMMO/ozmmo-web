@@ -3,7 +3,7 @@ CREATE TABLE almacen_tbl_bodega (
     id SERIAL PRIMARY KEY,
     codigo VARCHAR(20) UNIQUE NOT NULL,
     descripcion VARCHAR(255) NOT NULL,
-    empresa_id INTEGER REFERENCES catalogos.tbl_empresas(id),
+    empresa_id INTEGER REFERENCES catalogos_tbl_empresas(id),
    -- sucursal_id INTEGER,
     esta_activo BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -315,7 +315,7 @@ SELECT
     b.updated_at
 FROM 
     almacen_tbl_bodega b
-    LEFT JOIN catalogos.tbl_empresas e ON b.empresa_id = e.id;
+    LEFT JOIN catalogos_tbl_empresas e ON b.empresa_id = e.id;
     --LEFT JOIN catalogos.tbl_sucursales s ON b.sucursal_id = s.id
 
 -- Permisos de la vista
