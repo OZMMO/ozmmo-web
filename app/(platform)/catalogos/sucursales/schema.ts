@@ -1,8 +1,8 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const sucursalSchema = z.object({
   id: z.number().int().optional(),
-  empresa_id: z.number().int().optional(),
+  empresa_id: z.number().int().nullable().optional(),
   codigo: z.string(),
   nombre: z.string(),
   telefono: z.string().optional(),
@@ -10,4 +10,3 @@ export const sucursalSchema = z.object({
   responsable: z.string().optional(),
   estatus: z.boolean(),
 });
-

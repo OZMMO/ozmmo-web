@@ -1,55 +1,65 @@
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import SucursalesClientPage from "./page.client";
+import {
+  CriteriaSqlServer,
+  Empresa,
+  EmpresaModel,
+  Sucursal,
+  SucursalModel,
+} from "@/lib/db";
+import { auth } from "@/auth";
 // import { Empresa } from "@/lib/db/catalogos/empresa.model";
 
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 
 interface PageProps {
-  searchParams: Promise<IPageSearchPaginationParams>;
+  searchParams: IPageSearchPaginationParams;
 }
 export default async function SucursalesPage({ searchParams }: PageProps) {
-  const dataSearchParams = await searchParams;
-  const { page = 1, pageSize = 10 } = dataSearchParams;
-  const offset = (Number(page) - 1) * Number(pageSize);
-  // const { data: sucursales, error, count: countData } = await sql
-  //   .from('catalogos_tbl_sucursales')
-  //   .select(`
-  //     *,
-  //     catalogos_tbl_empresas (
-  //       codigo,
-  //       razon_social
-  //     )
-  //   `, { count: 'exact' })
-  //   .order('nombre', { ascending: true })
-  //   .range(offset, offset + Number(pageSize) - 1)
+  const session = await auth();
+  const userId = session?.user.id as string;
 
-  // const { data: empresas, error: errorEmpresas } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .select('*')
-  //   .filter('estatus', 'eq', true)
-  //   .order('codigo', { ascending: true })
-  //   .returns<Empresa[]>()
+  const sucursalModel = new SucursalModel();
 
-  // console.log(sucursales?.[0])
-  // let count = countData || 0;
+  const criteria1 = new CriteriaSqlServer<Sucursal>();
+  criteria1.addConditition("UserId", userId);
+  const { data: dataSucursales } = await sucursalModel.findMany(criteria1);
 
-  // if (error) {
-  //   console.error('Error fetching data:', error);
-  //   return <div>Error fetching data</div>;
-  // }
+  const empresaModel = new EmpresaModel();
 
-  // Calculate total pages by dividing total count by page size and rounding up
-  // const totalPages = count <= Number(pageSize) ? 1 : Math.ceil(count / Number(pageSize));
+  const criteriaEmpresa = new CriteriaSqlServer<Empresa>();
+  criteriaEmpresa.addConditition("UserId", userId);
+  const { data: dataEmpresas } = await empresaModel.findMany(criteriaEmpresa);
 
-  // return <SucursalesClientPage 
-  //   payload={{
-  //     data: sucursales,
-  //     totalCount: count || 0,
-  //     totalPages: totalPages
-  //   }}
-  //   paginationParams={dataSearchParams}
-  //   catalogoEmpresas={empresas || []}
-  // />;
+  // Crear criteria desde searchParams
+  const criteria = new CriteriaSqlServer<Sucursal>();
+  criteria.addConditition("page", Number(searchParams.page) || 1);
+  criteria.addConditition("pageSize", Number(searchParams.pageSize) || 10);
+  criteria.addConditition("query", searchParams.query || "");
+  criteria.addConditition(
+    "orderByColumn",
+    searchParams.orderByColumn || "Name"
+  );
+  criteria.addConditition(
+    "orderDirection",
+    searchParams.orderDirection || "asc"
+  );
+  criteria.addConditition("UserId", userId);
 
-  return <div>Sucursales</div>;
+  const { data, totalCount, totalPages } =
+    await sucursalModel.findMany(criteria);
+
+  return (
+    <SucursalesClientPage
+      payload={{
+        data: data,
+        totalCount: totalCount || 0,
+        totalPages: totalPages,
+      }}
+      paginationParams={searchParams}
+      catalogoEmpresas={dataEmpresas}
+    />
+  );
+
+  return <div>Bodegas</div>;
 }
