@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
@@ -13,20 +13,20 @@ import {
   Settings2,
   SquareTerminal,
   Shield,
-} from "lucide-react"
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
+import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { User } from "next-auth"
+} from "@/components/ui/sidebar";
+import { User } from "next-auth";
 
 // This is sample data.
 const data = {
@@ -57,8 +57,8 @@ const data = {
         {
           title: "Dashboard",
           url: "/dashboard",
-        }
-      ]
+        },
+      ],
     },
     {
       title: "Catálogos",
@@ -71,19 +71,25 @@ const data = {
           url: "/catalogos/empresas",
           items: [
             { title: "CRUD", url: "/catalogos/empresas/crud" },
-            { title: "Datos Fiscales", url: "/catalogos/empresas/datos-fiscales" },
-            { title: "Configuración", url: "/catalogos/empresas/configuracion" }
-          ]
+            {
+              title: "Datos Fiscales",
+              url: "/catalogos/empresas/datos-fiscales",
+            },
+            {
+              title: "Configuración",
+              url: "/catalogos/empresas/configuracion",
+            },
+          ],
         },
         {
           title: "Sucursales",
           url: "/catalogos/sucursales",
           items: [
             { title: "CRUD", url: "/catalogos/sucursales/crud" },
-            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" }
-          ]
-        }
-      ]
+            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
+          ],
+        },
+      ],
     },
     {
       title: "Inventario y Equipos",
@@ -96,8 +102,8 @@ const data = {
           items: [
             { title: "Proveedores", url: "/inventario/ordenes/proveedores" },
             { title: "Gestión", url: "/inventario/ordenes/gestion" },
-            { title: "Seguimiento", url: "/inventario/ordenes/seguimiento" }
-          ]
+            { title: "Seguimiento", url: "/inventario/ordenes/seguimiento" },
+          ],
         },
         {
           title: "Recepción",
@@ -105,34 +111,45 @@ const data = {
           items: [
             { title: "Escaneo/Registro", url: "/inventario/recepcion/escaneo" },
             { title: "Etiquetado", url: "/inventario/recepcion/etiquetado" },
-            { title: "Control", url: "/inventario/recepcion/control" }
-          ]
+            { title: "Control", url: "/inventario/recepcion/control" },
+          ],
         },
         {
           title: "Telemetría",
           url: "/inventario/telemetria",
           items: [
-            { title: "Instalación Sensores", url: "/inventario/telemetria/sensores" },
-            { title: "Control Calidad", url: "/inventario/telemetria/calidad" }
-          ]
+            {
+              title: "Instalación Sensores",
+              url: "/inventario/telemetria/sensores",
+            },
+            { title: "Control Calidad", url: "/inventario/telemetria/calidad" },
+          ],
         },
         {
           title: "Equipos",
           url: "/inventario/equipos",
           items: [
             { title: "Dashboard", url: "/inventario/equipos/dashboard" },
-            { title: "Alertas Stock", url: "/inventario/equipos/alertas" }
-          ]
+            { title: "Alertas Stock", url: "/inventario/equipos/alertas" },
+          ],
         },
         {
           title: "Bodegas",
           url: "/catalogos/bodega",
           items: [
             { title: "CRUD", url: "/catalogos/sucursales/crud" },
-            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" }
-          ]
-        }
-      ]
+            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
+          ],
+        },
+        {
+          title: "Ubicaciones",
+          url: "/catalogos/ubicaciones",
+          items: [
+            { title: "CRUD", url: "/catalogos/ubicaciones/crud" },
+            { title: "Vinculación", url: "/catalogos/ubicaciones/vinculacion" },
+          ],
+        },
+      ],
     },
     {
       title: "Ventas y Contratos",
@@ -145,26 +162,26 @@ const data = {
           items: [
             { title: "Clientes y Planes", url: "/ventas/contratos/clientes" },
             { title: "Descuentos", url: "/ventas/contratos/descuentos" },
-            { title: "Domiciliación", url: "/ventas/contratos/domiciliacion" }
-          ]
+            { title: "Domiciliación", url: "/ventas/contratos/domiciliacion" },
+          ],
         },
         {
           title: "Vendedores",
           url: "/ventas/vendedores",
           items: [
             { title: "Gestión", url: "/ventas/vendedores/gestion" },
-            { title: "Comisiones", url: "/ventas/vendedores/comisiones" }
-          ]
+            { title: "Comisiones", url: "/ventas/vendedores/comisiones" },
+          ],
         },
         {
           title: "Precios",
           url: "/ventas/precios",
           items: [
             { title: "Historial", url: "/ventas/precios/historial" },
-            { title: "Bonificaciones", url: "/ventas/precios/bonificaciones" }
-          ]
-        }
-      ]
+            { title: "Bonificaciones", url: "/ventas/precios/bonificaciones" },
+          ],
+        },
+      ],
     },
     {
       title: "Instalación",
@@ -177,8 +194,8 @@ const data = {
           items: [
             { title: "Interfaz", url: "/instalacion/app/interfaz" },
             { title: "Equipos Asignados", url: "/instalacion/app/equipos" },
-            { title: "Registro", url: "/instalacion/app/registro" }
-          ]
+            { title: "Registro", url: "/instalacion/app/registro" },
+          ],
         },
         {
           title: "Monitoreo",
@@ -186,8 +203,8 @@ const data = {
           items: [
             { title: "Recolección Datos", url: "/instalacion/monitoreo/datos" },
             { title: "Calidad Agua", url: "/instalacion/monitoreo/calidad" },
-            { title: "Estado Filtros", url: "/instalacion/monitoreo/filtros" }
-          ]
+            { title: "Estado Filtros", url: "/instalacion/monitoreo/filtros" },
+          ],
         },
         {
           title: "Dashboard",
@@ -195,14 +212,14 @@ const data = {
           items: [
             { title: "Visualización", url: "/instalacion/dashboard/vista" },
             { title: "Alertas", url: "/instalacion/dashboard/alertas" },
-            { title: "Reportes", url: "/instalacion/dashboard/reportes" }
-          ]
-        }
-      ]
+            { title: "Reportes", url: "/instalacion/dashboard/reportes" },
+          ],
+        },
+      ],
     },
     {
       title: "Seguridad",
-      url: "/seguridad", 
+      url: "/seguridad",
       icon: Shield,
       items: [
         {
@@ -210,27 +227,30 @@ const data = {
           url: "/seguridad/roles",
           items: [
             { title: "Implementación", url: "/seguridad/roles/implementacion" },
-            { title: "Auditoría", url: "/seguridad/roles/auditoria" }
-          ]
+            { title: "Auditoría", url: "/seguridad/roles/auditoria" },
+          ],
         },
         {
           title: "Control de Usuarios",
           url: "/seguridad/usuarios",
           items: [
             { title: "Gestión", url: "/seguridad/usuarios/gestion" },
-            { title: "Accesos", url: "/seguridad/usuarios/accesos" }
-          ]
+            { title: "Accesos", url: "/seguridad/usuarios/accesos" },
+          ],
         },
         {
           title: "Logs",
           url: "/seguridad/logs",
           items: [
-            { title: "Registro de Actividad", url: "/seguridad/logs/actividad" },
-            { title: "Alertas", url: "/seguridad/logs/alertas" }
-          ]
-        }
-      ]
-    }
+            {
+              title: "Registro de Actividad",
+              url: "/seguridad/logs/actividad",
+            },
+            { title: "Alertas", url: "/seguridad/logs/alertas" },
+          ],
+        },
+      ],
+    },
   ],
   projects: [
     {
@@ -249,10 +269,10 @@ const data = {
       icon: Map,
     },
   ],
-}
+};
 
 // Fix the type definition by separating the props
-type AppSidebarProps = React.ComponentProps<typeof Sidebar> & { user: User }
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & { user: User };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
@@ -269,5 +289,5 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

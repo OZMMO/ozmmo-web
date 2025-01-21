@@ -10,3 +10,7 @@ export * from "./catalogos/bodegas/bodega.model";
 export * from "./catalogos/bodegas/bodega";
 export * from "./catalogos/sucursales/sucursal.model";
 export * from "./catalogos/sucursales/sucursal";
+export * from "./catalogos/ubicaciones/ubicaciones.model";
+export * from "./catalogos/ubicaciones/ubicaciones";
+export * from "./catalogos/estados_ubicacion/estados_ubicacion.model";
+export * from "./catalogos/estados_ubicacion/estados_ubicacion";
