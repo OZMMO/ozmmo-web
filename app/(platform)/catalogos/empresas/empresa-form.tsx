@@ -21,6 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { empresaFormSchema } from "./schemas"
+import DireccionForm from "@/components/direccion"
+import { Direccion } from "@/lib/db/sat/direcciones/direccion"
+import { useState } from "react"
 // import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
 type EmpresaFormValues = z.infer<typeof empresaFormSchema>
@@ -52,8 +55,10 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
 
   const tipoContribuyente = form.watch("tipo_contribuyente")
 
+  const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
+
   const handleSubmit = (data: EmpresaFormValues) => {
-    console.log({data})
+    console.log({data, selectedDireccion})
     data.id = initialData?.id || 0
     onSubmit(data as any)
   }
@@ -259,6 +264,8 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
             </FormItem>
           )}
         />
+
+        <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
 
         <Button type="submit">Guardar</Button>
       </form>

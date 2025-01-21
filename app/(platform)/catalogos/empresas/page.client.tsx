@@ -34,7 +34,6 @@ interface PageProps {
   paginationParams: IPageSearchPaginationParams;
 }
 
-
 export default function EmpresasClientPage({ payload, paginationParams }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false)
@@ -56,6 +55,7 @@ export default function EmpresasClientPage({ payload, paginationParams }: PagePr
       currentPage={Number(paginationParams.page) || 1}
       pageSize={Number(paginationParams.pageSize) || 10}
       formComponent={EmpresaForm}
+      formClassName='w-[540px] sm:w-[640px] '
       // jsClassName="Empresa"
       actions={{
         create: createServer,
