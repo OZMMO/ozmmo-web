@@ -14,3 +14,7 @@ export * from "./catalogos/ubicaciones/ubicaciones.model";
 export * from "./catalogos/ubicaciones/ubicaciones";
 export * from "./catalogos/estados_ubicacion/estados_ubicacion.model";
 export * from "./catalogos/estados_ubicacion/estados_ubicacion";
+export * from "./catalogos/productos/productos.model";
+export * from "./catalogos/productos/productos";
+export * from "./catalogos/unidades_medida/unidades_medida.model";
+export * from "./catalogos/unidades_medida/unidades_medida";

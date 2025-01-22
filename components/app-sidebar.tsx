@@ -149,6 +149,14 @@ const data = {
             { title: "Vinculación", url: "/catalogos/ubicaciones/vinculacion" },
           ],
         },
+        {
+          title: "Productos",
+          url: "/catalogos/productos",
+          items: [
+            { title: "CRUD", url: "/catalogos/productos/crud" },
+            { title: "Vinculación", url: "/catalogos/productos/vinculacion" },
+          ],
+        },
       ],
     },
     {
