@@ -21,19 +21,28 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { empresaFormSchema } from "./schemas"
-import DireccionForm from "@/components/direccion"
+// import DireccionForm from "@/components/direccion"
 import { Direccion } from "@/lib/db/sat/direcciones/direccion"
 import { useState } from "react"
+import { Empresa } from "@/lib/db/catalogos/empresas/empresa"
+import DireccionForm from "@/components/direccion"
+import { TipoContribuyente } from "@/lib/db"
+// import { Empresa } from "@/lib/db"
 // import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
 type EmpresaFormValues = z.infer<typeof empresaFormSchema>
 
-interface EmpresaFormProps {
-  initialData?: any | null,
-  onSubmit: (data: any) => void
+export interface InfoExtraEmpresa {
+  tiposContribuyentes: TipoContribuyente[]
 }
 
-export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
+interface EmpresaFormProps {
+  initialData?: Empresa | null,
+  onSubmit: (data: Empresa) => void,
+  infoExtra?: InfoExtraEmpresa
+}
+
+export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormProps) {
   const form = useForm<EmpresaFormValues>({
     resolver: zodResolver(empresaFormSchema),
     defaultValues: {
@@ -41,26 +50,36 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
       rfc: initialData?.rfc || "",
       razon_social: initialData?.razon_social || "",
       nombre_comercial: initialData?.nombre_comercial || "",
+      tipo_contribuyente_id: initialData?.tipo_contribuyente_id || undefined,
+      // tipo_contribuyente: initialData?.tipo_contribuyente || undefined,
       curp: initialData?.curp || "",
-      tipo_contribuyente: initialData?.tipo_contribuyente || "Física",
-      regimen_fiscal: initialData?.regimen_fiscal || "",
+      regimen_fiscal_id: initialData?.regimen_fiscal_id || undefined,
+      // regimen_fiscal: initialData?.regimen_fiscal || "",
       correo_electronico: initialData?.correo_electronico || "",
       telefono: initialData?.telefono || "",
       representante_legal: initialData?.representante_legal || "",
       certificado_csd: initialData?.certificado_csd || "",
       llave_privada_csd: initialData?.llave_privada_csd || "",
       contrasena_csd: initialData?.contrasena_csd || "",
+      direccion: initialData?.direccion || undefined
     },
   })
 
-  const tipoContribuyente = form.watch("tipo_contribuyente")
+  const tipoContribuyente = form.watch("tipo_contribuyente_id")
 
   const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
 
   const handleSubmit = (data: EmpresaFormValues) => {
     console.log({data, selectedDireccion})
     data.id = initialData?.id || 0
-    onSubmit(data as any)
+    data.direccion = selectedDireccion || undefined
+    // if (selectedDireccion) {
+    //   data.direccion = selectedDireccion
+    // } else {
+    //   data.direccion = null
+    // }
+
+    onSubmit(data as Empresa)
   }
 
   return (
@@ -96,19 +115,20 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
           />
           <FormField
             control={form.control}
-            name="tipo_contribuyente"
+            name="tipo_contribuyente_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de Contribuyente</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={(value) => field.onChange(value.toString())} defaultValue={field.value?.toString()}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar tipo" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Física">Física</SelectItem>
-                    <SelectItem value="Moral">Moral</SelectItem>
+                    {infoExtra?.tiposContribuyentes.map((tipo) => (
+                      <SelectItem key={tipo.id} value={tipo.id}>{tipo.nombre}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -145,7 +165,7 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
           )}
         />
 
-        {tipoContribuyente === "Física" && (
+        {tipoContribuyente?.toString() === "fisica" && (
           <FormField
             control={form.control}
             name="curp"
@@ -168,7 +188,7 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
 
         <FormField
           control={form.control}
-          name="regimen_fiscal"
+          name="regimen_fiscal_id"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Régimen Fiscal</FormLabel>
