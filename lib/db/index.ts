@@ -18,3 +18,5 @@ export * from "./catalogos/productos/productos.model";
 export * from "./catalogos/productos/productos";
 export * from "./catalogos/unidades_medida/unidades_medida.model";
 export * from "./catalogos/unidades_medida/unidades_medida";
+export * from "./catalogos/lista_materiales_producto/material_producto.model";
+export * from "./catalogos/lista_materiales_producto/material_producto";
