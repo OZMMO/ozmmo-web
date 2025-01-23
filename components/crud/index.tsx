@@ -69,6 +69,16 @@ export interface Column<T> {
   render?: (value: T[keyof T]) => React.ReactNode;
 }
 
+export type Action<T> = {
+  icon: React.ReactNode;
+  onClick: (item: T) => void;
+  title: string;
+  variant: "outline" | "destructive" | "link" | "default" | "secondary" | "ghost";
+  size: "icon" | "default" | "sm" | "lg";
+  showAlert?: boolean;
+}
+
+
 interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
   columns: Column<T>[];
   data: T[];  // Cambiamos a datos serializados
@@ -93,6 +103,7 @@ interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
   formClassName?: string;
   infoExtra?: TInfoExtra;
   redirectMode?: boolean;  
+  extraActions?: Action<T>[];
 }
 
 export function CRUD<T extends { id: string | number }, TInfoExtra>({
@@ -109,7 +120,8 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   formClassName,
   path,
   infoExtra,
-  redirectMode = false
+  redirectMode = false,
+  extraActions = [],
 }: CRUDProps<T, TInfoExtra>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -212,32 +224,27 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
     return String(value || '');
   };
 
-  type Action = {
-    icon: React.ReactNode;
-    onClick: (item: T) => void;
-    title: string;
-    variant: "outline" | "destructive" | "link" | "default" | "secondary" | "ghost";
-    size: "icon" | "default" | "sm" | "lg";
-    showAlert?: boolean;
-  }
-
-  const localActions: Action[] = [{
-    icon: <Pencil className="h-4 w-4" />,
-    onClick: (item: T) => onEdit(item),
-    title: 'Editar',
-    variant: 'outline',
-    size: 'icon',
-    showAlert: false
-  },
-  {
-    icon: <Trash2 className="h-4 w-4" />,
-    onClick: (item: T) => handleDelete(item),
-    title: 'Eliminar',
-    variant: 'destructive',
-    size: 'icon',
-    showAlert: true
-  }
+  const localActions: Action[] = [
+    {
+      icon: <Pencil className="h-4 w-4" />,
+      onClick: (item: T) => onEdit(item),
+      title: 'Editar',
+      variant: 'outline',
+      size: 'icon',
+      showAlert: false
+    },
+    {
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: (item: T) => handleDelete(item),
+      title: 'Eliminar',
+      variant: 'destructive',
+      size: 'icon',
+      showAlert: true
+    }
   ]
+
+  const allActions = [...localActions, ...extraActions];
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -306,7 +313,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        {localActions.map((action) => (
+                        {allActions.map((action) => (
                           action.showAlert ? (
                             <AlertDialog key={action.title}>
                               <AlertDialogTrigger asChild>

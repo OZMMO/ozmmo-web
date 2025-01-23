@@ -8,6 +8,8 @@ import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { createSucursal, deleteSucursal, updateSucursal } from "./actions";
 // import { Sucursal } from '@/lib/db/catalogos/sucursal.model';
 import { SucursalForm } from "./sucursal-form";
+import { MoreHorizontal } from "lucide-react";
+import { Sucursal } from "@/lib/db";
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
 const columns: Column<any>[] = [
@@ -51,8 +53,13 @@ export default function SucursalesClientPage({
     return null;
   }
 
+  const handleViewDetails = (item: Sucursal) => {
+    console.log('View details for', item);
+    // Implement view details logic here
+  };
+
   return (
-    <CRUD<any, any>
+    <CRUD<Sucursal, SucursalInfoExtra>
       columns={columns}
       data={data}
       totalCount={totalCount}
@@ -66,6 +73,14 @@ export default function SucursalesClientPage({
         delete: deleteSucursal,
       }}
       infoExtra={{ catalogoEmpresas }}
+      extraActions={[{
+        icon: <MoreHorizontal className="h-4 w-4" />,
+        onClick: (item: Sucursal) => handleViewDetails(item),
+        title: 'View Details',
+        variant: 'link',
+        size: 'icon',
+        showAlert: false
+      }]}
     />
   );
 }
