@@ -3,34 +3,25 @@
 import { ActionState } from "@/components/crud";
 import { Empresa, EmpresaModel } from "@/lib/db";
 
-export const createServer = async (data: Empresa): Promise<ActionState<any>> => {
-
+export const createEmpresa = async (data: Empresa): Promise<ActionState<Empresa>> => {
   const model = new EmpresaModel();
   const result = await model.create(data);
 
   return { data: result }; 
 } 
 
-export const updateServer = async (data: any): Promise<ActionState<any>> => {
-
+export const updateEmpresa = async (data: any): Promise<ActionState<any>> => {
   if (!data.curp) {
     data.curp = null
   }
 
-  // const { error } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .update(data)
-  //   .eq('id', data.id)
+  const model = new EmpresaModel();
+  const result = await model.create(data);
 
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data };
+  return { data: result }; 
 }
 
-export const deleteServer = async (data: any): Promise<ActionState<any>> => {
+export const deleteEmpresa = async (data: any): Promise<ActionState<any>> => {
 
   // const { error } = await sql
   //   .from('catalogos_tbl_empresas')
