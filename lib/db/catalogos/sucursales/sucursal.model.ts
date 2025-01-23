@@ -94,7 +94,7 @@ export class SucursalModel implements IDBModel<Sucursal> {
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("id", this.sql.dataTypes.VarChar, sucursal.id)
+        .input("id", this.sql.dataTypes.Int, sucursal.id)
         .input("UserId", this.sql.dataTypes.VarChar, sucursal.UserId)
         .execute(`[Catalogos].[spBorrarSucursales]`);
 

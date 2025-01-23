@@ -34,7 +34,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-import { Pencil, Trash2 } from 'lucide-react'
+
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils';
 import TablePagination from '../tables/table-pagination';
 
@@ -201,6 +212,32 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
     return String(value || '');
   };
 
+  type Action = {
+    icon: React.ReactNode;
+    onClick: (item: T) => void;
+    title: string;
+    variant: "outline" | "destructive" | "link" | "default" | "secondary" | "ghost";
+    size: "icon" | "default" | "sm" | "lg";
+    showAlert?: boolean;
+  }
+
+  const localActions: Action[] = [{
+    icon: <Pencil className="h-4 w-4" />,
+    onClick: (item: T) => onEdit(item),
+    title: 'Editar',
+    variant: 'outline',
+    size: 'icon',
+    showAlert: false
+  },
+  {
+    icon: <Trash2 className="h-4 w-4" />,
+    onClick: (item: T) => handleDelete(item),
+    title: 'Eliminar',
+    variant: 'destructive',
+    size: 'icon',
+    showAlert: true
+  }
+  ]
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -260,35 +297,53 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
               <TableRow key={String(item[columns[0].key])}>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={() => onEdit(item)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon" title="Eliminar registro">
-                          <Trash2 className="h-4 w-4" />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="border-red-200">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>¿Eliminar registro?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Esta acción no se puede deshacer. Se eliminará permanentemente este registro
-                            y todos sus datos relacionados de nuestros servidores.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDelete(item)}
-                            disabled={isDeleting === String(item[columns[0].key])}
-                            className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                          >
-                            {isDeleting === String(item[columns[0].key]) ? 'Eliminando...' : 'Eliminar'}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        {localActions.map((action) => (
+                          action.showAlert ? (
+                            <AlertDialog key={action.title}>
+                              <AlertDialogTrigger asChild>
+                                <DropdownMenuItem onSelect={(e) => e.preventDefault()} className={cn(action.variant, action.size)}>
+                                  {action.icon}
+                                  <span className="ml-2">{action.title}</span>
+                                </DropdownMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="border-red-200">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>¿Eliminar registro?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Esta acción no se puede deshacer. Se eliminará permanentemente este registro
+                                    y todos sus datos relacionados de nuestros servidores.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => action.onClick(item)}
+                                    disabled={isDeleting === String(item[columns[0].key])}
+                                    className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                                  >
+                                    {isDeleting === String(item[columns[0].key]) ? 'Eliminando...' : 'Eliminar'}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          ) : (
+                            <DropdownMenuItem key={action.title} onClick={() => action.onClick(item)}>
+                              {action.icon}
+                              <span className="ml-2">{action.title}</span>
+                            </DropdownMenuItem>
+                          )
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </TableCell>
                 {columns.map((column) => (

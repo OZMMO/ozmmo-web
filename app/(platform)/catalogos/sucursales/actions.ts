@@ -25,6 +25,7 @@ export const updateSucursal = async (
 export const deleteSucursal = async (
   data: Sucursal
 ): Promise<ActionState<any>> => {
+  console.log({data})
   const model = new SucursalModel();
   const result = await model.delete(data);
 
