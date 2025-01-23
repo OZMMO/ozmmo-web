@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/card";
 import { BellRing } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
 const columns: Column<MaterialProducto>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -81,6 +84,15 @@ export default function MaterialProductoClientPage({
 
   return (
     <>
+      <div className="mb-4">
+        <Link href="/catalogos/productos">
+          <Button variant="outline" size="sm">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Regresar al Catálogo de Productos
+          </Button>
+        </Link>
+      </div>
+      
       <div className="grid grid-cols-1 gap-4">
         <Card className={cn("w-[100%]", className)} {...props}>
           <CardHeader>
