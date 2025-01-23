@@ -6,6 +6,9 @@ import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { createServer, deleteServer, updateServer } from "./actions";
 import { ProductosForm } from "./producto-form";
 import { Productos } from "@/lib/db";
+import { MoreHorizontal } from "lucide-react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const columns: Column<Productos>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -47,6 +50,8 @@ export default function ProductosClientPage({
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false);
 
+  const router = useRouter();
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -54,6 +59,15 @@ export default function ProductosClientPage({
   if (!isClient) {
     return null;
   }
+
+  const handleViewDetails = (item: Productos) => {
+    if (item.es_ensamble) {
+      router.push(`/catalogos/productos/${item.id}`);
+    } else {
+      toast.error("El producto no es ensamble");
+    }
+    // Implement view details logic here
+  };
 
   return (
     <CRUD<Productos, ProductosInfoExtra>
@@ -71,6 +85,16 @@ export default function ProductosClientPage({
         delete: deleteServer,
       }}
       infoExtra={{ catalogoUnidadMedida }}
+      extraActions={[
+        {
+          icon: <MoreHorizontal className="h-4 w-4" />,
+          onClick: (item: Productos) => handleViewDetails(item),
+          title: "Lista Materiales",
+          variant: "link",
+          size: "icon",
+          showAlert: false,
+        },
+      ]}
     />
   );
 }
