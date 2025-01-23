@@ -53,11 +53,6 @@ export default function SucursalesClientPage({
     return null;
   }
 
-  const handleViewDetails = (item: Sucursal) => {
-    console.log('View details for', item);
-    // Implement view details logic here
-  };
-
   return (
     <CRUD<Sucursal, SucursalInfoExtra>
       columns={columns}
@@ -73,14 +68,6 @@ export default function SucursalesClientPage({
         delete: deleteSucursal,
       }}
       infoExtra={{ catalogoEmpresas }}
-      extraActions={[{
-        icon: <MoreHorizontal className="h-4 w-4" />,
-        onClick: (item: Sucursal) => handleViewDetails(item),
-        title: 'View Details',
-        variant: 'link',
-        size: 'icon',
-        showAlert: false
-      }]}
     />
   );
 }

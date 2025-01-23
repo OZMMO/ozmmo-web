@@ -82,7 +82,7 @@ export default function DireccionForm({ selectedDireccion, setSelectedDireccion 
                                 aria-expanded={open}
                                 className="w-full justify-between text-wrap"
                             >
-                                {selectedDireccion ? selectedDireccion.Direccion : "Buscar dirección..."}
+                                {selectedDireccion ? selectedDireccion.direccion_completa : "Buscar dirección..."}
                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
@@ -106,8 +106,8 @@ export default function DireccionForm({ selectedDireccion, setSelectedDireccion 
                                     <CommandGroup>
                                         {direcciones.map((direccion) => (
                                             <CommandItem
-                                                key={`${direccion.RandomUUID}`}
-                                                value={direccion.Direccion}
+                                                key={`${direccion.random_id}`}
+                                                value={direccion.direccion_completa || ''}
                                                 onSelect={() => {
                                                     if (setSelectedDireccion) {
                                                         setSelectedDireccion(direccion)
@@ -115,11 +115,11 @@ export default function DireccionForm({ selectedDireccion, setSelectedDireccion 
                                                     setOpen(false)
                                                 }}
                                             >
-                                                {direccion.Direccion}
+                                                {direccion.direccion_completa}
                                                 <Check
                                                     className={cn(
                                                         "ml-auto h-4 w-4",
-                                                        selectedDireccion?.IDColonia === direccion.IDColonia
+                                                        selectedDireccion?.colonia_id === direccion.colonia_id
                                                             ? "opacity-100"
                                                             : "opacity-0"
                                                     )}
@@ -135,72 +135,72 @@ export default function DireccionForm({ selectedDireccion, setSelectedDireccion 
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     <div className="space-y-2">
-                        <Label htmlFor="postal-code">Código Postal</Label>
+                        <Label htmlFor="codigo_postal_id">Código Postal</Label>
                         <Input
-                            id="postal-code"
-                            value={selectedDireccion?.CodigoPostal || ''}
+                            id="codigo_postal_id"
+                            value={selectedDireccion?.codigo_postal || ''}
                             readOnly
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="country">País</Label>
+                        <Label htmlFor="pais_id">País</Label>
                         <Input
-                            id="country"
-                            value={selectedDireccion?.Pais || ''}
+                            id="pais_id"
+                            value={selectedDireccion?.pais || ''}
                             readOnly
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="state">Estado</Label>
+                        <Label htmlFor="estado_id">Estado</Label>
                         <Input
-                            id="state"
-                            value={selectedDireccion?.Estado || ''}
+                            id="estado_id"
+                            value={selectedDireccion?.estado || ''}
                             readOnly
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="municipality">Municipio</Label>
+                        <Label htmlFor="municipio_id">Municipio</Label>
                         <Input
-                            id="municipality"
-                            value={selectedDireccion?.Municipio || ''}
+                            id="municipio_id"
+                            value={selectedDireccion?.municipio || ''}
                             readOnly
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="locality">Localidad</Label>
+                        <Label htmlFor="localidad_id">Localidad</Label>
                         <Input
-                            id="locality"
-                            value={selectedDireccion?.Localidad || ''}
+                            id="localidad_id"
+                            value={selectedDireccion?.localidad || ''}
                             readOnly
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="neighborhood">Colonia</Label>
+                        <Label htmlFor="colonia_id">Colonia</Label>
                         <Input
-                            id="neighborhood"
-                            value={selectedDireccion?.Colonia || ''}
+                            id="colonia_id"
+                            value={selectedDireccion?.colonia || ''}
                             readOnly
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="street">Calle</Label>
-                        <Input id="street" />
+                        <Label htmlFor="calle">Calle</Label>
+                        <Input id="calle" value={selectedDireccion?.calle || ''} />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="exterior-number">Número exterior</Label>
-                        <Input id="exterior-number" />
+                        <Label htmlFor="numero_exterior">Número exterior</Label>
+                        <Input id="numero_exterior" value={selectedDireccion?.numero_exterior || ''} />
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="interior-number">Número interior</Label>
-                        <Input id="interior-number" />
+                        <Label htmlFor="numero_interior">Número interior</Label>
+                        <Input id="numero_interior" value={selectedDireccion?.numero_interior || ''} />
                     </div>
                 </div>
             </CardContent>

@@ -78,7 +78,6 @@ export type Action<T> = {
   showAlert?: boolean;
 }
 
-
 interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
   columns: Column<T>[];
   data: T[];  // Cambiamos a datos serializados
@@ -224,7 +223,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
     return String(value || '');
   };
 
-  const localActions: Action[] = [
+  const localActions: Action<T>[] = [
     {
       icon: <Pencil className="h-4 w-4" />,
       onClick: (item: T) => onEdit(item),
