@@ -157,6 +157,14 @@ const data = {
             { title: "Vinculación", url: "/catalogos/productos/vinculacion" },
           ],
         },
+        {
+          title: "Proveedores",
+          url: "/catalogos/proveedores",
+          items: [
+            { title: "CRUD", url: "/catalogos/proveedores/crud" },
+            { title: "Vinculación", url: "/catalogos/proveedores/vinculacion" },
+          ],
+        },
       ],
     },
     {
