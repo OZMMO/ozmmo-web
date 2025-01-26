@@ -26,6 +26,8 @@ export * from "./criteria/criteria-sqlserver.model";
 export * from "./sat/direcciones/direccion.model";
 export * from "./sat/direcciones/direccion";
 export * from "./sat/direcciones/schema";
+export * from "./sat/regimenes_fiscales/regime_fiscal.model";
+export * from "./sat/regimenes_fiscales/regimen_fiscal";
 export * from "./sat/tipos_contribuyentes/tipo_contribuyente";
 export * from "./sat/tipos_contribuyentes/tipos_contributentes.model";
 export * from "./security/account.model";
