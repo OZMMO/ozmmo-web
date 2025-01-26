@@ -190,17 +190,38 @@ export default function DireccionForm({ selectedDireccion, setSelectedDireccion 
 
                     <div className="space-y-2">
                         <Label htmlFor="calle">Calle</Label>
-                        <Input id="calle" value={selectedDireccion?.calle || ''} />
+                        <Input 
+                            id="calle" 
+                            value={selectedDireccion?.calle || ''} 
+                            onChange={(e) => {
+                                const calle = e.target.value;
+                                setSelectedDireccion({...selectedDireccion, calle} as Direccion);
+                            }}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="numero_exterior">Número exterior</Label>
-                        <Input id="numero_exterior" value={selectedDireccion?.numero_exterior || ''} />
+                        <Input 
+                            id="numero_exterior" 
+                            value={selectedDireccion?.numero_exterior || ''} 
+                            onChange={(e) => {
+                                const numero_exterior = e.target.value;
+                                setSelectedDireccion({...selectedDireccion, numero_exterior} as Direccion);
+                            }}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="numero_interior">Número interior</Label>
-                        <Input id="numero_interior" value={selectedDireccion?.numero_interior || ''} />
+                        <Input 
+                            id="numero_interior" 
+                            value={selectedDireccion?.numero_interior || ''} 
+                            onChange={(e) => {
+                                const numero_interior = e.target.value;
+                                setSelectedDireccion({...selectedDireccion, numero_interior} as Direccion);
+                            }}
+                        />
                     </div>
                 </div>
             </CardContent>

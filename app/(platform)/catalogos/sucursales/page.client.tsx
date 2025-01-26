@@ -13,10 +13,10 @@ import { Sucursal } from "@/lib/db";
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
 const columns: Column<any>[] = [
+  { key: "empresa", label: "Empresa", sortable: true },
   { key: "codigo", label: "Código", sortable: true },
   { key: "nombre", label: "Nombre", sortable: true },
   { key: "responsable", label: "Responsable", sortable: true },
-  { key: "empresa", label: "Empresa", sortable: true },
   // { key: 'correo_electronico', label: 'Correo', sortable: true },
   // { key: 'telefono', label: 'Teléfono', sortable: true },
   {
