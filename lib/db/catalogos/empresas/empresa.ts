@@ -7,7 +7,7 @@ export interface Empresa extends IPagination{
   rfc: string;
   razon_social: string;
   nombre_comercial?: string;
-  tipo_contribuyente_id?: number;
+  tipo_contribuyente_id?: string;
   tipo_contribuyente?: string;
   curp?: string;
   correo_electronico: string;

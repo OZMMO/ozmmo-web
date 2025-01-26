@@ -3,6 +3,9 @@ import { Sucursal } from "./sucursal";
 import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
+import { Direccion } from "../../sat/direcciones/direccion";
+import { Empresa } from "../empresas/empresa";
+import { undefined } from "../empresas/empresa.model";
 
 export class SucursalModel implements IDBModel<Sucursal> {
   sql: MSSQLServer;
@@ -19,7 +22,13 @@ export class SucursalModel implements IDBModel<Sucursal> {
       criteria.toSql(request);
       const result = await request.execute("[Catalogos].[spBuscarSucursales]");
       const data = result.recordset as Sucursal[];
-      return Promise.resolve(data[0] || null);
+      
+      const parsedData = data.map((sucursal) => {
+        sucursal.direccion = (sucursal.direccion && typeof sucursal.direccion === 'string') ? JSON.parse(sucursal.direccion) as Direccion : undefined;
+        return sucursal as Sucursal;
+      });
+      
+      return Promise.resolve(parsedData[0])
     } catch (error) {
       return Promise.reject(error);
     }
@@ -36,8 +45,13 @@ export class SucursalModel implements IDBModel<Sucursal> {
 
       const data = result.recordset as Sucursal[];
 
+      const parsedData = data.map((sucursal) => {
+        sucursal.direccion = (sucursal.direccion && typeof sucursal.direccion === 'string') ? JSON.parse(sucursal.direccion) as Direccion : undefined;
+        return sucursal as Sucursal;
+      });
+
       return Promise.resolve({
-        data: data,
+        data: parsedData,
         totalCount: data.length,
         totalPages: data[0]?.totalPages || 1,
       });
@@ -51,14 +65,16 @@ export class SucursalModel implements IDBModel<Sucursal> {
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("codigo", sucursal.codigo)
-        .input("nombre", sucursal.nombre)
-        .input("empresa_id", sucursal.empresa_id)
-        .input("correo_electronico", sucursal.correo_electronico)
-        .input("telefono", sucursal.telefono)
-        .input("responsable", sucursal.responsable)
-        .input("estatus", sucursal.estatus)
-        .input("UserId", sucursal.UserId)
+        .input("id", this.sql.dataTypes.Int, sucursal.id)
+        .input("codigo", this.sql.dataTypes.VarChar, sucursal.codigo)
+        .input("nombre", this.sql.dataTypes.VarChar, sucursal.nombre)
+        .input("empresa_id", this.sql.dataTypes.Int, sucursal.empresa_id)
+        .input("correo_electronico", this.sql.dataTypes.VarChar, sucursal.correo_electronico)
+        .input("telefono", this.sql.dataTypes.VarChar, sucursal.telefono)
+        .input("responsable", this.sql.dataTypes.VarChar, sucursal.responsable)
+        .input("estatus", this.sql.dataTypes.Bit, sucursal.estatus)
+        .input('direccion', this.sql.dataTypes.VarChar, sucursal.direccion ? JSON.stringify(sucursal.direccion) : null)
+        .input("UserId", this.sql.dataTypes.VarChar,  sucursal.UserId)
         .execute("[Catalogos].[spIUSucursales]");
 
       const data = ((result.recordset[0] || null) as Sucursal) || null;
@@ -72,15 +88,16 @@ export class SucursalModel implements IDBModel<Sucursal> {
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("codigo", sucursal.codigo)
-        .input("nombre", sucursal.nombre)
-        .input("empresa_id", sucursal.empresa_id)
-        .input("correo_electronico", sucursal.correo_electronico)
-        .input("telefono", sucursal.telefono)
-        .input("responsable", sucursal.responsable)
-        .input("estatus", sucursal.estatus)
-        .input("UserId", sucursal.UserId)
-        .input("id", sucursal.id)
+        .input("id", this.sql.dataTypes.Int, sucursal.id)
+        .input("codigo", this.sql.dataTypes.VarChar, sucursal.codigo)
+        .input("nombre", this.sql.dataTypes.VarChar, sucursal.nombre)
+        .input("empresa_id", this.sql.dataTypes.Int, sucursal.empresa_id)
+        .input("correo_electronico", this.sql.dataTypes.VarChar, sucursal.correo_electronico)
+        .input("telefono", this.sql.dataTypes.VarChar, sucursal.telefono)
+        .input("responsable", this.sql.dataTypes.VarChar, sucursal.responsable)
+        .input("estatus", this.sql.dataTypes.Bit, sucursal.estatus)
+        .input('direccion', this.sql.dataTypes.VarChar, sucursal.direccion ? JSON.stringify(sucursal.direccion) : null)
+        .input("UserId", this.sql.dataTypes.VarChar, sucursal.UserId)
         .execute("[Catalogos].[spIUSucursales]");
 
       const data = ((result.recordset[0] || null) as Sucursal) || null;

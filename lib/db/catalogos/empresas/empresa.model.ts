@@ -3,6 +3,7 @@ import { Empresa } from "./empresa";
 import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
+import { Direccion } from "../../sat/direcciones/direccion";
 
 export class EmpresaModel implements IDBModel<Empresa>{
   sql: MSSQLServer;
@@ -17,9 +18,15 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const request = await db.request();
 
       criteria.toSql(request);
-      const result = await request.execute('[Catalogos].[sp_buscar_empresas]');
-      const data =  result.recordset as Empresa[];
-      return Promise.resolve(data[0] || null)
+      const result = await request.execute('[Catalogos].[spBuscarEmpresas]');
+      let data =  result.recordset as Empresa[];
+
+      const parsedData = data.map((empresa) => {
+        empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+        return empresa as Empresa;
+      });
+      
+      return Promise.resolve(parsedData[0])
     } catch (error) {
       return Promise.reject(error)
     }
@@ -30,15 +37,22 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const request = await db.request();
 
       if(criteria) criteria.toSql(request);
-      const result = await request.execute('[Catalogos].[sp_buscar_empresas]');
+      const result = await request.execute('[Catalogos].[spBuscarEmpresas]');
 
-      const data =  result.recordset as Empresa[];
+      let data =  result.recordset as Empresa[];
+
+      const parsedData = data.map((empresa) => {
+        empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+        return empresa as Empresa;
+      });
       
       return Promise.resolve({
-        data: data,
-        totalCount: data.length,
-        totalPages: data[0]?.totalPages || 1
+        data: parsedData,
+        totalCount: parsedData.length,
+        totalPages: parsedData[0]?.totalPages || 1
       })
+
+
     } catch (error) {
       return Promise.reject(error)
     }
@@ -47,21 +61,24 @@ export class EmpresaModel implements IDBModel<Empresa>{
     try {
       const db = await this.sql.connect();
       const result = await db.request()
-        .input('codigo', empresa.codigo)
-        .input('rfc', empresa.rfc)
-        .input('razon_social', empresa.razon_social)
-        .input('nombre_comercial', empresa.nombre_comercial)
-        .input('curp', empresa.curp)
-        .input('correo_electronico', empresa.correo_electronico)
-        .input('telefono', empresa.telefono)
-        .input('representante_legal', empresa.representante_legal)
-        .input('certificado_csd', empresa.certificado_csd)
-        .input('llave_privada_csd', empresa.llave_privada_csd)
-        .input('contrasena_csd', empresa.contrasena_csd)
-        .input('estatus', empresa.estatus)
-        .input('regimen_fiscal_id', 1 /*empresa.regimen_fiscal_id*/)
-        .input('UserId', empresa.UserId)
-        .execute('[Catalogos].[sp_iu_tbl_empresas]');
+        .input('id', this.sql.dataTypes.Int, empresa.id)
+        .input('codigo',this.sql.dataTypes.VarChar, empresa.codigo)
+        .input('rfc', this.sql.dataTypes.VarChar, empresa.rfc)
+        .input('razon_social', this.sql.dataTypes.VarChar, empresa.razon_social)
+        .input('nombre_comercial', this.sql.dataTypes.VarChar, empresa.nombre_comercial)
+        .input('tipo_contribuyente_id', this.sql.dataTypes.VarChar, empresa.tipo_contribuyente_id)
+        .input('curp', this.sql.dataTypes.VarChar, empresa.curp)
+        .input('correo_electronico', this.sql.dataTypes.VarChar, empresa.correo_electronico)
+        .input('telefono', this.sql.dataTypes.VarChar, empresa.telefono)
+        .input('representante_legal', this.sql.dataTypes.VarChar, empresa.representante_legal)
+        .input('certificado_csd', this.sql.dataTypes.VarChar, empresa.certificado_csd)
+        .input('llave_privada_csd', this.sql.dataTypes.VarChar, empresa.llave_privada_csd)
+        .input('contrasena_csd', this.sql.dataTypes.VarChar, empresa.contrasena_csd)
+        .input('estatus', this.sql.dataTypes.VarChar, empresa.estatus)
+        .input('regimen_fiscal_id', this.sql.dataTypes.Int, empresa.regimen_fiscal_id)
+        .input('direccion', this.sql.dataTypes.VarChar, empresa.direccion ? JSON.stringify(empresa.direccion) : null)
+        .input('UserId', this.sql.dataTypes.VarChar, empresa.UserId)
+        .execute('[Catalogos].[spIUEmpresa]');
 
       const data = (result.recordset[0] || null) as Empresa || null;
       return Promise.resolve(data)
@@ -69,25 +86,29 @@ export class EmpresaModel implements IDBModel<Empresa>{
       return Promise.reject(error)
     }
   }
+
   async update(empresa: Empresa): Promise<Empresa> {
     try {
       const db = await this.sql.connect();
       const result = await db.request()
-      .input('codigo', empresa.codigo)
-      .input('rfc', empresa.rfc)
-      .input('razon_social', empresa.razon_social)
-      .input('nombre_comercial', empresa.nombre_comercial)
-      .input('curp', empresa.curp)
-      .input('correo_electronico', empresa.correo_electronico)
-      .input('telefono', empresa.telefono)
-      .input('representante_legal', empresa.representante_legal)
-      .input('certificado_csd', empresa.certificado_csd)
-      .input('llave_privada_csd', empresa.llave_privada_csd)
-      .input('contrasena_csd', empresa.contrasena_csd)
-      .input('estatus', empresa.estatus)
-      .input('regimen_fiscal_id', empresa.regimen_fiscal_id)  
-      .input('UserId', empresa.UserId)
-      .execute('[Catalogos].[sp_iu_tbl_empresas]');
+        .input('id', this.sql.dataTypes.Int, empresa.id)
+        .input('codigo',this.sql.dataTypes.VarChar, empresa.codigo)
+        .input('rfc', this.sql.dataTypes.VarChar, empresa.rfc)
+        .input('razon_social', this.sql.dataTypes.VarChar, empresa.razon_social)
+        .input('nombre_comercial', this.sql.dataTypes.VarChar, empresa.nombre_comercial)
+        .input('tipo_contribuyente_id', this.sql.dataTypes.VarChar, empresa.tipo_contribuyente_id)
+        .input('curp', this.sql.dataTypes.VarChar, empresa.curp)
+        .input('correo_electronico', this.sql.dataTypes.VarChar, empresa.correo_electronico)
+        .input('telefono', this.sql.dataTypes.VarChar, empresa.telefono)
+        .input('representante_legal', this.sql.dataTypes.VarChar, empresa.representante_legal)
+        .input('certificado_csd', this.sql.dataTypes.VarChar, empresa.certificado_csd)
+        .input('llave_privada_csd', this.sql.dataTypes.VarChar, empresa.llave_privada_csd)
+        .input('contrasena_csd', this.sql.dataTypes.VarChar, empresa.contrasena_csd)
+        .input('estatus', this.sql.dataTypes.VarChar, empresa.estatus)
+        .input('regimen_fiscal_id', this.sql.dataTypes.Int, empresa.regimen_fiscal_id)
+        .input('direccion', this.sql.dataTypes.VarChar, empresa.direccion ? JSON.stringify(empresa.direccion) : null)
+        .input('UserId', this.sql.dataTypes.VarChar, empresa.UserId)
+        .execute('[Catalogos].[spIUEmpresa]');
 
       const data = (result.recordset[0] || null) as Empresa || null;
     return Promise.resolve(data)
@@ -95,6 +116,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
       return Promise.reject(error)
     }
   }
+
   async delete(empresa: Empresa): Promise<Empresa> {
     try {
       const db = await this.sql.connect();
@@ -109,8 +131,8 @@ export class EmpresaModel implements IDBModel<Empresa>{
       return Promise.reject(error)
     }
   }
+
   count(criteria?: ICriteria<Empresa> | undefined): Promise<number> {
     throw new Error("Method not implemented.");
   }
-
 }

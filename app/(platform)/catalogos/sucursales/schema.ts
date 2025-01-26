@@ -1,3 +1,4 @@
+import { direccionSchema } from "@/lib/db/sat/direcciones/schema";
 import { z } from "zod";
 
 export const sucursalSchema = z.object({
@@ -9,4 +10,5 @@ export const sucursalSchema = z.object({
   correo_electronico: z.string().email().optional(),
   responsable: z.string().optional(),
   estatus: z.boolean(),
+  direccion: direccionSchema.optional(),
 });

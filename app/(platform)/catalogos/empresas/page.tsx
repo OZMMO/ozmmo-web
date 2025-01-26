@@ -1,7 +1,7 @@
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import EmpresasClientPage from "./page.client";
 import { auth } from "@/auth";
-import { Empresa } from "@/lib/db";
+import { Empresa, RegimenFiscalModel } from "@/lib/db";
 import { CriteriaSqlServer, EmpresaModel } from "@/lib/db";
 import TipoContribuyenteModel from "@/lib/db/sat/tipos_contribuyentes/tipos_contributentes.model";
 
@@ -29,10 +29,21 @@ export default async function SucursalesPage({searchParams}: PageProps) {
   criteria.addConditition('orderDirection', searchParams.orderDirection || 'asc');
   criteria.addConditition('UserId', userId);
 
-  const { data, totalCount, totalPages } = await empresaModel.findMany(criteria);
-
+  
   const tipoContribuyenteModel = new TipoContribuyenteModel();
-  const tiposContribuyentes = await tipoContribuyenteModel.findMany();
+  const regimenFiscalModel = new RegimenFiscalModel();
+  
+  const promiseAll = Promise.all([
+    empresaModel.findMany(criteria),
+    tipoContribuyenteModel.findMany(),
+    regimenFiscalModel.findMany(userId)
+  ])
+
+  const [dataEmpresas, tiposContribuyentesResult, regimenesFiscalesResult] = await promiseAll;
+
+  const { data, totalCount, totalPages } = dataEmpresas;
+  const tiposContribuyentes = tiposContribuyentesResult;
+  const regimenesFiscales = regimenesFiscalesResult;
 
   console.log({tiposContribuyentes});
   return <EmpresasClientPage 
@@ -43,6 +54,7 @@ export default async function SucursalesPage({searchParams}: PageProps) {
     }}
     paginationParams={searchParams}
     tiposContribuyentes={tiposContribuyentes}
+    regimenesFiscales={regimenesFiscales}
   />;
 
   return <div>Empresas</div>;

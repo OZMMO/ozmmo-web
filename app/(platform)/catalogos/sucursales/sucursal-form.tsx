@@ -21,11 +21,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { sucursalSchema } from "./schema";
-import { Sucursal } from "@/lib/db";
-import { Empresa } from "@/lib/db";
 import { SucursalInfoExtra } from "./page.client";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { useState } from "react";
+import DireccionForm from "@/components/direccion";
+import { Direccion } from "@/lib/db/sat/direcciones/direccion";
+import { Sucursal } from "@/lib/db/catalogos/sucursales/sucursal";
 type SucursalFormValues = z.infer<typeof sucursalSchema>;
 
 interface SucursalFormProps {
@@ -49,14 +50,20 @@ export function SucursalForm({
       responsable: initialData?.responsable || "",
       correo_electronico: initialData?.correo_electronico || "",
       estatus: initialData?.estatus || true,
+      direccion: initialData?.direccion || undefined
     },
   });
+
+
+  const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
 
   const handleSubmit = (data: SucursalFormValues) => {
     console.log({ data });
     data.id = initialData?.id || 0;
     data.empresa_id = data.empresa_id ? Number(data.empresa_id) : null;
-    onSubmit(data as any);
+    
+    data.direccion = selectedDireccion || undefined
+    onSubmit(data as Sucursal);
   };
 
   return (
@@ -180,6 +187,8 @@ export function SucursalForm({
             )}
           />
         </div>
+
+        <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
 
         <Button type="submit">Guardar</Button>
       </form>

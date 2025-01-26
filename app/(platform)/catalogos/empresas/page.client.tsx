@@ -7,6 +7,7 @@ import { createEmpresa, updateEmpresa, deleteEmpresa } from './actions';
 import { EmpresaForm, InfoExtraEmpresa } from './empresa-form';
 import { Empresa } from '@/lib/db/catalogos/empresas/empresa';
 import { TipoContribuyente } from '@/lib/db/sat/tipos_contribuyentes/tipo_contribuyente';
+import { RegimenFiscal } from '@/lib/db/sat/regimenes_fiscales/regimen_fiscal';
 // import { Empresa } from '@/lib/db';
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
@@ -39,9 +40,10 @@ interface PageProps {
   payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
   tiposContribuyentes: TipoContribuyente[]; 
+  regimenesFiscales: RegimenFiscal[];
 }
 
-export default function EmpresasClientPage({ payload, paginationParams, tiposContribuyentes }: PageProps) {
+export default function EmpresasClientPage({ payload, paginationParams, tiposContribuyentes, regimenesFiscales }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false)
  
@@ -62,7 +64,7 @@ export default function EmpresasClientPage({ payload, paginationParams, tiposCon
       currentPage={Number(paginationParams.page) || 1}
       pageSize={Number(paginationParams.pageSize) || 10}
       formComponent={EmpresaForm}
-      formClassName='w-[540px] sm:w-[640px] '
+      formClassName='w-[95vw] max-w-[840px] sm:w-[100vw] md:w-[90vw] lg:w-[840px]'
       // jsClassName="Empresa"
       actions={{
         create: createEmpresa,
@@ -70,7 +72,8 @@ export default function EmpresasClientPage({ payload, paginationParams, tiposCon
         delete: deleteEmpresa,
       }}
       infoExtra={{
-        tiposContribuyentes
+        tiposContribuyentes,
+        regimenesFiscales
       }}
     />
   );
