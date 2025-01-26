@@ -62,7 +62,7 @@ export default function ProductosClientPage({
 
   const handleViewDetails = (item: Productos) => {
     if (item.es_ensamble) {
-      router.push(`/catalogos/productos/${item.id}`);
+      router.push(`/almacen/productos/${item.id}`);
     } else {
       toast.error("El producto no es ensamble");
     }

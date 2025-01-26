@@ -85,14 +85,14 @@ export default function MaterialProductoClientPage({
   return (
     <>
       <div className="mb-4">
-        <Link href="/catalogos/productos">
+        <Link href="/almacen/productos">
           <Button variant="outline" size="sm">
             <ChevronLeft className="mr-2 h-4 w-4" />
             Regresar al Catálogo de Productos
           </Button>
         </Link>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-4">
         <Card className={cn("w-[100%]", className)} {...props}>
           <CardHeader>

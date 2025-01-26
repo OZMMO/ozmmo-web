@@ -135,34 +135,42 @@ const data = {
         },
         {
           title: "Bodegas",
-          url: "/catalogos/bodega",
+          url: "/almacen/bodega",
           items: [
-            { title: "CRUD", url: "/catalogos/sucursales/crud" },
-            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
+            { title: "CRUD", url: "/almacen/sucursales/crud" },
+            { title: "Vinculación", url: "/almacen/sucursales/vinculacion" },
           ],
         },
         {
           title: "Ubicaciones",
-          url: "/catalogos/ubicaciones",
+          url: "/almacen/ubicaciones",
           items: [
-            { title: "CRUD", url: "/catalogos/ubicaciones/crud" },
-            { title: "Vinculación", url: "/catalogos/ubicaciones/vinculacion" },
+            { title: "CRUD", url: "/almacen/ubicaciones/crud" },
+            { title: "Vinculación", url: "/almacen/ubicaciones/vinculacion" },
           ],
         },
         {
           title: "Productos",
-          url: "/catalogos/productos",
+          url: "/almacen/productos",
           items: [
-            { title: "CRUD", url: "/catalogos/productos/crud" },
-            { title: "Vinculación", url: "/catalogos/productos/vinculacion" },
+            { title: "CRUD", url: "/almacen/productos/crud" },
+            { title: "Vinculación", url: "/almacen/productos/vinculacion" },
           ],
         },
         {
           title: "Proveedores",
-          url: "/catalogos/proveedores",
+          url: "/almacen/proveedores",
           items: [
-            { title: "CRUD", url: "/catalogos/proveedores/crud" },
-            { title: "Vinculación", url: "/catalogos/proveedores/vinculacion" },
+            { title: "CRUD", url: "/almacen/proveedores/crud" },
+            { title: "Vinculación", url: "/almacen/proveedores/vinculacion" },
+          ],
+        },
+        {
+          title: "Recepciones",
+          url: "/almacen/recepcion",
+          items: [
+            { title: "CRUD", url: "/almacen/recepcion/crud" },
+            { title: "Vinculación", url: "/almacen/recepcion/vinculacion" },
           ],
         },
       ],
