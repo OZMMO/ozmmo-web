@@ -4,8 +4,6 @@ import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
 import { Direccion } from "../../sat/direcciones/direccion";
-import { Empresa } from "../empresas/empresa";
-import { undefined } from "../empresas/empresa.model";
 
 export class SucursalModel implements IDBModel<Sucursal> {
   sql: MSSQLServer;

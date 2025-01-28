@@ -33,7 +33,7 @@ import { Upload } from "lucide-react"
 // import { Empresa } from "@/lib/db"
 // import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
-type EmpresaFormValues = z.infer<typeof empresaFormSchema>
+export type EmpresaFormValues = z.infer<typeof empresaFormSchema>
 
 export interface InfoExtraEmpresa {
   tiposContribuyentes: TipoContribuyente[]

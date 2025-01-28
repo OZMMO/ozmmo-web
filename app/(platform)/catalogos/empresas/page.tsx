@@ -45,7 +45,6 @@ export default async function SucursalesPage({searchParams}: PageProps) {
   const tiposContribuyentes = tiposContribuyentesResult;
   const regimenesFiscales = regimenesFiscalesResult;
 
-  console.log({tiposContribuyentes});
   return <EmpresasClientPage 
     payload={{
       data: data,

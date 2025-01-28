@@ -18,7 +18,7 @@ export const createEmpresa = async (data: Empresa): Promise<ActionState<Empresa>
 
     return { data: result }; 
   } catch (error: any) {
-    return { error: error.message }
+    return { error }
   }
 } 
 
@@ -38,11 +38,11 @@ export const updateEmpresa = async (data: Empresa): Promise<ActionState<Empresa>
 
     return { data: result }; 
   } catch (error: any) {
-    return { error: error.message }
+    return { error}
   }
 }
 
-export const deleteEmpresa = async (data: any): Promise<ActionState<any>> => {
+export const deleteEmpresa = async (data: Empresa): Promise<ActionState<Empresa>> => {
 
   // const { error } = await sql
   //   .from('catalogos_tbl_empresas')

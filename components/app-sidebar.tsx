@@ -32,20 +32,20 @@ import { User } from "next-auth";
 const data = {
   teams: [
     {
-      name: "Acme Inc",
+      name: "Ozmmo",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
+    // {
+    //   name: "Acme Corp.",
+    //   logo: AudioWaveform,
+    //   plan: "Startup",
+    // },
+    // {
+    //   name: "Evil Corp.",
+    //   logo: Command,
+    //   plan: "Free",
+    // },
   ],
   navMain: [
     {
@@ -69,25 +69,32 @@ const data = {
         {
           title: "Empresas",
           url: "/catalogos/empresas",
-          items: [
-            { title: "CRUD", url: "/catalogos/empresas/crud" },
-            {
-              title: "Datos Fiscales",
-              url: "/catalogos/empresas/datos-fiscales",
-            },
-            {
-              title: "Configuración",
-              url: "/catalogos/empresas/configuracion",
-            },
-          ],
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/empresas/crud" },
+          //   {
+          //     title: "Datos Fiscales",
+          //     url: "/catalogos/empresas/datos-fiscales",
+          //   },
+          //   {
+          //     title: "Configuración",
+          //     url: "/catalogos/empresas/configuracion",
+          //   },
+          // ],
         },
         {
           title: "Sucursales",
           url: "/catalogos/sucursales",
-          items: [
-            { title: "CRUD", url: "/catalogos/sucursales/crud" },
-            { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
-          ],
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/sucursales/crud" },
+          //   { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
+          // ],
+        },
+        {
+          title: "Clientes",
+          url: "/catalogos/clientes",
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/clientes/crud" },
+          // ],
         },
       ],
     },
