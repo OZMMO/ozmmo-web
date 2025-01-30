@@ -21,11 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { detalleRecepcionFormSchema } from "./schemas";
-// import { Bodega } from "@/lib/db/catalogos/bodega.model"
-import { DetalleRecepcionInfoExtra } from "./page.client";
-import { Textarea } from "@/components/ui/textarea";
 
 type DetalleRecepcionFormValues = z.infer<typeof detalleRecepcionFormSchema>;
 
@@ -108,29 +104,6 @@ export function DetalleRecepcionForm({
         <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
-            name="cantidad"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cantidad</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Ej: 1000"
-                    {...field}
-                    value={field.value?.toString() ?? ""}
-                    onChange={(event) =>
-                      field.onChange(+event.target.value || 0)
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          <FormField
-            control={form.control}
             name="unidad_medida_id"
             render={({ field }) => (
               <FormItem>
@@ -162,6 +135,31 @@ export function DetalleRecepcionForm({
             )}
           />
         </div>
+        
+        <div className="grid grid-cols-1 gap-4">
+          <FormField
+            control={form.control}
+            name="cantidad"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Cantidad</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Ej: 1000"
+                    {...field}
+                    value={field.value?.toString() ?? ""}
+                    onChange={(event) =>
+                      field.onChange(+event.target.value || 0)
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+     
         <Button type="submit">Guardar</Button>
       </form>
     </Form>

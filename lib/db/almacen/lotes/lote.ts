@@ -1,0 +1,20 @@
+import { IPagination } from "@/lib/interfaces/pagination.interface";
+
+export interface Lote extends IPagination{
+  id: number;
+  codigo_lote: string;
+  producto_id: number;
+  producto?: string;
+  fecha_fabricacion?: Date;
+  fecha_expiracion?: Date;
+  cantidad_inicial?: number;
+  cantidad_disponible?: number;
+  estado_lote_id?: number;
+  estado_lote?: string;
+  recepcion_id?: number;
+  recepcion?: string;
+  estatus?: boolean;
+  ubicacion_id?: number;
+  ubicacion?: string;
+  UserId?: string;
+}

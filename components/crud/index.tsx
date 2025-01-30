@@ -167,7 +167,6 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   };
 
   const handleUpdate = async (formData: T) => {
-    console.log("update", { formData });
     try {
       const result = await actions.update(formData);
       if (result.error) throw result.error;
@@ -288,15 +287,13 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-slate-200 dark:bg-slate-800 cursor-pointer">
             <TableRow>
-              <TableHead>Actions</TableHead>
+              <TableHead className="h-8">Actions</TableHead>
               {columns.map((column) => (
                 <TableHead
                   key={String(column.key)}
-                  className={
-                    column.sortable ? "cursor-pointer hover:bg-muted" : ""
-                  }
+                  className={cn(column.sortable ? "cursor-pointer hover:bg-muted" : "", "h-6", "px-0")}
                   onClick={() => {
                     if (column.sortable) {
                       const query = createQueryString({
@@ -323,8 +320,8 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           </TableHeader>
           <TableBody>
             {data.map((item: T) => (
-              <TableRow key={String(item[columns[0].key])}>
-                <TableCell>
+              <TableRow key={String(item[columns[0].key])} className="hover:bg-sky-200/50">
+                <TableCell className="p-0">
                   <div className="flex items-center gap-2">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -381,7 +378,10 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
                           ) : (
                             <DropdownMenuItem
                               key={action.title}
-                              onClick={() => action.onClick(item)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                action.onClick(item);
+                              }}
                             >
                               {action.icon}
                               <span className="ml-2">{action.title}</span>
@@ -395,6 +395,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
                 {columns.map((column) => (
                   <TableCell
                     key={`${String(item[columns[0].key])}-${String(column.key)}`}
+                    className="p-0"
                   >
                     {renderCellContent(item, column)}
                   </TableCell>

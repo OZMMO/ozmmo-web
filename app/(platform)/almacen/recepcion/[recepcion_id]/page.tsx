@@ -52,17 +52,12 @@ export default async function DetalleRecepcionPage({
   const detalleRecepcionModel = new DetalleRecepcionModel();
   // Crear criteria desde searchParams
   const criteria = new CriteriaSqlServer<DetalleRecepcion>();
+  criteria.addConditition("recepcion_id", params.recepcion_id);
   criteria.addConditition("page", Number(searchParams.page) || 1);
   criteria.addConditition("pageSize", Number(searchParams.pageSize) || 10);
   criteria.addConditition("query", searchParams.query || "");
-  criteria.addConditition(
-    "orderByColumn",
-    searchParams.orderByColumn || "Name"
-  );
-  criteria.addConditition(
-    "orderDirection",
-    searchParams.orderDirection || "asc"
-  );
+  criteria.addConditition("orderByColumn",searchParams.orderByColumn || "Name");
+  criteria.addConditition("orderDirection",searchParams.orderDirection || "asc");
   criteria.addConditition("UserId", userId);
 
   const { data, totalCount, totalPages } =
