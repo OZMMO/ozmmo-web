@@ -21,16 +21,32 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { empresaFormSchema } from "./schemas"
+// import DireccionForm from "@/components/direccion"
+import { Direccion } from "@/lib/db/sat/direcciones/direccion"
+import { useEffect, useState } from "react"
+import { Empresa } from "@/lib/db/catalogos/empresas/empresa"
+import DireccionForm from "@/components/direccion"
+import { TipoContribuyente } from "@/lib/db"
+import { RegimenFiscal } from "@/lib/db/sat/regimenes_fiscales/regimen_fiscal"
+import { Label } from "@/components/ui/label"
+import { Upload } from "lucide-react"
+// import { Empresa } from "@/lib/db"
 // import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
-type EmpresaFormValues = z.infer<typeof empresaFormSchema>
+export type EmpresaFormValues = z.infer<typeof empresaFormSchema>
 
-interface EmpresaFormProps {
-  initialData?: any | null,
-  onSubmit: (data: any) => void
+export interface InfoExtraEmpresa {
+  tiposContribuyentes: TipoContribuyente[]
+  regimenesFiscales: RegimenFiscal[]
 }
 
-export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
+interface EmpresaFormProps {
+  initialData?: Empresa | null,
+  onSubmit: (data: Empresa) => void,
+  infoExtra?: InfoExtraEmpresa
+}
+
+export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormProps) {
   const form = useForm<EmpresaFormValues>({
     resolver: zodResolver(empresaFormSchema),
     defaultValues: {
@@ -38,24 +54,38 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
       rfc: initialData?.rfc || "",
       razon_social: initialData?.razon_social || "",
       nombre_comercial: initialData?.nombre_comercial || "",
+      tipo_contribuyente_id: initialData?.tipo_contribuyente_id || undefined,
       curp: initialData?.curp || "",
-      tipo_contribuyente: initialData?.tipo_contribuyente || "Física",
-      regimen_fiscal: initialData?.regimen_fiscal || "",
+      regimen_fiscal_id: initialData?.regimen_fiscal_id || undefined,
       correo_electronico: initialData?.correo_electronico || "",
       telefono: initialData?.telefono || "",
       representante_legal: initialData?.representante_legal || "",
-      certificado_csd: initialData?.certificado_csd || "",
-      llave_privada_csd: initialData?.llave_privada_csd || "",
+      certificado_csd: initialData?.certificado_csd || undefined,
+      llave_privada_csd: initialData?.llave_privada_csd || undefined,
       contrasena_csd: initialData?.contrasena_csd || "",
+      direccion: initialData?.direccion || undefined
     },
   })
 
-  const tipoContribuyente = form.watch("tipo_contribuyente")
+  const [listaRegimenesFiscales, setListaRegimenesFiscales] = useState<RegimenFiscal[]>([])
+  const tipoContribuyente = form.watch("tipo_contribuyente_id")
+
+  const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
+
+  useEffect(() => {
+    if (tipoContribuyente === "fisica") {
+      setListaRegimenesFiscales(infoExtra?.regimenesFiscales.filter(regimen => regimen.persona_fisica) as RegimenFiscal[])
+    } else {
+      setListaRegimenesFiscales(infoExtra?.regimenesFiscales.filter(regimen => regimen.persona_moral) as RegimenFiscal[])
+    }
+  }, [tipoContribuyente])
+
 
   const handleSubmit = (data: EmpresaFormValues) => {
-    console.log({data})
     data.id = initialData?.id || 0
-    onSubmit(data as any)
+    data.direccion = selectedDireccion || undefined
+
+    onSubmit(data as Empresa)
   }
 
   return (
@@ -91,19 +121,20 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
           />
           <FormField
             control={form.control}
-            name="tipo_contribuyente"
+            name="tipo_contribuyente_id"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tipo de Contribuyente</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={(value) => field.onChange(value.toString())} defaultValue={field.value?.toString()}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccionar tipo" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Física">Física</SelectItem>
-                    <SelectItem value="Moral">Moral</SelectItem>
+                    {infoExtra?.tiposContribuyentes.map((tipo) => (
+                      <SelectItem key={tipo.id} value={tipo.id}>{tipo.nombre}</SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -140,7 +171,7 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
           )}
         />
 
-        {tipoContribuyente === "Física" && (
+        {tipoContribuyente?.toString() === "fisica" && (
           <FormField
             control={form.control}
             name="curp"
@@ -163,12 +194,29 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
 
         <FormField
           control={form.control}
-          name="regimen_fiscal"
+          name="regimen_fiscal_id"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Régimen Fiscal</FormLabel>
               <FormControl>
-                <Input placeholder="Ej: 601" maxLength={3} {...field} />
+                <Select 
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  defaultValue={field.value?.toString()}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione régimen fiscal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {listaRegimenesFiscales.map((regimen) => (
+                      <SelectItem 
+                        key={regimen.id} 
+                        value={regimen.id.toString()}
+                      >
+                        {regimen.descripcion}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -217,35 +265,76 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={form.control}
-          name="certificado_csd"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Certificado CSD</FormLabel>
-              <FormControl>
-                <Input placeholder="Contenido del certificado en Base64" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="llave_privada_csd"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Llave Privada CSD</FormLabel>
-              <FormControl>
-                <Input placeholder="Contenido de la llave privada en Base64" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="group/field grid gap-2" data-invalid={!!form.formState.errors?.certificado_csd}>
+            <Label htmlFor="certificado_csd" className="group-data-[invalid=true]/field:text-destructive">
+              Certificado CSD (.cer) <span aria-hidden="true">*</span>
+            </Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="certificado_csd"
+                name="certificado_csd"
+                type="file"
+                accept=".cer"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      const base64 = e.target?.result?.toString().split(',')[1] || '';
+                      form.setValue("certificado_csd", base64);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="group-data-[invalid=true]/field:border-destructive focus-visible:group-data-[invalid=true]/field:ring-destructive"
+                aria-invalid={!!form.formState.errors?.certificado_csd}
+                aria-errormessage="error-certificado_csd"
+              />
+              <Upload className="text-muted-foreground" />
+            </div>
+            {form.formState.errors?.certificado_csd && (
+              <p id="error-certificado_csd" className="text-destructive text-sm">
+                {form.formState.errors.certificado_csd.message}
+              </p>
+            )}
+          </div>
+          <div className="group/field grid gap-2" data-invalid={!!form.formState.errors?.llave_privada_csd}>
+            <Label htmlFor="llave_privada_csd" className="group-data-[invalid=true]/field:text-destructive">
+              Llave Privada CSD (.key) <span aria-hidden="true">*</span>
+            </Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="llave_privada_csd"
+                name="llave_privada_csd"
+                type="file"
+                accept=".key"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      const base64 = e.target?.result?.toString().split(',')[1] || '';
+                      form.setValue("llave_privada_csd", base64);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="group-data-[invalid=true]/field:border-destructive focus-visible:group-data-[invalid=true]/field:ring-destructive"
+                aria-invalid={!!form.formState.errors?.llave_privada_csd}
+                aria-errormessage="error-llave_privada_csd"
+              />
+              <Upload className="text-muted-foreground" />
+            </div>
+            {form.formState.errors?.llave_privada_csd && (
+              <p id="error-llave_privada_csd" className="text-destructive text-sm">
+                {form.formState.errors.llave_privada_csd.message}
+              </p>
+            )}
+          </div>
+        </div>
+              
         <FormField
           control={form.control}
           name="contrasena_csd"
@@ -259,6 +348,8 @@ export function EmpresaForm({ initialData, onSubmit }: EmpresaFormProps) {
             </FormItem>
           )}
         />
+
+        <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
 
         <Button type="submit">Guardar</Button>
       </form>

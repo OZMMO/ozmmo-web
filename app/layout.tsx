@@ -1,7 +1,6 @@
-
 import { SessionProvider } from 'next-auth/react'
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { Inter } from "next/font/google";
+// import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
@@ -17,10 +16,10 @@ export const metadata = {
   description: "Agua pura sin complicaciones",
 };
 
-const inter = Inter({
-  display: "swap",
-  subsets: ["latin"],
-});
+// const inter = Inter({
+//   display: "swap",
+//   subsets: ["latin"],
+// });
 
 export default async function RootLayout({
   children,
@@ -30,7 +29,7 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <SessionProvider session={session}>
-      <html lang="en" className={inter.className} suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning>
         <body className="bg-background text-foreground" suppressHydrationWarning>
           <ThemeProvider
             attribute="class"

@@ -3,34 +3,46 @@
 import { ActionState } from "@/components/crud";
 import { Empresa, EmpresaModel } from "@/lib/db";
 
-export const createServer = async (data: Empresa): Promise<ActionState<any>> => {
-
-  const model = new EmpresaModel();
-  const result = await model.create(data);
-
-  return { data: result }; 
-} 
-
-export const updateServer = async (data: any): Promise<ActionState<any>> => {
-
+export const createEmpresa = async (data: Empresa): Promise<ActionState<Empresa>> => {
   if (!data.curp) {
-    data.curp = null
+    data.curp = undefined
   }
 
-  // const { error } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .update(data)
-  //   .eq('id', data.id)
+  if (!data.direccion) {
+    data.direccion = undefined
+  }
 
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
+  try {
+    const model = new EmpresaModel();
+    const result = await model.create(data);
 
-  return { data };
+    return { data: result }; 
+  } catch (error: any) {
+    return { error }
+  }
+} 
+
+export const updateEmpresa = async (data: Empresa): Promise<ActionState<Empresa>> => {
+  if (!data.curp) {
+    data.curp = undefined
+  }
+
+  if (!data.direccion) {
+    data.direccion = undefined
+  }
+
+  try {
+    console.log({data})
+    const model = new EmpresaModel();
+    const result = await model.update(data);
+
+    return { data: result }; 
+  } catch (error: any) {
+    return { error}
+  }
 }
 
-export const deleteServer = async (data: any): Promise<ActionState<any>> => {
+export const deleteEmpresa = async (data: Empresa): Promise<ActionState<Empresa>> => {
 
   // const { error } = await sql
   //   .from('catalogos_tbl_empresas')

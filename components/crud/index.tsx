@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Table,
   TableBody,
@@ -23,8 +23,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+} from "@/components/ui/alert-dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import {
   Pagination,
   PaginationContent,
@@ -33,10 +39,21 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
-import { Pencil, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils';
-import TablePagination from '../tables/table-pagination';
+} from "@/components/ui/pagination";
+
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import TablePagination from "../tables/table-pagination";
 
 // Placeholder type definitions
 // Replace these with actual definitions as needed
@@ -58,9 +75,24 @@ export interface Column<T> {
   render?: (value: T[keyof T]) => React.ReactNode;
 }
 
+export type Action<T> = {
+  icon: React.ReactNode;
+  onClick: (item: T) => void;
+  title: string;
+  variant:
+    | "outline"
+    | "destructive"
+    | "link"
+    | "default"
+    | "secondary"
+    | "ghost";
+  size: "icon" | "default" | "sm" | "lg";
+  showAlert?: boolean;
+}
+
 interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
   columns: Column<T>[];
-  data: T[];  // Cambiamos a datos serializados
+  data: T[]; // Cambiamos a datos serializados
   jsClassName?: ModelType;
   totalCount: number;
   totalPages: number;
@@ -72,16 +104,17 @@ interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
     delete: (data: T) => Promise<ActionState<T>>;
   };
   formComponent: React.ComponentType<{
-    initialData?: T
-    onSubmit: (data: T) => void
-    errors?: FieldErrors<T>
-    infoExtra?: TInfoExtra
+    initialData?: T;
+    onSubmit: (data: T) => void;
+    errors?: FieldErrors<T>;
+    infoExtra?: TInfoExtra;
   }>;
   searchable?: boolean;
   path?: string;
   formClassName?: string;
   infoExtra?: TInfoExtra;
-  redirectMode?: boolean;  
+  redirectMode?: boolean;
+  extraActions?: Action<T>[];
 }
 
 export function CRUD<T extends { id: string | number }, TInfoExtra>({
@@ -98,7 +131,8 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   formClassName,
   path,
   infoExtra,
-  redirectMode = false
+  redirectMode = false,
+  extraActions = [],
 }: CRUDProps<T, TInfoExtra>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -109,19 +143,22 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   const [isDeleting, setIsDeleting] = useState<string | number | null>(null);
   const [errors, setErrors] = useState<FieldErrors<T>>({} as FieldErrors<T>);
 
-  const query = searchParams.get('query') || '';
-  const orderByColumn = searchParams.get('orderByColumn') as keyof T || columns[0].key;
-  const orderDirection = (searchParams.get('orderDirection') || 'asc') as 'asc' | 'desc';
+  const query = searchParams.get("query") || "";
+  const orderByColumn =
+    (searchParams.get("orderByColumn") as keyof T) || columns[0].key;
+  const orderDirection = (searchParams.get("orderDirection") || "asc") as
+    | "asc"
+    | "desc";
 
   const handleCreate = async (formData: T) => {
     try {
       const result = await actions.create(formData);
       if (result.error) throw result.error;
-      toast.success('Item created successfully!');
+      toast.success("Item created successfully!");
       setIsOpenNew(false);
-      router.refresh()
+      router.refresh();
     } catch (error: any) {
-      console.error('Error creating item:', error);
+      console.error("Error creating item:", error);
       toast.error(error.message);
       if (error.details) {
         setErrors({ ...error.details });
@@ -130,15 +167,14 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   };
 
   const handleUpdate = async (formData: T) => {
-    console.log('update', {formData})
     try {
       const result = await actions.update(formData);
       if (result.error) throw result.error;
-      toast.success('Item updated successfully!');
+      toast.success("Item updated successfully!");
       setEditItem(null);
-      router.refresh()  
+      router.refresh();
     } catch (error: any) {
-      console.error('Error updating item:', error);
+      console.error("Error updating item:", error);
       toast.error(error.message);
       if (error.details) {
         setErrors({ ...error.details });
@@ -151,17 +187,19 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
     try {
       const result = await actions.delete(item);
       if (result.error) throw result.error;
-      toast.success('Item deleted successfully!');
-      router.refresh()
+      toast.success("Item deleted successfully!");
+      router.refresh();
     } catch (error: any) {
-      console.error('Error deleting item:', error);
+      console.error("Error deleting item:", error);
       toast.error(error.message);
     } finally {
       setIsDeleting(null);
     }
   };
 
-  const createQueryString = (params: Record<string, string | number | null>) => {
+  const createQueryString = (
+    params: Record<string, string | number | null>
+  ) => {
     const newSearchParams = new URLSearchParams(searchParams.toString());
     Object.entries(params).forEach(([key, value]) => {
       if (value === null) {
@@ -182,7 +220,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   };
 
   const onEdit = (item: T) => {
-    console.log('edit', {item})
+    console.log("edit", { item });
     if (redirectMode) {
       router.push(`${path}/${String(item[columns[0].key])}`);
     } else {
@@ -195,11 +233,32 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
       return column.render(item[column.key]);
     }
     const value = item[column.key];
-    if (typeof value?.toLocaleString === 'function') {
+    if (typeof value?.toLocaleString === "function") {
       return value.toLocaleString();
     }
-    return String(value || '');
+    return String(value || "");
   };
+
+  const localActions: Action<T>[] = [
+    {
+      icon: <Pencil className="h-4 w-4" />,
+      onClick: (item: T) => onEdit(item),
+      title: "Editar",
+      variant: "outline",
+      size: "icon",
+      showAlert: false,
+    },
+    {
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: (item: T) => handleDelete(item),
+      title: "Eliminar",
+      variant: "destructive",
+      size: "icon",
+      showAlert: true,
+    },
+  ];
+
+  const allActions = [...localActions, ...extraActions];
 
   return (
     <div className="space-y-4">
@@ -209,7 +268,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
             <Input
               type="search"
               placeholder="Search..."
-              defaultValue={searchParams.get('query') || ''}
+              defaultValue={searchParams.get("query") || ""}
               onChange={(e) => {
                 const query = createQueryString({
                   query: e.target.value,
@@ -221,25 +280,29 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
             />
           </div>
         )}
-        <Button variant="outline" onClick={onNew}>Add New</Button>
+        <Button variant="outline" onClick={onNew}>
+          Add New
+        </Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-slate-200 dark:bg-slate-800 cursor-pointer">
             <TableRow>
-              <TableHead>Actions</TableHead>
+              <TableHead className="h-8">Actions</TableHead>
               {columns.map((column) => (
                 <TableHead
                   key={String(column.key)}
-                  className={column.sortable ? 'cursor-pointer hover:bg-muted' : ''}
+                  className={cn(column.sortable ? "cursor-pointer hover:bg-muted" : "", "h-6", "px-0")}
                   onClick={() => {
                     if (column.sortable) {
                       const query = createQueryString({
                         orderByColumn: column.key as string,
-                        orderDirection: orderByColumn === column.key && orderDirection === 'asc'
-                          ? 'desc'
-                          : 'asc',
+                        orderDirection:
+                          orderByColumn === column.key &&
+                          orderDirection === "asc"
+                            ? "desc"
+                            : "asc",
                       });
                       router.push(`${pathname}?${query}`);
                     }
@@ -248,7 +311,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
                   <div className="flex items-center gap-2">
                     {column.label}
                     {column.sortable && orderByColumn === column.key && (
-                      <span>{orderDirection === 'asc' ? '↑' : '↓'}</span>
+                      <span>{orderDirection === "asc" ? "↑" : "↓"}</span>
                     )}
                   </div>
                 </TableHead>
@@ -257,42 +320,83 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           </TableHeader>
           <TableBody>
             {data.map((item: T) => (
-              <TableRow key={String(item[columns[0].key])}>
-                <TableCell>
+              <TableRow key={String(item[columns[0].key])} className="hover:bg-sky-200/50">
+                <TableCell className="p-0">
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={() => onEdit(item)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="icon" title="Eliminar registro">
-                          <Trash2 className="h-4 w-4" />
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent className="border-red-200">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>¿Eliminar registro?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Esta acción no se puede deshacer. Se eliminará permanentemente este registro
-                            y todos sus datos relacionados de nuestros servidores.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDelete(item)}
-                            disabled={isDeleting === String(item[columns[0].key])}
-                            className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
-                          >
-                            {isDeleting === String(item[columns[0].key]) ? 'Eliminando...' : 'Eliminar'}
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        {allActions.map((action) =>
+                          action.showAlert ? (
+                            <AlertDialog key={action.title}>
+                              <AlertDialogTrigger asChild>
+                                <DropdownMenuItem
+                                  onSelect={(e) => e.preventDefault()}
+                                  className={cn(action.variant, action.size)}
+                                >
+                                  {action.icon}
+                                  <span className="ml-2">{action.title}</span>
+                                </DropdownMenuItem>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="border-red-200">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    ¿Eliminar registro?
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Esta acción no se puede deshacer. Se
+                                    eliminará permanentemente este registro y
+                                    todos sus datos relacionados de nuestros
+                                    servidores.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>
+                                    Cancelar
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => action.onClick(item)}
+                                    disabled={
+                                      isDeleting ===
+                                      String(item[columns[0].key])
+                                    }
+                                    className="bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                                  >
+                                    {isDeleting === String(item[columns[0].key])
+                                      ? "Eliminando..."
+                                      : "Eliminar"}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          ) : (
+                            <DropdownMenuItem
+                              key={action.title}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                action.onClick(item);
+                              }}
+                            >
+                              {action.icon}
+                              <span className="ml-2">{action.title}</span>
+                            </DropdownMenuItem>
+                          )
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </TableCell>
                 {columns.map((column) => (
-                  <TableCell key={`${String(item[columns[0].key])}-${String(column.key)}`}>
+                  <TableCell
+                    key={`${String(item[columns[0].key])}-${String(column.key)}`}
+                    className="p-0"
+                  >
                     {renderCellContent(item, column)}
                   </TableCell>
                 ))}
@@ -302,7 +406,12 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
         </Table>
       </div>
       <Sheet open={isOpenNew} onOpenChange={setIsOpenNew}>
-        <SheetContent className={cn('w-[400px] sm:w-[540px] overflow-y-auto', formClassName)}>
+        <SheetContent
+          className={cn(
+            "w-[400px] sm:w-[540px] overflow-y-auto",
+            formClassName
+          )}
+        >
           <SheetHeader>
             <SheetTitle>Add new</SheetTitle>
           </SheetHeader>
@@ -316,8 +425,16 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
         </SheetContent>
       </Sheet>
 
-      <Sheet open={editItem !== null} onOpenChange={(open) => !open && setEditItem(null)}>
-        <SheetContent className={cn('w-[400px] sm:w-[540px] overflow-y-auto', formClassName)}>
+      <Sheet
+        open={editItem !== null}
+        onOpenChange={(open) => !open && setEditItem(null)}
+      >
+        <SheetContent
+          className={cn(
+            "w-[400px] sm:w-[540px] overflow-y-auto",
+            formClassName
+          )}
+        >
           <SheetHeader>
             <SheetTitle>Editing</SheetTitle>
           </SheetHeader>

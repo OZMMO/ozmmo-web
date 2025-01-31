@@ -3,10 +3,11 @@ import {CRUD, Column} from '@/components/crud';
 import { useEffect, useState } from 'react';
 import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interface';
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
-import { createServer, deleteServer, updateServer } from './actions';
-import { EmpresaForm } from './empresa-form';
-import { Empresa } from '@/lib/db';
-// import { Empresa } from '@/lib/db/catalogos/empresa.model';
+import { createEmpresa, updateEmpresa, deleteEmpresa } from './actions';
+import { EmpresaForm, InfoExtraEmpresa } from './empresa-form';
+import { Empresa } from '@/lib/db/catalogos/empresas/empresa';
+import { TipoContribuyente } from '@/lib/db/sat/tipos_contribuyentes/tipo_contribuyente';
+import { RegimenFiscal } from '@/lib/db/sat/regimenes_fiscales/regimen_fiscal';
 
 const columns: Column<Empresa>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -24,18 +25,23 @@ const columns: Column<Empresa>[] = [
   //     value && typeof value !== 'boolean' ? new Date(value.toString()).toLocaleDateString() : ''
   // },
   { key: 'estatus', label: 'Estatus', sortable: true,
-    render: (value: string | number | boolean | Date | undefined) => 
-      value ? 'Activo' : 'Inactivo'
+    render: (value: any) => {
+      if (typeof value === 'object' && value !== null && 'estatus' in value) {
+        return value.estatus ? 'Activo' : 'Inactivo';
+      }
+      return value ? 'Activo' : 'Inactivo';
+    }
    }
 ];
 
 interface PageProps {
   payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
+  tiposContribuyentes: TipoContribuyente[]; 
+  regimenesFiscales: RegimenFiscal[];
 }
 
-
-export default function EmpresasClientPage({ payload, paginationParams }: PageProps) {
+export default function EmpresasClientPage({ payload, paginationParams, tiposContribuyentes, regimenesFiscales }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false)
  
@@ -48,7 +54,7 @@ export default function EmpresasClientPage({ payload, paginationParams }: PagePr
   }
 
   return (
-    <CRUD<Empresa, null>
+    <CRUD<Empresa, InfoExtraEmpresa>
       columns={columns}
       data={data}
       totalCount={totalCount}
@@ -56,11 +62,16 @@ export default function EmpresasClientPage({ payload, paginationParams }: PagePr
       currentPage={Number(paginationParams.page) || 1}
       pageSize={Number(paginationParams.pageSize) || 10}
       formComponent={EmpresaForm}
+      formClassName='w-[95vw] max-w-[840px] sm:w-[100vw] md:w-[90vw] lg:w-[840px]'
       // jsClassName="Empresa"
       actions={{
-        create: createServer,
-        update: updateServer,
-        delete: deleteServer,
+        create: createEmpresa,
+        update: updateEmpresa,
+        delete: deleteEmpresa,
+      }}
+      infoExtra={{
+        tiposContribuyentes,
+        regimenesFiscales
       }}
     />
   );
