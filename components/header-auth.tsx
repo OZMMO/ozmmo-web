@@ -20,7 +20,7 @@ export default function AuthButton() {
               size="sm"
               variant={"outline"}
             >
-              <Link href="/sign-in">Sign in</Link>
+              <Link href="/auth/login">Sign in</Link>
             </Button>            
             {/* <Button
               asChild
@@ -51,7 +51,7 @@ export default function AuthButton() {
   ) : (
     <div className="flex gap-2">
       <Button asChild size="sm" variant={"outline"}>
-        <Link href="/sign-in">Sign in</Link>
+        <Link href="/auth/login">Sign in</Link>
       </Button>
       {/* <Button asChild size="sm" variant={"default"}>
         <Link href="/sign-up">Sign up</Link>
