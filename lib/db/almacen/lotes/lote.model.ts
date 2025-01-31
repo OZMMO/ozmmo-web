@@ -58,6 +58,7 @@ export class LoteModel implements IDBModel<Lote>{
       request.input('recepcion_id', lote.recepcion_id);
       request.input('estatus', lote.estatus);
       request.input('ubicacion_id', lote.ubicacion_id);
+      request.input('trazabilidad_lotes', JSON.stringify(lote.trazabilidad_lotes));
       request.input('UserId', lote.UserId); 
       const result = await request.execute('[Almacen].[spIULote]');
       const data =  result.recordset as Lote[];
@@ -73,6 +74,7 @@ export class LoteModel implements IDBModel<Lote>{
     try {
       const db = await this.sql.connect();
       const request = await db.request();
+
       request.input('id', lote.id);
       request.input('codigo_lote', lote.codigo_lote);
       request.input('producto_id', lote.producto_id);
@@ -84,6 +86,7 @@ export class LoteModel implements IDBModel<Lote>{
       request.input('recepcion_id', lote.recepcion_id);
       request.input('estatus', lote.estatus);
       request.input('ubicacion_id', lote.ubicacion_id);
+      request.input('trazabilidad_lotes', JSON.stringify(lote.trazabilidad_lotes));
       request.input('UserId', lote.UserId); 
       const result = await request.execute('[Almacen].[spIULote]');
       const data =  result.recordset as Lote[];
@@ -106,5 +109,9 @@ export class LoteModel implements IDBModel<Lote>{
     } catch (error) {
       return Promise.reject(error)
     }
+  }
+
+  async count(criteria: ICriteria<Lote>): Promise<number> {
+    return Promise.resolve(0)
   }
 } 

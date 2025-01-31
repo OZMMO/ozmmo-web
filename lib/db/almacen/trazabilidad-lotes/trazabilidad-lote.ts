@@ -1,12 +1,17 @@
 import { z } from "zod";
+import { IPagination } from "@/lib/interfaces/pagination.interface";
 
-export interface TrazabilidadLote {
+export interface TrazabilidadLote extends IPagination {
   id: number;
   lote_id: number;
+  codigo_lote: string;
   ubicacion_origen_id: number;
+  ubicacion_origen: string;
   ubicacion_destino_id: number;
+  ubicacion_destino: string;
   cantidad: number;
   tipo_movimiento_id: number;
+  tipo_movimiento: string;
   referencia_movimiento?: string;
   notas?: string;
   estatus: boolean;

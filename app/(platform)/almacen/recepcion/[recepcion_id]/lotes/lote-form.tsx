@@ -120,41 +120,52 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex items-center space-x-4 rounded-md border p-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {/* Info Cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="flex items-center space-x-2 rounded-md border p-4">
           <div className="flex-1 space-y-1">
             <p className="text-sm font-medium leading-none">Producto</p>
-            <p className="text-sm text-muted-foreground">
-              {detalleRecepcion.producto}
-            </p>
+            <p className="text-sm text-muted-foreground">{detalleRecepcion.producto}</p>
           </div>
         </div>
-        <div className="flex items-center space-x-4 rounded-md border p-4">
+        <div className="flex items-center space-x-2 rounded-md border p-4">
           <div className="flex-1 space-y-1">
             <p className="text-sm font-medium leading-none">Unidad de Medida</p>
-            <p className="text-sm text-muted-foreground">
-              {detalleRecepcion.unidad_medida}
-            </p>
+            <p className="text-sm text-muted-foreground">{detalleRecepcion.unidad_medida}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2 rounded-md border p-4">
+          <div className="flex-1 space-y-1">
+            <p className="text-sm font-medium leading-none">Cantidad a Recibir</p>
+            <p className="text-sm text-muted-foreground">{new Intl.NumberFormat().format(detalleRecepcion.cantidad)}</p>
+          </div>
+        </div>
+        <div className="flex items-center space-x-2 rounded-md border p-4">
+          <div className="flex-1 space-y-1">
+            <p className="text-sm font-medium leading-none">Bodega</p>
+            <p className="text-sm text-muted-foreground">{bodega.nombre}</p>
           </div>
         </div>
       </div>
-      <div className="flex items-center space-x-4 rounded-md border p-4">
-        <div className="flex-1 space-y-1">
-          <p className="text-sm font-medium leading-none">Cantidad a Recibir</p>
-          <p className="text-sm text-muted-foreground">
-            {new Intl.NumberFormat().format(detalleRecepcion.cantidad)}
-          </p>
-        </div>
-      </div>
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="codigo_lote">Código del Lote</Label>
-          <Input type="text" id="codigo_lote" className="w-full" disabled value={"AUTO GENERADO"} />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="fecha_fabricacion">Fecha de Fabricación</Label> <br />
+
+      {/* Main Form Fields */}
+      <div className="space-y-6">
+        {/* First Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="col-span-1">
+            <Label htmlFor="codigo_lote" className="mb-2 block">Código del Lote</Label>
+            <Input 
+              type="text" 
+              id="codigo_lote" 
+              className="w-full" 
+              disabled 
+              value={"AUTO GENERADO"} 
+            />
+          </div>
+          
+          <div className="col-span-1">
+            <Label htmlFor="fecha_fabricacion" className="mb-2 block">Fecha de Fabricación</Label>
             <Controller
               control={control}
               name="fecha_fabricacion"
@@ -164,7 +175,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-full md:w-[240px] justify-start text-left font-normal",
+                        "w-full justify-start text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -183,11 +194,10 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
                 </Popover>
               )}
             />
-            {errors.fecha_fabricacion && <p className="text-red-500">{errors.fecha_fabricacion.message}</p>}
           </div>
 
-          <div>
-            <Label htmlFor="fecha_expiracion">Fecha de Expiración</Label> <br />
+          <div className="col-span-1">
+            <Label htmlFor="fecha_expiracion" className="mb-2 block">Fecha de Expiración</Label>
             <Controller
               control={control}
               name="fecha_expiracion" 
@@ -197,7 +207,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "w-full md:w-[240px] justify-start text-left font-normal",
+                        "w-full justify-start text-left font-normal",
                         !field.value && "text-muted-foreground"
                       )}
                     >
@@ -216,156 +226,164 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
                 </Popover>
               )}
             />
-            {errors.fecha_expiracion && <p className="text-red-500">{errors.fecha_expiracion.message}</p>}
           </div>
 
-          <div>
-            <Label htmlFor="cantidad_inicial">Cantidad Inicial</Label>
+          <div className="col-span-1">
+            <Label htmlFor="cantidad_inicial" className="mb-2 block">Cantidad Inicial</Label>
             <Input type="number" id="cantidad_inicial" {...register("cantidad_inicial")} disabled className="w-full" />
           </div>
 
-          <div>
-            <Label htmlFor="cantidad_disponible">Cantidad Disponible</Label>
+          <div className="col-span-1">
+            <Label htmlFor="cantidad_disponible" className="mb-2 block">Cantidad Disponible</Label>
             <Input type="number" id="cantidad_disponible" {...register("cantidad_disponible")} disabled className="w-full" />
           </div>
         </div>
-      </div>
-      <div>
-        <Label htmlFor="estado_lote_id">Estado del Lote</Label>
-        <Controller
-          control={control}
-          name="estado_lote_id"
-          render={({ field }) => (
-            <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccione estado" />
-              </SelectTrigger>
-              <SelectContent>
-                {estadosLote.map((estado) => (
-                  <SelectItem key={estado.id} value={estado.id.toString()}>
-                    <div className="flex flex-col items-start">
-                      <span>{estado.nombre}</span>
-                      <span className="text-sm text-muted-foreground">{estado.descripcion}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.estado_lote_id && <p className="text-red-500">{errors.estado_lote_id.message}</p>}
-      </div>
 
-      <div className=" flex items-center space-x-4 rounded-md border p-4">
-        <div className="flex-1 space-y-1">
-          <p className="text-sm font-medium leading-none">Bodega</p>
-          <p className="text-sm text-muted-foreground">
-            {bodega.nombre}
-          </p>
+        {/* Second Row - Estado y Ubicaciones */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div>
+            <Label htmlFor="estado_lote_id" className="mb-2 block">Estado del Lote</Label>
+            <Controller
+              control={control}
+              name="estado_lote_id"
+              render={({ field }) => (
+                <Select 
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value?.toString()}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Seleccione estado" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {estadosLote.map((estado) => (
+                      <SelectItem key={estado.id} value={estado.id.toString()}>
+                        <div className="flex flex-col items-start">
+                          <span>{estado.nombre}</span>
+                          <span className="text-sm text-muted-foreground">
+                            {estado.descripcion}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="trazabilidad_lotes.ubicacion_origen_id" className="mb-2 block">Ubicación Origen</Label>
+            <Controller
+              control={control}
+              name="trazabilidad_lotes.ubicacion_origen_id" 
+              render={({ field }) => (
+                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione ubicación" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ubicaciones.map((ubicacion) => (
+                      <SelectItem key={ubicacion.id} value={ubicacion.id.toString()}>
+                        <div className="flex flex-col items-start">
+                          <span>{ubicacion.codigo}</span>
+                          <span className="text-sm text-muted-foreground">{ubicacion.descripcion}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="trazabilidad_lote.ubicacion_destino_id" className="mb-2 block">Ubicación Destino</Label>
+            <Controller
+              control={control}
+              name="trazabilidad_lotes.ubicacion_destino_id"
+              render={({ field }) => (
+                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione ubicación" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ubicaciones.map((ubicacion) => (
+                      <SelectItem key={ubicacion.id} value={ubicacion.id.toString()}>
+                        <div className="flex flex-col items-start">
+                          <span>{ubicacion.codigo}</span>
+                          <span className="text-sm text-muted-foreground">{ubicacion.descripcion}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="trazabilidad_lotes.tipo_movimiento_id" className="mb-2 block">Tipo de Movimiento</Label>
+            <Controller
+              control={control}
+              name="trazabilidad_lotes.tipo_movimiento_id"
+              render={({ field }) => (
+                <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione tipo de movimiento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {tiposMovimientos.map((tipoMovimiento) => (
+                      <SelectItem key={tipoMovimiento.id} value={tipoMovimiento.id.toString()}>
+                        <div className="flex flex-col items-start">
+                          <span>{tipoMovimiento.nombre}</span>
+                          <span className="text-sm text-muted-foreground">{tipoMovimiento.descripcion}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Referencias y Notas */}
+        <div className="grid grid-cols-1 gap-6">
+          <div>
+            <Label htmlFor="trazabilidad_lotes.referencia_movimiento" className="mb-2 block">
+              Referencia del Movimiento
+            </Label>
+            <Input 
+              type="text" 
+              id="trazabilidad_lotes.referencia_movimiento" 
+              {...register("trazabilidad_lotes.referencia_movimiento")} 
+              className="w-full" 
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="trazabilidad_lotes.notas" className="mb-2 block">Notas</Label>
+            <Textarea
+              id="trazabilidad_lotes.notas"
+              placeholder="Ingrese notas adicionales..."
+              {...register("trazabilidad_lotes.notas")}
+              className="min-h-[100px]"
+            />
+          </div>
         </div>
       </div>
 
-      <div>
-        <Label htmlFor="trazabilidad_lotes.ubicacion_origen_id">Ubicación Origen</Label>
-        <Controller
-          control={control}
-          name="trazabilidad_lotes.ubicacion_origen_id" 
-          render={({ field }) => (
-            <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccione ubicación" />
-              </SelectTrigger>
-              <SelectContent>
-                {ubicaciones.map((ubicacion) => (
-                  <SelectItem key={ubicacion.id} value={ubicacion.id.toString()}>
-                    <div className="flex flex-col items-start">
-                      <span>{ubicacion.codigo}</span>
-                      <span className="text-sm text-muted-foreground">{ubicacion.descripcion}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.trazabilidad_lotes?.ubicacion_origen_id && (
-          <p className="text-red-500">{errors.trazabilidad_lotes.ubicacion_origen_id.message}</p>
-        )}
+      {/* Submit Button */}
+      <div className="flex justify-end">
+        <Button type="submit" disabled={isSubmitting} className="w-full md:w-auto">
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </div>
 
-      <div>
-        <Label htmlFor="trazabilidad_lote.ubicacion_destino_id">Ubicación Destino</Label>
-        <Controller
-          control={control}
-          name="trazabilidad_lotes.ubicacion_destino_id"
-          render={({ field }) => (
-            <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccione ubicación" />
-              </SelectTrigger>
-              <SelectContent>
-                {ubicaciones.map((ubicacion) => (
-                  <SelectItem key={ubicacion.id} value={ubicacion.id.toString()}>
-                    <div className="flex flex-col items-start">
-                      <span>{ubicacion.codigo}</span>
-                      <span className="text-sm text-muted-foreground">{ubicacion.descripcion}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.trazabilidad_lotes?.ubicacion_destino_id && (
-          <p className="text-red-500">{errors.trazabilidad_lotes.ubicacion_destino_id.message}</p>
-        )}
-      </div>
-
-      <div>
-        <Label htmlFor="trazabilidad_lotes.tipo_movimiento_id">Tipo de Movimiento</Label>
-        <Controller
-          control={control}
-          name="trazabilidad_lotes.tipo_movimiento_id"
-          render={({ field }) => (
-            <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccione tipo de movimiento" />
-              </SelectTrigger>
-              <SelectContent>
-                {tiposMovimientos.map((tipoMovimiento) => (
-                  <SelectItem key={tipoMovimiento.id} value={tipoMovimiento.id.toString()}>
-                    <div className="flex flex-col items-start">
-                      <span>{tipoMovimiento.nombre}</span>
-                      <span className="text-sm text-muted-foreground">{tipoMovimiento.descripcion}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.trazabilidad_lotes?.tipo_movimiento_id && (
-          <p className="text-red-500">{errors.trazabilidad_lotes.tipo_movimiento_id.message}</p>
-        )}
-      </div>
-
-      <div>
-        <Label htmlFor="trazabilidad_lotes.referencia_movimiento">Referencia del Movimiento</Label>
-        <Input type="text" id="trazabilidad_lotes.referencia_movimiento" {...register("trazabilidad_lotes.referencia_movimiento")} className="w-full" />
-      </div>
-
-      <div>
-        <Label htmlFor="trazabilidad_lotes.notas">Notas</Label>
-        <Textarea
-          id="trazabilidad_lotes.notas"
-          placeholder="Ingrese notas adicionales..."
-          {...register("trazabilidad_lotes.notas")}
-        />
-      </div>
-      
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Guardando..." : "Guardar"}
-      </Button>
+      {/* Error Message */}
+      {submitError && (
+        <p className="text-red-500 text-center mt-4">{submitError}</p>
+      )}
     </form>
   )
 }

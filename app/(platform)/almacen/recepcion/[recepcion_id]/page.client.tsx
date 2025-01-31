@@ -7,6 +7,7 @@ import { createServer, deleteServer, updateServer } from "./actions";
 import { DetalleRecepcionForm } from "./detalle_recepcion-form";
 import {
   DetalleRecepcion,
+  Lote,
   Productos,
   Recepcion,
   Ubicacion,
@@ -21,23 +22,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { BellRing, PackageCheck, PlusCircle } from "lucide-react";
+import { Badge, BellRing, PackageCheck, PackageOpen, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import LoteForm from "./lotes/lote-form";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { EstadoLote } from "@/lib/db/almacen/estados-lote/estado-lote";
 import { EstadoLoteModel } from "@/lib/db/almacen/estados-lote/estado-lote.model";
 import { TipoMovimiento } from "@/lib/db/almacen/tipos-movimientos/tipo-movimiento";
-
-const columns: Column<DetalleRecepcion>[] = [
-  // { key: 'id', label: 'ID', sortable: true },
-  { key: "producto", label: "Producto", sortable: true },
-  { key: "unidad_medida", label: "Unidad de Medida", sortable: true },
-  { key: "cantidad", label: "Cantidad", sortable: true },
-];
+import { Table, TableCell } from "@/components/ui/table";
+import { TableBody } from "@/components/ui/table";
+import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge as CustomBadge } from "@/components/ui/badge";
 
 interface PageProps {
   payload: IResponseModel<any[]>;
@@ -72,7 +70,8 @@ export default function DetalleRecepcionClientPage({
   const [estadosLote, setEstadosLote] = useState<EstadoLote[]>([]);
   const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
   const [tiposMovimientos, setTiposMovimientos] = useState<TipoMovimiento[]>([]);
-
+  const [lotes, setLotes] = useState<Lote[]>([]);
+  const [isOpenVerLoteForm, setIsOpenVerLoteForm] = useState(false);
   useEffect(() => {
     setIsClient(true);
 
@@ -106,6 +105,39 @@ export default function DetalleRecepcionClientPage({
     return null;
   }
 
+  const columns: Column<DetalleRecepcion>[] = [
+    // { key: 'id', label: 'ID', sortable: true },
+    { key: "id", label: "Ver Lotes", render: (value) => {
+      return (
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={async () => {
+            const item = data.find(d => d.id === value); // Assuming 'data' is accessible and contains the items
+            if (item) {
+              setDetalleRecepcion(item);
+              setIsOpenVerLoteForm(true);
+              await fetchLotes(item.producto_id);
+            }
+          }}
+        >
+          <PackageOpen className="h-4 w-4" />
+          Ver Lotes
+        </Button>
+      );
+    }},
+    { key: "producto", label: "Producto", sortable: true },
+    { key: "unidad_medida", label: "Unidad de Medida", sortable: true },
+    { key: "cantidad", label: "Cantidad", sortable: true },
+  ];
+
+  const fetchLotes = async (producto_id: number) => {
+    const response = await fetch(`/api/almancen/lotes?producto_id=${producto_id.toString()}`);
+    const data = await response.json();
+    console.log('lotes', data);
+    setLotes(data.data);
+  };
+
   const extraActions: Action<DetalleRecepcion>[] = [
     {
       icon: <PackageCheck className="h-4 w-4" />,
@@ -124,8 +156,55 @@ export default function DetalleRecepcionClientPage({
   return (
     <>
       <Sheet open={isOpenLoteForm} onOpenChange={setIsOpenLoteForm}>
-        <SheetContent className="w-full xs:w-full sm:w-full md:w-[600px] lg:w-[640px] overflow-y-auto">
+        <SheetContent className="w-full xs:w-full sm:w-full md:w-[90%] lg:w-[80%] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Nuevo Lote</SheetTitle>
+          </SheetHeader>
           {detalleRecepcion && <LoteForm detalleRecepcion={detalleRecepcion} estadosLote={estadosLote} bodega={{ id: recepcion?.bodega_id || 0, nombre: recepcion?.bodega || 'SIN BODEGA SELECCIONADA' }} ubicaciones={ubicaciones} tiposMovimientos={tiposMovimientos} />}
+        </SheetContent>
+      </Sheet>
+
+      <Sheet open={isOpenVerLoteForm} onOpenChange={setIsOpenVerLoteForm}>
+        <SheetContent className="w-full xs:w-full sm:w-full md:w-[90%] lg:w-[80%] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Lotes</SheetTitle>
+          </SheetHeader>
+          <div className="mt-6">
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Código</TableHead>
+                    <TableHead>Producto</TableHead>
+                    <TableHead>Fabricación</TableHead>
+                    <TableHead>Expiración</TableHead>
+                    <TableHead>Cantidad</TableHead>
+                    <TableHead>Disponible</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead>Ubicación</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {lotes.map((lote) => (
+                    <TableRow key={lote.id}>
+                      <TableCell className="font-medium">{lote.codigo_lote}</TableCell>
+                      <TableCell>{lote.producto}</TableCell>
+                      <TableCell>{lote.fecha_fabricacion ? new Date(lote.fecha_fabricacion).toLocaleDateString() : ''}</TableCell>
+                      <TableCell>{lote.fecha_expiracion ? new Date(lote.fecha_expiracion).toLocaleDateString() : ''}</TableCell>
+                      <TableCell>{lote.cantidad_inicial}</TableCell>
+                      <TableCell>{lote.cantidad_disponible}</TableCell>
+                      <TableCell>
+                        <CustomBadge variant={lote.estatus ? "default" : "secondary"}>
+                          {lote.estado_lote}
+                        </CustomBadge>
+                      </TableCell>
+                      <TableCell>{lote.ubicacion}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
       <div className="mb-4">
@@ -208,6 +287,7 @@ export default function DetalleRecepcionClientPage({
           extraActions={extraActions}
         />
       </div>
+      
     </>
   );
 }
