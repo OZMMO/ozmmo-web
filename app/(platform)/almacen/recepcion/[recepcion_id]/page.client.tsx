@@ -76,13 +76,13 @@ export default function DetalleRecepcionClientPage({
     setIsClient(true);
 
     const fetchEstadosLote = async () => {
-      const response = await fetch('/api/almancen/estados-lotes');
+      const response = await fetch('/api/almacen/estados-lotes');
       const data = await response.json();
       setEstadosLote(data);
     };
 
     const fetchUbicaciones = async () => {
-      const response = await fetch(`/api/almancen/ubicaciones?bodega_id=${recepcion?.bodega_id}`);
+      const response = await fetch(`/api/almacen/ubicaciones?bodega_id=${recepcion?.bodega_id}`);
       const dataJson = await response.json();
       const data = dataJson.data;
       console.log('ubicaciones', data);
@@ -90,7 +90,7 @@ export default function DetalleRecepcionClientPage({
     };
 
     const fetchTiposMovimientos = async () => {
-      const response = await fetch(`/api/almancen/tipos-movimientos?SoloActivos=true&Categorias=Entrada`);
+      const response = await fetch(`/api/almacen/tipos-movimientos?SoloActivos=true&Categorias=Entrada`);
       const data = await response.json();
       console.log('tiposMovimientos', data);
       setTiposMovimientos(data);
@@ -132,7 +132,7 @@ export default function DetalleRecepcionClientPage({
   ];
 
   const fetchLotes = async (producto_id: number) => {
-    const response = await fetch(`/api/almancen/lotes?producto_id=${producto_id.toString()}`);
+    const response = await fetch(`/api/almacen/lotes?producto_id=${producto_id.toString()}`);
     const data = await response.json();
     console.log('lotes', data);
     setLotes(data.data);
