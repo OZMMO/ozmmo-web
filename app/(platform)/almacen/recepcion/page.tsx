@@ -12,6 +12,7 @@ import {
 import { CriteriaSqlServer } from "@/lib/db";
 import RecepcionesClientPage from "./page.client";
 // import { Empresa } from "@/lib/db/catalogos/empresa.model";
+
 export const dynamic = "force-dynamic";
 
 interface PageProps {

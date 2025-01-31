@@ -37,6 +37,8 @@ import { TableBody } from "@/components/ui/table";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge as CustomBadge } from "@/components/ui/badge";
 
+export const dynamic = 'force-dynamic'
+
 interface PageProps {
   payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
