@@ -1,17 +1,19 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import { NextResponse } from "next/server";
 import { DireccionModel } from "@/lib/db/sat/direcciones/direccion.model";
 
+export async function GET(
+  request: Request,
+  { params }: { params: { direccion: string } }
+) {
+  try {
+    const direccion = params.direccion;
+    
+    if(!direccion) return NextResponse.json({ error: 'Direccion is required' }, { status: 400 });
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    const direccionModel = new DireccionModel();
+    const direcciones = await direccionModel.findMany(direccion);
+    return NextResponse.json(direcciones);
+  } catch (error) {
+    return NextResponse.json({ error: 'Error fetching direcciones' }, { status: 500 });
   }
-
-  const direccion = req.query.direccion as string;
-  
-  if(!direccion) return res.status(400).json({ error: 'Direccion is required' });
-
-  const direccionModel = new DireccionModel();
-  const direcciones = await direccionModel.findMany(direccion);
-  return res.status(200).json(direcciones);
 } 
