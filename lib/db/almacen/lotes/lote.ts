@@ -1,4 +1,5 @@
 import { IPagination } from "@/lib/interfaces/pagination.interface";
+import { TrazabilidadLote } from "../trazabilidad-lotes/trazabilidad-lote";
 
 export interface Lote extends IPagination{
   id: number;
@@ -17,4 +18,5 @@ export interface Lote extends IPagination{
   ubicacion_id?: number;
   ubicacion?: string;
   UserId?: string;
+  trazabilidad_lotes?: TrazabilidadLote;
 }

@@ -123,8 +123,8 @@ export default function DetalleRecepcionClientPage({
 
   return (
     <>
-      <Sheet open={isOpenLoteForm} onOpenChange={setIsOpenLoteForm} >
-        <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
+      <Sheet open={isOpenLoteForm} onOpenChange={setIsOpenLoteForm}>
+        <SheetContent className="w-full xs:w-full sm:w-full md:w-[600px] lg:w-[640px] overflow-y-auto">
           {detalleRecepcion && <LoteForm detalleRecepcion={detalleRecepcion} estadosLote={estadosLote} bodega={{ id: recepcion?.bodega_id || 0, nombre: recepcion?.bodega || 'SIN BODEGA SELECCIONADA' }} ubicaciones={ubicaciones} tiposMovimientos={tiposMovimientos} />}
         </SheetContent>
       </Sheet>

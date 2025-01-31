@@ -17,6 +17,7 @@ import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { createLote } from "./actions";
 
 interface LoteFormProps {
   detalleRecepcion: DetalleRecepcion;
@@ -50,7 +51,7 @@ const loteSchema = z.object({
   estatus: z.boolean().optional(),
   ubicacion_id: z.number().optional(),
   UserId: z.string().optional(),
-  trazabilidad_lote: trazabilidadLoteSchema,
+  trazabilidad_lotes: trazabilidadLoteSchema,
 });
 
 type LoteFormData = z.infer<typeof loteSchema>;
@@ -80,7 +81,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
       estatus: true,
       ubicacion_id: 1,
       UserId: "",
-      trazabilidad_lote: {
+      trazabilidad_lotes: {
         cantidad: detalleRecepcion.cantidad,
         ubicacion_origen_id: undefined,
         ubicacion_destino_id: undefined,
@@ -101,7 +102,13 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
       console.log("Form data:", data)
 
       // Simulating an API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await createLote(data as Lote);
+
+      if (response.error) {
+        setSubmitError(response.error.message)
+        throw response.error;
+      }
 
       reset()
       alert("Form submitted successfully!")
@@ -141,6 +148,10 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
         </div>
       </div>
       <div className="space-y-4">
+        <div>
+          <Label htmlFor="codigo_lote">Código del Lote</Label>
+          <Input type="text" id="codigo_lote" className="w-full" disabled value={"AUTO GENERADO"} />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="fecha_fabricacion">Fecha de Fabricación</Label> <br />
@@ -255,10 +266,10 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
       </div>
 
       <div>
-        <Label htmlFor="trazabilidad_lote.ubicacion_origen_id">Ubicación Origen</Label>
+        <Label htmlFor="trazabilidad_lotes.ubicacion_origen_id">Ubicación Origen</Label>
         <Controller
           control={control}
-          name="trazabilidad_lote.ubicacion_origen_id" 
+          name="trazabilidad_lotes.ubicacion_origen_id" 
           render={({ field }) => (
             <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
               <SelectTrigger>
@@ -277,8 +288,8 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
             </Select>
           )}
         />
-        {errors.trazabilidad_lote?.ubicacion_origen_id && (
-          <p className="text-red-500">{errors.trazabilidad_lote.ubicacion_origen_id.message}</p>
+        {errors.trazabilidad_lotes?.ubicacion_origen_id && (
+          <p className="text-red-500">{errors.trazabilidad_lotes.ubicacion_origen_id.message}</p>
         )}
       </div>
 
@@ -286,7 +297,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
         <Label htmlFor="trazabilidad_lote.ubicacion_destino_id">Ubicación Destino</Label>
         <Controller
           control={control}
-          name="trazabilidad_lote.ubicacion_destino_id"
+          name="trazabilidad_lotes.ubicacion_destino_id"
           render={({ field }) => (
             <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
               <SelectTrigger>
@@ -305,16 +316,16 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
             </Select>
           )}
         />
-        {errors.trazabilidad_lote?.ubicacion_destino_id && (
-          <p className="text-red-500">{errors.trazabilidad_lote.ubicacion_destino_id.message}</p>
+        {errors.trazabilidad_lotes?.ubicacion_destino_id && (
+          <p className="text-red-500">{errors.trazabilidad_lotes.ubicacion_destino_id.message}</p>
         )}
       </div>
 
       <div>
-        <Label htmlFor="trazabilidad_lote.tipo_movimiento_id">Tipo de Movimiento</Label>
+        <Label htmlFor="trazabilidad_lotes.tipo_movimiento_id">Tipo de Movimiento</Label>
         <Controller
           control={control}
-          name="trazabilidad_lote.tipo_movimiento_id"
+          name="trazabilidad_lotes.tipo_movimiento_id"
           render={({ field }) => (
             <Select onValueChange={(value) => field.onChange(Number(value))} defaultValue={field.value?.toString()}>
               <SelectTrigger>
@@ -333,22 +344,22 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
             </Select>
           )}
         />
-        {errors.trazabilidad_lote?.tipo_movimiento_id && (
-          <p className="text-red-500">{errors.trazabilidad_lote.tipo_movimiento_id.message}</p>
+        {errors.trazabilidad_lotes?.tipo_movimiento_id && (
+          <p className="text-red-500">{errors.trazabilidad_lotes.tipo_movimiento_id.message}</p>
         )}
       </div>
 
       <div>
-        <Label htmlFor="trazabilidad_lote.referencia_movimiento">Referencia del Movimiento</Label>
-        <Input type="text" id="trazabilidad_lote.referencia_movimiento" {...register("trazabilidad_lote.referencia_movimiento")} className="w-full" />
+        <Label htmlFor="trazabilidad_lotes.referencia_movimiento">Referencia del Movimiento</Label>
+        <Input type="text" id="trazabilidad_lotes.referencia_movimiento" {...register("trazabilidad_lotes.referencia_movimiento")} className="w-full" />
       </div>
 
       <div>
-        <Label htmlFor="trazabilidad_lote.notas">Notas</Label>
+        <Label htmlFor="trazabilidad_lotes.notas">Notas</Label>
         <Textarea
-          id="trazabilidad_lote.notas"
+          id="trazabilidad_lotes.notas"
           placeholder="Ingrese notas adicionales..."
-          {...register("trazabilidad_lote.notas")}
+          {...register("trazabilidad_lotes.notas")}
         />
       </div>
       
