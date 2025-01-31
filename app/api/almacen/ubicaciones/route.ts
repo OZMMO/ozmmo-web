@@ -1,19 +1,17 @@
 import { auth } from "@/auth";
 import { CriteriaSqlServer, Ubicacion, UbicacionesModel } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { bodega_id: string } }
+  request: NextRequest
 ) { 
   try {
     const session = await auth();
     const userId = session?.user.id as string;
-
-    const bodega_id = params.bodega_id;
+    const bodega_id = request?.nextUrl?.searchParams.get('bodega_id')
     
     if(!bodega_id) return NextResponse.json({ error: 'Bodega is required' }, { status: 400 });
-
+    console.log({bodega_id});
     const criteria = new CriteriaSqlServer<Ubicacion>();
     criteria.addConditition("bodega_id", bodega_id);
     criteria.addConditition("estatus", "1");
@@ -22,6 +20,7 @@ export async function GET(
     
     return NextResponse.json(ubicaciones);
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ error: 'Error fetching ubicaciones' }, { status: 500 });
   }
 }

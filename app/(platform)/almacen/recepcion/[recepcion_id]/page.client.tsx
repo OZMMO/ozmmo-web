@@ -134,7 +134,7 @@ export default function DetalleRecepcionClientPage({
   ];
 
   const fetchLotes = async (producto_id: number) => {
-    const response = await fetch(`/api/almacen/lotes?producto_id=${producto_id.toString()}`);
+    const response = await fetch(`/api/almacen/lotes?recepcion_id=${recepcion_id.toString()}&producto_id=${producto_id.toString()}`);
     const data = await response.json();
     console.log('lotes', data);
     setLotes(data.data);

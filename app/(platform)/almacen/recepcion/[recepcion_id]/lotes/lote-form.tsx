@@ -103,16 +103,17 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
 
       // Simulating an API call
       // await new Promise((resolve) => setTimeout(resolve, 1000))
-      const response = await createLote(data as Lote);
-
-      if (response.error) {
-        setSubmitError(response.error.message)
-        throw response.error;
-      }
+      createLote(data as Lote);
+      // console.log('response', response);
+      // if (response.error) {
+      //   setSubmitError(response.error.message)
+      //   throw response.error;
+      // }
 
       reset()
       alert("Form submitted successfully!")
     } catch (error) {
+      console.log('error', error);
       setSubmitError("An error occurred while submitting the form. Please try again.")
     } finally {
       setIsSubmitting(false)

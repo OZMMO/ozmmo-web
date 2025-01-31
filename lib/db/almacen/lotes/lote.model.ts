@@ -46,25 +46,27 @@ export class LoteModel implements IDBModel<Lote>{
 
   async create(lote: Lote): Promise<Lote> { 
     try {
+      console.log('lote-server-MODEL', lote);
       const db = await this.sql.connect();
       const request = await db.request();
-      request.input('codigo_lote', lote.codigo_lote);
-      request.input('producto_id', lote.producto_id);
-      request.input('fecha_fabricacion', lote.fecha_fabricacion);
-      request.input('fecha_expiracion', lote.fecha_expiracion);
-      request.input('cantidad_inicial', lote.cantidad_inicial);
-      request.input('cantidad_disponible', lote.cantidad_disponible);
-      request.input('estado_lote_id', lote.estado_lote_id);
-      request.input('recepcion_id', lote.recepcion_id);
-      request.input('estatus', lote.estatus);
-      request.input('ubicacion_id', lote.ubicacion_id);
-      request.input('trazabilidad_lotes', JSON.stringify(lote.trazabilidad_lotes));
-      request.input('UserId', lote.UserId); 
+      request.input('codigo_lote',this.sql.dataTypes.VarChar, lote.codigo_lote);
+      request.input('producto_id', this.sql.dataTypes.Int, lote.producto_id);
+      request.input('fecha_fabricacion', this.sql.dataTypes.DateTime, lote.fecha_fabricacion);
+      request.input('fecha_expiracion', this.sql.dataTypes.DateTime, lote.fecha_expiracion);
+      request.input('cantidad_inicial', this.sql.dataTypes.Int, lote.cantidad_inicial);
+      request.input('cantidad_disponible', this.sql.dataTypes.Int, lote.cantidad_disponible);
+      request.input('estado_lote_id', this.sql.dataTypes.Int, lote.estado_lote_id);
+      request.input('recepcion_id', this.sql.dataTypes.Int, lote.recepcion_id);
+      request.input('estatus', this.sql.dataTypes.VarChar, lote.estatus);
+      request.input('ubicacion_id', this.sql.dataTypes.Int, lote.ubicacion_id);
+      request.input('trazabilidad_lotes',this.sql.dataTypes.VarChar, JSON.stringify(lote.trazabilidad_lotes));
+      request.input('UserId', this.sql.dataTypes.VarChar, lote.UserId);
+
       const result = await request.execute('[Almacen].[spIULote]');
-      const data =  result.recordset as Lote[];
+      const data = (result.recordset[0] || null) as Lote || null;
 
-      return Promise.resolve(data[0] || null)
-
+      console.log('data-return', data);
+      return Promise.resolve(data)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -89,8 +91,8 @@ export class LoteModel implements IDBModel<Lote>{
       request.input('trazabilidad_lotes', JSON.stringify(lote.trazabilidad_lotes));
       request.input('UserId', lote.UserId); 
       const result = await request.execute('[Almacen].[spIULote]');
+      console.log('data-return', 'asdf');
       const data =  result.recordset as Lote[];
-
       return Promise.resolve(data[0] || null)
 
     } catch (error) {

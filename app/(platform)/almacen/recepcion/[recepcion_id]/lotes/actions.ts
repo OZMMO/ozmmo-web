@@ -5,6 +5,7 @@ import { Lote, LoteModel } from "@/lib/db";
 
 export const createLote = async (data: Lote): Promise<ActionState<Lote>> => {
   try { 
+    console.log('data-server', data);
     const model = new LoteModel();
     const result = await model.create(data);
 
