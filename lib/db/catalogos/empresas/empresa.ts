@@ -1,7 +1,7 @@
 import { IPagination } from "@/lib/interfaces/paginations.interface";
 import { Direccion } from "../../sat/direcciones/direccion";
 
-export interface Empresa extends IPagination{
+export interface Empresa extends IPagination {
   id: number;
   codigo: string;
   rfc: string;
@@ -22,4 +22,4 @@ export interface Empresa extends IPagination{
   regimen_fiscal?: string;
   direccion?: Direccion;
   UserId?: string;
-} 
+}

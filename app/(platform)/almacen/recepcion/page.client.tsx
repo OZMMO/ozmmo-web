@@ -66,6 +66,11 @@ export default function RecepcionesClientPage({
     // Implement view details logic here
   };
 
+  const handleGenerateHojaRecepcion = (item: Recepcion) => {
+    //router.push(`/almacen/recepcion/generar-hoja/${item.id}`);
+    // Implement generate hoja de recepcion logic here
+  };
+
   return (
     <CRUD<Recepcion, RecepcionInfoExtra>
       columns={columns}
@@ -87,6 +92,14 @@ export default function RecepcionesClientPage({
           icon: <MoreHorizontal className="h-4 w-4" />,
           onClick: (item: Recepcion) => handleViewDetails(item),
           title: "Detalle de Recepción",
+          variant: "link",
+          size: "icon",
+          showAlert: false,
+        },
+        {
+          icon: <MoreHorizontal className="h-4 w-4" />,
+          onClick: (item: Recepcion) => handleViewDetails(item),
+          title: "Generar Hoja de Recepción",
           variant: "link",
           size: "icon",
           showAlert: false,

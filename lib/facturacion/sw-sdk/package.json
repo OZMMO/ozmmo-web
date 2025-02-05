@@ -1,0 +1,32 @@
+{
+  "name": "sw-sdk-nodejs",
+  "version": "1.1.4",
+  "description": "Node.js Library for SW Services",
+  "homepage": "https://github.com/lunasoft/sw-sdk-nodejs",
+  "author": {
+    "name": "Flavio Ochoa",
+    "email": "flavio.ochoa@sw.com.mx",
+    "url": ""
+  },
+  "files": [
+    "lib",
+    "SWSDK.js"
+  ],
+  "main": "SWSDK.js",
+  "keywords": [
+    ""
+  ],
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "gulp": "^3.9.1",
+    "gulp-zip": "^4.0.0",
+    "minimist": "^1.2.0",
+    "mocha": "^3.4.2"
+  },
+  "scripts": {
+    "test": "mocha lib/Tests/"
+  },
+  "repository": "git@github.com:/lunasoft/sw-sdk-nodejs.git",
+  "license": "MIT",
+  "dependencies": {}
+}

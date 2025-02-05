@@ -15,3 +15,7 @@ declare module "next-auth" {
     user: ExtendedUser;
   }
 }
+
+declare module '@nodecfdi/cfdiutils-core' {
+  export * from '@nodecfdi/cfdiutils-core/dist/types';
+}
