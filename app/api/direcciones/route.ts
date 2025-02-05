@@ -1,12 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { DireccionModel } from "@/lib/db/sat/direcciones/direccion.model";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { direccion: string } }
+  request: NextRequest
 ) {
   try {
-    const direccion = params.direccion;
+    const direccion = request.nextUrl.searchParams.get('direccion');
     
     if(!direccion) return NextResponse.json({ error: 'Direccion is required' }, { status: 400 });
 

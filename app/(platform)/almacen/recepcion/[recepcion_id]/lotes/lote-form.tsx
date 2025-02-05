@@ -34,10 +34,10 @@ const loteSchema = z.object({
   id: z.number().optional(),
   codigo_lote: z.string(),
   producto_id: z.number().optional(),
-  fecha_fabricacion: z.date({
+  fecha_fabricacion: z.string({
     invalid_type_error: "Fecha de fabricación inválida",
   }).optional(),
-  fecha_expiracion: z.date({
+  fecha_expiracion: z.string({
     invalid_type_error: "Fecha de expiración inválida",
   }).optional(),
   cantidad_inicial: z.number({
@@ -72,8 +72,8 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
     defaultValues: {
       codigo_lote: "",
       producto_id: detalleRecepcion.producto_id,
-      fecha_fabricacion: addDays(new Date(), -50),
-      fecha_expiracion: addDays(new Date(), 365),
+      fecha_fabricacion: addDays(new Date(), -50).toISOString(),
+      fecha_expiracion: addDays(new Date(), 365).toISOString(),
       recepcion_id: detalleRecepcion.recepcion_id,
       estado_lote_id: 1, // Activo - Lote disponible para uso
       cantidad_inicial: detalleRecepcion.cantidad,
@@ -181,14 +181,14 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PP") : <span>Seleccione fecha</span>}
+                      {field.value ? format(new Date(field.value), "PP") : <span>Seleccione fecha</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
+                      selected={field.value ? new Date(field.value) : undefined}
+                      onSelect={(date) => field.onChange(date?.toISOString())}
                       initialFocus
                     />
                   </PopoverContent>
@@ -213,14 +213,14 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PP") : <span>Seleccione fecha</span>}
+                      {field.value ? format(new Date(field.value), "PP") : <span>Seleccione fecha</span>}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
+                      selected={field.value ? new Date(field.value) : undefined}
+                      onSelect={(date) => field.onChange(date?.toISOString())}
                       initialFocus
                     />
                   </PopoverContent>
