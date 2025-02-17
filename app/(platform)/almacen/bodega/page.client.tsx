@@ -41,6 +41,7 @@ export default function BodegasClientPage({ payload, paginationParams, catalogoE
 
   return (
     <CRUD<Bodega, BodegaInfoExtra>
+      title="Catálogo de Bodegas"
       columns={columns}
       data={data}
       totalCount={totalCount}

@@ -55,6 +55,7 @@ export default function SucursalesClientPage({
 
   return (
     <CRUD<Sucursal, SucursalInfoExtra>
+      title="Catálogo deSucursales"
       columns={columns}
       data={data}
       totalCount={totalCount}

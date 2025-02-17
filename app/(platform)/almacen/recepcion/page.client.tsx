@@ -68,6 +68,7 @@ export default function RecepcionesClientPage({
 
   return (
     <CRUD<Recepcion, RecepcionInfoExtra>
+      title="Recepciones de Productos"
       columns={columns}
       data={data}
       totalCount={totalCount}

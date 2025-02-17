@@ -55,6 +55,7 @@ export default function EmpresasClientPage({ payload, paginationParams, tiposCon
 
   return (
     <CRUD<Empresa, InfoExtraEmpresa>
+      title="Catálogo de Empresas"
       columns={columns}
       data={data}
       totalCount={totalCount}

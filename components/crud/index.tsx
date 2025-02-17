@@ -91,6 +91,7 @@ export type Action<T> = {
 }
 
 interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
+  title?: string;
   columns: Column<T>[];
   data: T[]; // Cambiamos a datos serializados
   jsClassName?: ModelType;
@@ -118,6 +119,7 @@ interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
 }
 
 export function CRUD<T extends { id: string | number }, TInfoExtra>({
+  title,
   columns,
   data,
   jsClassName,
@@ -262,6 +264,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
 
   return (
     <div className="space-y-4">
+      {title && <h1 className="text-2xl font-bold">{title}</h1>}
       <div className="flex justify-between items-center">
         {searchable && (
           <div className="flex gap-2">

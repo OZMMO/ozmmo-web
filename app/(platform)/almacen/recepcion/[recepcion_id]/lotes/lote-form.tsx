@@ -18,6 +18,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { createLote } from "./actions";
+import { toast } from "sonner";
 
 interface LoteFormProps {
   detalleRecepcion: DetalleRecepcion;
@@ -28,6 +29,7 @@ interface LoteFormProps {
   };
   ubicaciones: Ubicacion[];
   tiposMovimientos: TipoMovimiento[]; 
+  setClose: () => void;
 }
 
 const loteSchema = z.object({
@@ -57,7 +59,7 @@ const loteSchema = z.object({
 type LoteFormData = z.infer<typeof loteSchema>;
 
 
-export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicaciones, tiposMovimientos }: LoteFormProps) {
+export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicaciones, tiposMovimientos, setClose }: LoteFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -100,10 +102,12 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
     try {
       // Here you would typically send the form data to your server
       console.log("Form data:", data)
-
+      const response = await createLote(data as Lote);
+      setClose();
+      console.log('response', response);
       // Simulating an API call
       // await new Promise((resolve) => setTimeout(resolve, 1000))
-      createLote(data as Lote);
+      // createLote(data as Lote);
       // console.log('response', response);
       // if (response.error) {
       //   setSubmitError(response.error.message)
@@ -111,7 +115,8 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
       // }
 
       reset()
-      alert("Form submitted successfully!")
+      toast.success("Lote creado correctamente")
+      // alert("Form submitted successfully!")
     } catch (error) {
       console.log('error', error);
       setSubmitError("An error occurred while submitting the form. Please try again.")

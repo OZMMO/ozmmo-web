@@ -196,6 +196,7 @@ export default function MaterialProductoClientPage({
       <br></br>
       <div className="grid grid-cols-1 gap-4">
         <CRUD<MaterialProducto, MaterialProductoInfoExtra>
+          title="Lista de Materiales"
           columns={columns}
           data={data}
           totalCount={totalCount}
