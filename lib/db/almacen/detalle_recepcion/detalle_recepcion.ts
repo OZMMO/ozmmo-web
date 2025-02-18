@@ -8,5 +8,7 @@ export interface DetalleRecepcion extends IPagination {
   cantidad: number;
   unidad_medida_id: number;
   unidad_medida?: string;
+  cantidad_recibida?: number;
+  cantidad_restante?: number;
   UserId?: string;
 }

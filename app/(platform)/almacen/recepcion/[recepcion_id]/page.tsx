@@ -60,8 +60,7 @@ export default async function DetalleRecepcionPage({
   criteria.addConditition("orderDirection",searchParams.orderDirection || "asc");
   criteria.addConditition("UserId", userId);
 
-  const { data, totalCount, totalPages } =
-    await detalleRecepcionModel.findMany(criteria);
+  const { data, totalCount, totalPages } = await detalleRecepcionModel.findMany(criteria);
 
   return (
     <MaterialProductoClientPage

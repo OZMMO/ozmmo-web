@@ -22,7 +22,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge, BellRing, PackageCheck, PackageOpen, PlusCircle } from "lucide-react";
+import { Badge, BellRing, Loader2, PackageCheck, PackageOpen, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -73,7 +73,10 @@ export default function DetalleRecepcionClientPage({
   const [ubicaciones, setUbicaciones] = useState<Ubicacion[]>([]);
   const [tiposMovimientos, setTiposMovimientos] = useState<TipoMovimiento[]>([]);
   const [lotes, setLotes] = useState<Lote[]>([]);
+  const [loadingLotes, setLoadingLotes] = useState(false);
+
   const [isOpenVerLoteForm, setIsOpenVerLoteForm] = useState(false);
+
   useEffect(() => {
     setIsClient(true);
 
@@ -119,7 +122,14 @@ export default function DetalleRecepcionClientPage({
             if (item) {
               setDetalleRecepcion(item);
               setIsOpenVerLoteForm(true);
-              await fetchLotes(item.producto_id);
+              try { 
+                setLoadingLotes(true);
+                await fetchLotes(item.producto_id);
+                setLoadingLotes(false);
+              } catch (error) {
+                setLoadingLotes(false);
+                console.error('Error fetching lotes:', error);
+              }
             }
           }}
         >
@@ -131,6 +141,31 @@ export default function DetalleRecepcionClientPage({
     { key: "producto", label: "Producto", sortable: true },
     { key: "unidad_medida", label: "Unidad de Medida", sortable: true },
     { key: "cantidad", label: "Cantidad", sortable: true },
+    { key: "cantidad_recibida", label: "Cantidad Recibida", sortable: true },
+    { key: "cantidad_restante", label: "Cantidad Restante", sortable: true, render: (value) => {
+      return (
+        <span className={`${Number(value) < 0 ? "text-red-500" : ""}`}>
+          {Number(value).toLocaleString('es-MX')}
+        </span>
+      );
+    }},
+    { key: "cantidad_restante", label: "Estatus", sortable: true, render: (value) => {
+      return (
+        <span className={`${
+          Number(value) < 0 
+            ? "text-red-500" 
+            : Number(value) === 0 
+              ? "text-green-500"
+              : "text-yellow-500"
+        }`}>
+          {Number(value) < 0 
+            ? "Excedido"
+            : Number(value) === 0
+              ? "Completo" 
+              : "Pendiente"}
+        </span>
+      );
+    }},
   ];
 
   const fetchLotes = async (producto_id: number) => {
@@ -144,7 +179,6 @@ export default function DetalleRecepcionClientPage({
     {
       icon: <PackageCheck className="h-4 w-4" />,
       onClick: (item: DetalleRecepcion) => {
-        console.log(item);
         setDetalleRecepcion(item);
         setIsOpenLoteForm(true);
       },
@@ -153,6 +187,7 @@ export default function DetalleRecepcionClientPage({
       size: "default",
     },
   ];
+
   const { className, ...props }: CardProps = {} as CardProps;
 
   const handleCloseLoteForm = () => {
@@ -177,9 +212,14 @@ export default function DetalleRecepcionClientPage({
             <SheetTitle>Lotes</SheetTitle>
           </SheetHeader>
           <div className="mt-6">
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
+            {loadingLotes ? (
+              <div className="flex justify-center items-center h-full">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </div>
+            ) : (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
                   <TableRow>
                     <TableHead>Código</TableHead>
                     <TableHead>Producto</TableHead>
@@ -209,8 +249,9 @@ export default function DetalleRecepcionClientPage({
                     </TableRow>
                   ))}
                 </TableBody>
-              </Table>
-            </div>
+                </Table>
+              </div>
+            )}
           </div>
         </SheetContent>
       </Sheet>

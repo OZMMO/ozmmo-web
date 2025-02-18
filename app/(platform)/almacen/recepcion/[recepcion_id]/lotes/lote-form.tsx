@@ -19,7 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { createLote } from "./actions";
 import { toast } from "sonner";
-
+import { useRouter } from "next/navigation";
 interface LoteFormProps {
   detalleRecepcion: DetalleRecepcion;
   estadosLote: EstadoLote[];
@@ -44,9 +44,13 @@ const loteSchema = z.object({
   }).optional(),
   cantidad_inicial: z.number({
     invalid_type_error: "Cantidad inicial inválida",
+  }).refine((val) => Number.isFinite(val), {
+    message: "Debe ser un número decimal válido"
   }).optional(),
   cantidad_disponible: z.number({
-    invalid_type_error: "Cantidad disponible inválida",
+    invalid_type_error: "Cantidad disponible inválida", 
+  }).refine((val) => Number.isFinite(val), {
+    message: "Debe ser un número decimal válido"
   }).optional(),
   estado_lote_id: z.number().optional(),
   recepcion_id: z.number().optional(),
@@ -60,6 +64,7 @@ type LoteFormData = z.infer<typeof loteSchema>;
 
 
 export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicaciones, tiposMovimientos, setClose }: LoteFormProps) {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -69,6 +74,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
     formState: { errors },
     reset,
     control,
+    getValues,
   } = useForm<LoteFormData>({
     resolver: zodResolver(loteSchema),
     defaultValues: {
@@ -95,13 +101,15 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
     },
   });
 
+  console.log("errors", errors);
+  console.log("form", getValues());
   const onSubmit = async (data: LoteFormData) => {
+    console.log("Form data:", data)
     setIsSubmitting(true)
     setSubmitError(null)
 
     try {
       // Here you would typically send the form data to your server
-      console.log("Form data:", data)
       const response = await createLote(data as Lote);
       setClose();
       console.log('response', response);
@@ -116,6 +124,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
 
       reset()
       toast.success("Lote creado correctamente")
+      router.refresh();
       // alert("Form submitted successfully!")
     } catch (error) {
       console.log('error', error);
@@ -158,8 +167,8 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
       {/* Main Form Fields */}
       <div className="space-y-6">
         {/* First Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-          <div className="col-span-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* <div className="col-span-1">
             <Label htmlFor="codigo_lote" className="mb-2 block">Código del Lote</Label>
             <Input 
               type="text" 
@@ -168,7 +177,7 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
               disabled 
               value={"AUTO GENERADO"} 
             />
-          </div>
+          </div> */}
           
           <div className="col-span-1">
             <Label htmlFor="fecha_fabricacion" className="mb-2 block">Fecha de Fabricación</Label>
@@ -233,15 +242,38 @@ export default function LoteForm({ detalleRecepcion, estadosLote, bodega, ubicac
               )}
             />
           </div>
-
           <div className="col-span-1">
             <Label htmlFor="cantidad_inicial" className="mb-2 block">Cantidad Inicial</Label>
-            <Input type="number" id="cantidad_inicial" {...register("cantidad_inicial")} disabled className="w-full" />
+            <Input 
+              type="number" 
+              id="cantidad_inicial" 
+              {...register("cantidad_inicial", {
+                setValueAs: (value) => parseFloat(value) || 0,
+                onChange: (e) => {
+                  const value = parseFloat(e.target.value) || 0;
+                  e.target.value = value.toString();
+                }
+              })} 
+              className="w-full" 
+              step="0.01"
+            />
           </div>
 
           <div className="col-span-1">
             <Label htmlFor="cantidad_disponible" className="mb-2 block">Cantidad Disponible</Label>
-            <Input type="number" id="cantidad_disponible" {...register("cantidad_disponible")} disabled className="w-full" />
+            <Input 
+              type="number" 
+              id="cantidad_disponible" 
+              {...register("cantidad_disponible", {
+                setValueAs: (value) => parseFloat(value) || 0,
+                onChange: (e) => {
+                  const value = parseFloat(e.target.value) || 0;
+                  e.target.value = value.toString();
+                }
+              })} 
+              className="w-full" 
+              step="0.01" 
+            />
           </div>
         </div>
 

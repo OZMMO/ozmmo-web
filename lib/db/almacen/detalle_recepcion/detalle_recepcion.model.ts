@@ -36,9 +36,7 @@ export class DetalleRecepcionModel implements IDBModel<DetalleRecepcion> {
       const request = await db.request();
 
       if (criteria) criteria.toSql(request);
-      const result = await request.execute(
-        "[Almacen].[spBuscarDetalleRecepcion]"
-      );
+      const result = await request.execute("[Almacen].[spBuscarDetalleRecepcion]");
 
       const data = result.recordset as DetalleRecepcion[];
 
@@ -93,7 +91,7 @@ export class DetalleRecepcionModel implements IDBModel<DetalleRecepcion> {
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("id", this.sql.dataTypes.VarChar, detalleRecepcion.id)
+        .input("id", this.sql.dataTypes.Int, detalleRecepcion.id)
         .input("UserId", this.sql.dataTypes.VarChar, detalleRecepcion.UserId)
         .execute(`[Almacen].[spBorrarDetalleRecepcion]`);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -22,11 +22,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { detalleRecepcionFormSchema } from "./schemas";
-
+import { UnidadesMedida } from "@/lib/db/almacen/unidades_medida/unidades_medida";
+import { DetalleRecepcion } from "@/lib/db/almacen/detalle_recepcion/detalle_recepcion";
 type DetalleRecepcionFormValues = z.infer<typeof detalleRecepcionFormSchema>;
 
 interface DetalleRecepcionFormProps {
-  initialData?: any | null;
+  initialData?: DetalleRecepcion | null;
   infoExtra?: any;
   onSubmit: (data: any) => void;
 }
@@ -36,7 +37,16 @@ export function DetalleRecepcionForm({
   infoExtra,
   onSubmit,
 }: DetalleRecepcionFormProps) {
-  console.log({ infoExtra });
+  const [unidadMedida, setUnidadMedida] = useState<UnidadesMedida | null>(null);
+
+  useEffect(() => {
+    if (initialData?.producto_id) {
+      const unidadMedida = infoExtra?.catalogoUnidadMedida?.find(
+        (u: any) => u.id === initialData?.unidad_medida_id
+      );
+      setUnidadMedida(unidadMedida);
+    }
+  }, [initialData?.producto_id]);
 
   const form = useForm<DetalleRecepcionFormValues>({
     resolver: zodResolver(detalleRecepcionFormSchema),
@@ -47,12 +57,12 @@ export function DetalleRecepcionForm({
       unidad_medida_id: initialData?.unidad_medida_id || 0,
     },
   });
+
   const {
     formState: { errors },
   } = form;
-  console.log({ form, errors });
+
   const handleSubmit = (data: DetalleRecepcionFormValues) => {
-    console.log({ data });
     data.id = initialData?.id || 0;
     data.unidad_medida_id = Number(data.unidad_medida_id);
     data.producto_id = Number(data.producto_id);
@@ -76,7 +86,21 @@ export function DetalleRecepcionForm({
               <FormItem>
                 <FormLabel>Producto</FormLabel>
                 <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
+                  onValueChange={(value) => {
+                    field.onChange(Number(value));
+                    // Find selected product and set its unidad_medida_id
+                    const producto = infoExtra?.catalogoProductos?.find(
+                      (p: any) => p.id === Number(value)
+                    );
+                    console.log({ producto });
+                    if (producto) {
+                      const unidadMedida = infoExtra?.catalogoUnidadMedida?.find(
+                        (u: any) => u.id === producto.unidad_medida_id
+                      );
+                      setUnidadMedida(unidadMedida);
+                      form.setValue("unidad_medida_id", unidadMedida?.id);
+                    }
+                  }}
                   defaultValue={field.value?.toString()}
                 >
                   <FormControl>
@@ -100,9 +124,13 @@ export function DetalleRecepcionForm({
             )}
           />
         </div>
-
         <div className="grid grid-cols-1 gap-4">
-          <FormField
+          {unidadMedida && (
+            <div className="text-sm text-gray-500">
+              Unidad de Medida: {unidadMedida.abreviatura}-{unidadMedida.nombre}
+            </div>
+          )}
+          {/* <FormField
             control={form.control}
             name="unidad_medida_id"
             render={({ field }) => (
@@ -132,8 +160,8 @@ export function DetalleRecepcionForm({
                 </Select>
                 <FormMessage />
               </FormItem>
-            )}
-          />
+            )} 
+          />*/}
         </div>
         
         <div className="grid grid-cols-1 gap-4">
