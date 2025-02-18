@@ -48,6 +48,7 @@ export default function ProveedoresClientPage({
 
   return (
     <CRUD<Proveedor, ProveedorInfoExtra>
+      title="Catálogo de Proveedores"
       columns={columns}
       data={data}
       totalCount={totalCount}

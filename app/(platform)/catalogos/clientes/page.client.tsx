@@ -46,6 +46,7 @@ export default function ClientesClientPage({ payload, paginationParams, tiposCon
 
   return (
     <CRUD<Cliente, InfoExtraCliente>
+      title="Catálogo de Clientes"
       columns={columns}
       data={data}
       totalCount={totalCount}

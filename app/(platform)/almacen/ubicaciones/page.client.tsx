@@ -45,6 +45,7 @@ export default function BodegasClientPage({ payload, paginationParams, catalogoB
 
   return (
     <CRUD<Ubicacion, UbicacionInfoExtra>
+      title="Catálogo de Ubicaciones"
       columns={columns}
       data={data}
       totalCount={totalCount}

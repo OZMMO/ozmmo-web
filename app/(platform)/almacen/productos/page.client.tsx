@@ -71,6 +71,7 @@ export default function ProductosClientPage({
 
   return (
     <CRUD<Productos, ProductosInfoExtra>
+      title="Catálogo de Productos"
       columns={columns}
       data={data}
       totalCount={totalCount}

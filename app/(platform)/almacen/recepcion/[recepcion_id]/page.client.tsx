@@ -155,6 +155,11 @@ export default function DetalleRecepcionClientPage({
   ];
   const { className, ...props }: CardProps = {} as CardProps;
 
+  const handleCloseLoteForm = () => {
+    setIsOpenLoteForm(false);
+    setDetalleRecepcion(null);
+  }
+
   return (
     <>
       <Sheet open={isOpenLoteForm} onOpenChange={setIsOpenLoteForm}>
@@ -162,7 +167,7 @@ export default function DetalleRecepcionClientPage({
           <SheetHeader>
             <SheetTitle>Nuevo Lote</SheetTitle>
           </SheetHeader>
-          {detalleRecepcion && <LoteForm detalleRecepcion={detalleRecepcion} estadosLote={estadosLote} bodega={{ id: recepcion?.bodega_id || 0, nombre: recepcion?.bodega || 'SIN BODEGA SELECCIONADA' }} ubicaciones={ubicaciones} tiposMovimientos={tiposMovimientos} />}
+          {detalleRecepcion && <LoteForm setClose={handleCloseLoteForm} detalleRecepcion={detalleRecepcion} estadosLote={estadosLote} bodega={{ id: recepcion?.bodega_id || 0, nombre: recepcion?.bodega || 'SIN BODEGA SELECCIONADA' }} ubicaciones={ubicaciones} tiposMovimientos={tiposMovimientos} />}
         </SheetContent>
       </Sheet>
 
@@ -267,6 +272,7 @@ export default function DetalleRecepcionClientPage({
       <br></br>
       <div className="grid grid-cols-1 gap-4">
         <CRUD<DetalleRecepcion, DetalleRecepcionInfoExtra>
+          title="Detalles de la Recepcion"
           columns={columns}
           data={data}
           totalCount={totalCount}
