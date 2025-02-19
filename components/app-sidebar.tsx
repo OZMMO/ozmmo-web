@@ -32,7 +32,7 @@ import { User } from "next-auth";
 const data = {
   teams: [
     {
-      name: "Ozmmo",
+      name: "OZMMO",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
@@ -49,14 +49,18 @@ const data = {
   ],
   navMain: [
     {
-      title: "Home",
+      title: "Dashboards",
       url: "/dashboard",
       icon: PieChart,
       isActive: true,
       items: [
         {
-          title: "Dashboard",
+          title: "General",
           url: "/dashboard",
+        },
+        {
+          title: "Almacén",
+          url: "/dashboard/almacen",
         },
       ],
     },

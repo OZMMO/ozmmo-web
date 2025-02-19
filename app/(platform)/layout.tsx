@@ -48,7 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Breadcrumb> */}
           </div>
         </header>
-        <main className="p-4">
+        <main className="p-2">
           {children}
         </main>
       </SidebarInset>

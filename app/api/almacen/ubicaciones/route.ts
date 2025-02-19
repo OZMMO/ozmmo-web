@@ -2,6 +2,8 @@ import { auth } from "@/auth";
 import { CriteriaSqlServer, Ubicacion, UbicacionesModel } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(
   request: NextRequest
 ) { 
@@ -11,7 +13,7 @@ export async function GET(
     const bodega_id = request?.nextUrl?.searchParams.get('bodega_id')
     
     if(!bodega_id) return NextResponse.json({ error: 'Bodega is required' }, { status: 400 });
-    console.log({bodega_id});
+
     const criteria = new CriteriaSqlServer<Ubicacion>();
     criteria.addConditition("bodega_id", bodega_id);
     criteria.addConditition("estatus", "1");
