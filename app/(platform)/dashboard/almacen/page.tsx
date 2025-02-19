@@ -97,16 +97,16 @@ interface KPICardProps {
 }
 
 const KPICard: React.FC<KPICardProps> = ({ title, value, icon: Icon, trend, trendValue, bgColor, iconColor }) => (
-  <Card className={bgColor}>
+  <Card className={`${bgColor} dark:bg-gray-800`}>
     <CardContent className="p-4">
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-sm text-gray-600">{title}</p>
-          <h3 className="text-2xl font-bold">{value}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-300">{title}</p>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{value}</h3>
         </div>
-        <Icon className={iconColor} />
+        <Icon className={`${iconColor} dark:text-white`} />
       </div>
-      <div className="mt-2 flex items-center text-sm text-green-600">
+      <div className="mt-2 flex items-center text-sm text-green-600 dark:text-green-400">
         <ArrowUpRight size={16} className="mr-1" />
         <span>{trend}</span>
       </div>
@@ -119,20 +119,20 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <div className="p-2 space-y-4">
+    <div className="p-2 space-y-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Dashboard de Almacén</h1>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 dark:border-gray-700 dark:text-white">
             <Package2 size={16} />
             Nueva Recepción
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 dark:border-gray-700 dark:text-white">
             <BoxesIcon size={16} />
             Nuevo Movimiento
           </Button>
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2 dark:border-gray-700 dark:text-white">
             <Search size={16} />
             Búsqueda Avanzada
           </Button>
@@ -146,7 +146,7 @@ const Dashboard = () => {
           value={`${dummyData.kpis.ocupacionTotal}%`}
           icon={Warehouse}
           trend="+2.5%"
-          bgColor="bg-blue-50"
+          bgColor="bg-blue-50 dark:bg-blue-900"
           iconColor="text-blue-500"
         />
         <KPICard
@@ -154,7 +154,7 @@ const Dashboard = () => {
           value={dummyData.kpis.productosStock}
           icon={Package}
           trend="+154"
-          bgColor="bg-green-50"
+          bgColor="bg-green-50 dark:bg-green-900"
           iconColor="text-green-500"
         />
         <KPICard
@@ -162,7 +162,7 @@ const Dashboard = () => {
           value={dummyData.kpis.recepcionesPendientes}
           icon={Truck}
           trend="Hoy"
-          bgColor="bg-yellow-50"
+          bgColor="bg-yellow-50 dark:bg-yellow-900"
           iconColor="text-yellow-500"
         />
         <KPICard
@@ -170,7 +170,7 @@ const Dashboard = () => {
           value={dummyData.kpis.alertasStock}
           icon={AlertTriangle}
           trend="+3"
-          bgColor="bg-red-50"
+          bgColor="bg-red-50 dark:bg-red-900"
           iconColor="text-red-500"
         />
         <KPICard
@@ -178,7 +178,7 @@ const Dashboard = () => {
           value={`+${dummyData.kpis.tendenciaMensual}%`}
           icon={TrendingUp}
           trend="vs. Enero"
-          bgColor="bg-purple-50"
+          bgColor="bg-purple-50 dark:bg-purple-900"
           iconColor="text-purple-500"
         />
         <KPICard
@@ -186,14 +186,14 @@ const Dashboard = () => {
           value={dummyData.kpis.rotacionInventario}
           icon={BarChart3}
           trend="veces/mes"
-          bgColor="bg-indigo-50"
+          bgColor="bg-indigo-50 dark:bg-indigo-900"
           iconColor="text-indigo-500"
         />
       </div>
 
       {/* Main Content */}
       <Tabs defaultValue="dashboard" className="w-full">
-        <TabsList>
+        <TabsList className="dark:bg-gray-800">
           <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="inventario">Inventario</TabsTrigger>
           <TabsTrigger value="recepciones">Recepciones</TabsTrigger>
@@ -202,7 +202,7 @@ const Dashboard = () => {
 
         <TabsContent value="dashboard">
           <div className="grid grid-cols-2 gap-4">
-            <Card>
+            <Card className="dark:bg-gray-800">
               <CardHeader>
                 <CardTitle>Tendencia de Stock</CardTitle>
                 <CardDescription>Últimos 6 meses</CardDescription>
@@ -222,7 +222,7 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="dark:bg-gray-800">
               <CardHeader>
                 <CardTitle>Distribución del Inventario</CardTitle>
                 <CardDescription>Por categoría de producto</CardDescription>
