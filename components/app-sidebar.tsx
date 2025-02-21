@@ -158,6 +158,13 @@ const data = {
           ],
         },
         {
+          title: "Emsambles",
+          url: "/inventario/emsambles",
+          items: [
+            { title: "Dashboard", url: "/inventario/emsambles/dashboard" },
+          ],
+        },
+        {
           title: "Telemetría",
           url: "/inventario/telemetria",
           items: [

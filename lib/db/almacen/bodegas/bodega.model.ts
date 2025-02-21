@@ -11,31 +11,46 @@ export class BodegaModel implements IDBModel<Bodega>{
     this.sql = new MSSQLServer();
   }
 
-  async findUnique(criteria: ICriteria<Bodega>): Promise<Bodega | null> {
+  async findUnique(criteria: ICriteria<Bodega & { SoloActivos?: boolean }>): Promise<Bodega | null> {
     try {
       const db = await this.sql.connect();
       const request = await db.request();
 
       criteria.toSql(request);
-      const result = await request.execute('[Almacen].[sp_buscar_bodegas]');
+      const result = await request.execute('[Almacen].[spBuscarBodegas]');
       const data =  result.recordset as Bodega[];
-      return Promise.resolve(data[0] || null)
+
+      const parseData = data.map(item => {
+        item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
+        item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
+      
+        return item;
+      });
+
+      return Promise.resolve(parseData[0] || null)
     } catch (error) {
       return Promise.reject(error)
     }
   }
-  async findMany(criteria: ICriteria<Bodega> | undefined): Promise<IResponseModel<Bodega[]>> {
+  async findMany(criteria: ICriteria<Bodega & { SoloActivos?: boolean }> | undefined): Promise<IResponseModel<Bodega[]>> {
     try {
       const db = await this.sql.connect();
       const request = await db.request();
 
       if(criteria) criteria.toSql(request);
-      const result = await request.execute('[Almacen].[sp_buscar_bodegas]');
+      const result = await request.execute('[Almacen].[spBuscarBodegas]');
 
       const data =  result.recordset as Bodega[];
       
+      const parseData = data.map(item => {
+        item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
+        item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
+      
+        return item;
+      });
+
       return Promise.resolve({
-        data: data,
+        data: parseData,
         totalCount: data.length,
         totalPages: data[0]?.totalPages || 1
       })

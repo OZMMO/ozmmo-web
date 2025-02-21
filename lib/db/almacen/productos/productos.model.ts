@@ -11,7 +11,7 @@ export class ProductosModel implements IDBModel<Productos> {
     this.sql = new MSSQLServer();
   }
 
-  async findUnique(criteria: ICriteria<Productos>): Promise<Productos | null> {
+async findUnique(criteria: ICriteria<Productos & { SoloEnsambles?: boolean, SoloActivos?: boolean }>): Promise<Productos | null> {
     try {
       const db = await this.sql.connect();
       const request = await db.request();
@@ -19,13 +19,23 @@ export class ProductosModel implements IDBModel<Productos> {
       criteria.toSql(request);
       const result = await request.execute("[Almacen].[spBuscarProductos]");
       const data = result.recordset as Productos[];
-      return Promise.resolve(data[0] || null);
+
+      const parseData = data.map((item) => {
+        item.materiales = item.materiales && typeof item.materiales === "string" ? JSON.parse(item.materiales) : item.materiales;
+        item.fecha_registro = item.fecha_registro
+          ? new Date(item.fecha_registro)
+          : undefined;
+        return item;
+      });
+      
+      return Promise.resolve(parseData[0] || null);
     } catch (error) {
       return Promise.reject(error);
     }
   }
+
   async findMany(
-    criteria: ICriteria<Productos> | undefined
+    criteria: ICriteria<Productos & { SoloEnsambles?: boolean, SoloActivos?: boolean }> | undefined
   ): Promise<IResponseModel<Productos[]>> {
     try {
       const db = await this.sql.connect();
@@ -36,8 +46,16 @@ export class ProductosModel implements IDBModel<Productos> {
 
       const data = result.recordset as Productos[];
 
+      const parseData = data.map((item) => {
+        item.materiales = item.materiales && typeof item.materiales === "string" ? JSON.parse(item.materiales) : item.materiales;
+        item.fecha_registro = item.fecha_registro
+          ? new Date(item.fecha_registro)
+          : undefined;
+        return item;
+      });
+
       return Promise.resolve({
-        data: data,
+        data: parseData,
         totalCount: data.length,
         totalPages: data[0]?.totalPages || 1,
       });
@@ -45,6 +63,7 @@ export class ProductosModel implements IDBModel<Productos> {
       return Promise.reject(error);
     }
   }
+
   async create(producto: Productos): Promise<Productos> {
     try {
       const db = await this.sql.connect();
@@ -67,6 +86,7 @@ export class ProductosModel implements IDBModel<Productos> {
       return Promise.reject(error);
     }
   }
+
   async update(producto: Productos): Promise<Productos> {
     try {
       const db = await this.sql.connect();
@@ -90,6 +110,7 @@ export class ProductosModel implements IDBModel<Productos> {
       return Promise.reject(error);
     }
   }
+
   async delete(producto: Productos): Promise<Productos> {
     try {
       const db = await this.sql.connect();
@@ -105,6 +126,7 @@ export class ProductosModel implements IDBModel<Productos> {
       return Promise.reject(error);
     }
   }
+
   count(criteria?: ICriteria<Productos> | undefined): Promise<number> {
     throw new Error("Method not implemented.");
   }

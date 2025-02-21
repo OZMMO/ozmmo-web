@@ -1,11 +1,11 @@
 'use client';
 import {CRUD, Column} from '@/components/crud';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interface';
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createServer, deleteServer, updateServer } from './actions';
 import { BodegaForm } from './bodega-form';
-import { Bodega } from '@/lib/db';
+import { Bodega, Empresa } from '@/lib/db';
   // import { Bodega } from '@/lib/db/catalogos/bodega.model';
   // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
@@ -13,7 +13,14 @@ const columns: Column<Bodega>[] = [
   // { key: 'id', label: 'ID', sortable: true },
   { key: 'codigo', label: 'Código', sortable: true },
   { key: 'descripcion', label: 'Descripción', sortable: true },
-  { key: 'empresa', label: 'Empresa', sortable: true },
+  { key: 'empresa', label: 'Empresa', sortable: true, render: (value: Bodega[keyof Bodega]): React.ReactNode => {
+    const empresa = value as Empresa;
+    return (
+      empresa 
+      ? <span>{empresa.rfc}-{empresa.razon_social}</span>
+      : <span>Sin empresa</span>
+    )
+  } },
   { key: 'estatus', label: 'Estatus', sortable: true, render: (value) => value ? 'Activo' : 'Inactivo' }
 ];
 
