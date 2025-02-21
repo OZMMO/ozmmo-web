@@ -49,7 +49,7 @@ export class LoteModel implements IDBModel<Lote> {
     try {
       const db = await this.sql.connect();
       const request = await db.request();
-
+      console.log("lote", lote);
       // Asegurarse de que los valores sean del tipo correcto
       request.input(
         "codigo_lote",
@@ -75,6 +75,11 @@ export class LoteModel implements IDBModel<Lote> {
         lote.estado_lote_id
       );
       request.input("recepcion_id", this.sql.dataTypes.Int, lote.recepcion_id);
+      request.input(
+        "tipo_movimiento_id",
+        this.sql.dataTypes.Int,
+        lote.tipo_movimiento_id
+      );
       request.input("estatus", this.sql.dataTypes.Bit, lote.estatus ? 1 : 0);
       request.input("ubicacion_id", this.sql.dataTypes.Int, lote.ubicacion_id);
       request.input(
