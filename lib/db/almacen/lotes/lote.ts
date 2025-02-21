@@ -1,7 +1,7 @@
 import { IPagination } from "@/lib/interfaces/pagination.interface";
 import { TrazabilidadLote } from "../trazabilidad-lotes/trazabilidad-lote";
 
-export interface Lote extends IPagination{
+export interface Lote extends IPagination {
   id: number;
   codigo_lote: string;
   producto_id: number;
@@ -13,6 +13,7 @@ export interface Lote extends IPagination{
   estado_lote_id?: number;
   estado_lote?: string;
   recepcion_id?: number;
+  tipo_movimiento_id?: number;
   recepcion?: string;
   estatus?: boolean;
   ubicacion_id?: number;

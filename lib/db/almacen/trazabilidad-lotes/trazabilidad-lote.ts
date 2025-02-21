@@ -23,8 +23,8 @@ export interface TrazabilidadLote extends IPagination {
 export const trazabilidadLoteSchema = z.object({
   id: z.number().optional(),
   lote_id: z.number().optional(),
-  ubicacion_origen_id: z.number().optional(),
-  ubicacion_destino_id: z.number().optional(),
+  ubicacion_origen_id: z.number().nullable().optional(),
+  ubicacion_destino_id: z.number().nullable().optional(),
   cantidad: z.number().optional(),
   tipo_movimiento_id: z.number().optional(),
   referencia_movimiento: z.string().optional(),
@@ -33,4 +33,4 @@ export const trazabilidadLoteSchema = z.object({
   fecha_registro: z.date().optional(),
   cantidad_anterior: z.number().optional(),
   cantidad_actual: z.number().optional(),
-})
+});
