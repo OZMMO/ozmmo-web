@@ -2,6 +2,8 @@ import { ProductosModel } from "@/lib/db/almacen/productos/productos.model";
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const session = await auth();
