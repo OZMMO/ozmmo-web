@@ -158,10 +158,10 @@ const data = {
           ],
         },
         {
-          title: "Emsambles",
-          url: "/inventario/emsambles",
+          title: "Ensambles",
+          url: "/inventario/ensambles",
           items: [
-            { title: "Dashboard", url: "/inventario/emsambles/dashboard" },
+            { title: "Dashboard", url: "/inventario/ensambles/dashboard" },
           ],
         },
         {
