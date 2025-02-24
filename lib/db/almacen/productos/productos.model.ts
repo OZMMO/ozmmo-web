@@ -3,6 +3,7 @@ import { Productos } from "./productos";
 import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
+import { Lote } from "../lotes/lote";
 
 export class ProductosModel implements IDBModel<Productos> {
   sql: MSSQLServer;
@@ -129,5 +130,23 @@ async findUnique(criteria: ICriteria<Productos & { SoloEnsambles?: boolean, Solo
 
   count(criteria?: ICriteria<Productos> | undefined): Promise<number> {
     throw new Error("Method not implemented.");
+  }
+
+  async getProductosDisponibles({ bodega_id, producto_id, cantidad_minima, UserId }: { bodega_id: number, producto_id: number, cantidad_minima: number, UserId: string }): Promise<Lote[]> {
+    try {
+      const db = await this.sql.connect();
+      const result = await db.request()
+        .input("bodega_id", bodega_id)
+        .input("producto_id", producto_id)
+        .input("cantidad_minima", cantidad_minima)
+        .input("UserId", UserId)
+        .execute("[Almacen].[spBuscarProductosDisponibles]");
+
+      const data = result.recordset as Lote[];
+
+      return Promise.resolve(data);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }

@@ -19,9 +19,7 @@ export class MaterialProductoModel implements IDBModel<MaterialProducto> {
       const request = await db.request();
 
       criteria.toSql(request);
-      const result = await request.execute(
-        "[Almacen].[spBuscarListaMaterialesProductos]"
-      );
+      const result = await request.execute("[Almacen].[spBuscarListaMaterialesProductos]");
       const data = result.recordset as MaterialProducto[];
       return Promise.resolve(data[0] || null);
     } catch (error) {
@@ -36,10 +34,7 @@ export class MaterialProductoModel implements IDBModel<MaterialProducto> {
       const request = await db.request();
 
       if (criteria) criteria.toSql(request);
-      const result = await request.execute(
-        "[Almacen].[spBuscarListaMaterialesProductos]"
-      );
-
+      const result = await request.execute("[Almacen].[spBuscarListaMaterialesProductos]");
       const data = result.recordset as MaterialProducto[];
 
       return Promise.resolve({

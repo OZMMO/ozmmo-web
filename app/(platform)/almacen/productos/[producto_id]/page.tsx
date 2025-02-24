@@ -53,21 +53,15 @@ export default async function MaterialProductoPage({
   const materialProductoModel = new MaterialProductoModel();
   // Crear criteria desde searchParams
   const criteria = new CriteriaSqlServer<MaterialProducto>();
+  criteria.addConditition("producto_parent_id", params.producto_id);
   criteria.addConditition("page", Number(searchParams.page) || 1);
   criteria.addConditition("pageSize", Number(searchParams.pageSize) || 10);
   criteria.addConditition("query", searchParams.query || "");
-  criteria.addConditition(
-    "orderByColumn",
-    searchParams.orderByColumn || "Name"
-  );
-  criteria.addConditition(
-    "orderDirection",
-    searchParams.orderDirection || "asc"
-  );
+  criteria.addConditition("orderByColumn",searchParams.orderByColumn || "Name");
+  criteria.addConditition("orderDirection",searchParams.orderDirection || "asc");
   criteria.addConditition("UserId", userId);
 
-  const { data, totalCount, totalPages } =
-    await materialProductoModel.findMany(criteria);
+  const { data, totalCount, totalPages } = await materialProductoModel.findMany(criteria);
 
   return (
     <MaterialProductoClientPage
