@@ -107,7 +107,7 @@ const data = {
       url: "/inventario",
       icon: Frame,
       isActive: true,
-      items: [                        
+      items: [
         {
           title: "Bodegas",
           url: "/almacen/bodega",
@@ -185,20 +185,21 @@ const data = {
         },
       ],
     },
-    // {
-    //   title: "Ventas y Contratos",
-    //   url: "/ventas",
-    //   icon: PieChart,
-    //   items: [
-    //     {
-    //       title: "Contratos",
-    //       url: "/ventas/contratos",
-    //       items: [
-    //         { title: "Clientes y Planes", url: "/ventas/contratos/clientes" },
-    //         { title: "Descuentos", url: "/ventas/contratos/descuentos" },
-    //         { title: "Domiciliación", url: "/ventas/contratos/domiciliacion" },
-    //       ],
-    //     },
+    {
+      title: "Ventas y Contratos",
+      url: "/ventas",
+      icon: PieChart,
+      items: [
+        {
+          title: "Pedidos Clientes",
+          url: "/ventas/pedidos-clientes",
+        },
+        {
+          title: "Ordenes Instalación",
+          url: "/ventas/ordenes-instalacion",
+        },
+      ],
+    },
     //     {
     //       title: "Vendedores",
     //       url: "/ventas/vendedores",
