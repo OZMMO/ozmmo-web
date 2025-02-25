@@ -26,7 +26,7 @@ import { pedidoClienteFormSchema } from "./schemas";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { Cliente, Canal, Pedido, Direccion } from "@/lib/db";
 import DireccionForm from "@/components/direccion";
-
+import { Textarea } from "@/components/ui/textarea";
 type PedidoClienteFormValues = z.infer<typeof pedidoClienteFormSchema>;
 
 interface PedidoClienteFormProps {
@@ -47,10 +47,11 @@ export function PedidoClienteForm({
     resolver: zodResolver(pedidoClienteFormSchema),
     defaultValues: {
       id_cliente: initialData?.id_cliente || 0,
-      id_canal_venta: initialData?.canal_id || 0,
+      id_canal_venta: initialData?.id_canal_venta || 0,
       generar_factura: initialData?.generar_factura || false,
       generar_instalacion: initialData?.generar_instalacion || false,
       direccion: initialData?.direccion || undefined,
+      Notas: initialData?.Notas || "",
     },
   });
   const error = form.formState.errors;
@@ -128,6 +129,8 @@ export function PedidoClienteForm({
               </FormItem>
             )}
           />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="generar_factura"
@@ -158,6 +161,22 @@ export function PedidoClienteForm({
                 </FormControl>
                 <div className="space-y-1 leading-none">
                   <FormLabel>Generar Instalación</FormLabel>
+                </div>
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="grid grid-cols-1 gap-4">
+          <FormField
+            control={form.control}
+            name="Notas"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                <FormControl>
+                  <Textarea placeholder="Notas" {...field} />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Notas</FormLabel>
                 </div>
               </FormItem>
             )}

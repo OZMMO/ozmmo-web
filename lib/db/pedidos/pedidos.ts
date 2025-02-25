@@ -9,7 +9,7 @@ export interface Pedido extends IPagination {
   cliente?: string;
   generar_factura: boolean;
   generar_instalacion: boolean;
-  notas?: string;
+  Notas?: string;
   FechaHoraExpedicion?: Date;
   id_canal_venta?: number;
   canal_venta?: string;

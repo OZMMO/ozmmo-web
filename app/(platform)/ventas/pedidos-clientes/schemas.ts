@@ -7,5 +7,6 @@ export const pedidoClienteFormSchema = z.object({
   id_canal_venta: z.number().int().min(1, "El canal es requerido"),
   generar_factura: z.boolean().default(false),
   generar_instalacion: z.boolean().default(false),
+  Notas: z.string().optional(),
   direccion: direccionSchema.optional(),
 });

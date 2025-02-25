@@ -67,7 +67,7 @@ export class PedidoModel implements IDBModel<Pedido> {
           : undefined;
         return item;
       });
-
+      console.log(parseData);
       return Promise.resolve({
         data: parseData,
         totalCount: data.length,
@@ -89,7 +89,7 @@ export class PedidoModel implements IDBModel<Pedido> {
         .input("id_cliente", pedido.id_cliente)
         .input("generar_factura", pedido.generar_factura)
         .input("generar_instalacion", pedido.generar_instalacion)
-        .input("Notas", pedido.notas)
+        .input("Notas", pedido.Notas)
         .input("id_canal_venta", pedido.id_canal_venta)
         .input("detalles", JSON.stringify(pedido.detalles))
         .input("direccion", JSON.stringify(pedido.direccion))
@@ -114,7 +114,7 @@ export class PedidoModel implements IDBModel<Pedido> {
         .input("id_cliente", pedido.id_cliente)
         .input("generar_factura", pedido.generar_factura)
         .input("generar_instalacion", pedido.generar_instalacion)
-        .input("Notas", pedido.notas)
+        .input("Notas", pedido.Notas)
         .input("id_canal_venta", pedido.id_canal_venta)
         .input("detalles", JSON.stringify(pedido.detalles))
         .input("direccion", JSON.stringify(pedido.direccion))
