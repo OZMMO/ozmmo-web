@@ -10,7 +10,7 @@ import {
   deletePedidoCliente,
 } from "./actions";
 import { PedidoClienteForm } from "./pedido-cliente-form";
-import { Pedido, Cliente, Canal } from "@/lib/db";
+import { Pedido, Cliente, Canal, Productos } from "@/lib/db";
 
 const columns: Column<Pedido>[] = [
   { key: "cliente", label: "Cliente", sortable: true },
@@ -35,6 +35,7 @@ interface PageProps {
   paginationParams: IPageSearchPaginationParams;
   clientes: Cliente[];
   canales: Canal[];
+  productos: Productos[];
 }
 
 export default function PedidosClientesClientPage({
@@ -42,6 +43,7 @@ export default function PedidosClientesClientPage({
   paginationParams,
   clientes,
   canales,
+  productos,
 }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false);
@@ -64,12 +66,13 @@ export default function PedidosClientesClientPage({
       currentPage={Number(paginationParams.page) || 1}
       pageSize={Number(paginationParams.pageSize) || 10}
       formComponent={PedidoClienteForm}
+      formClassName="w-full xs:w-full sm:w-full md:w-[90%] lg:w-[80%] overflow-y-auto"
       actions={{
         create: createPedidoCliente,
         update: updatePedidoCliente,
         delete: deletePedidoCliente,
       }}
-      infoExtra={{ clientes, canales }}
+      infoExtra={{ clientes, canales, productos }}
     />
   );
 }

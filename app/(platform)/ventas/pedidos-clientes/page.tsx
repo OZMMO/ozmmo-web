@@ -1,7 +1,14 @@
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import PedidosClientesClientPage from "./page.client";
 import { auth } from "@/auth";
-import { Canal, Cliente, Pedido, PedidoModel } from "@/lib/db";
+import {
+  Canal,
+  Cliente,
+  Pedido,
+  PedidoModel,
+  Productos,
+  ProductosModel,
+} from "@/lib/db";
 import { CriteriaSqlServer } from "@/lib/db";
 import { ClienteModel, CanalModel } from "@/lib/db";
 
@@ -49,12 +56,19 @@ export default async function PedidosClientesPage({ searchParams }: PageProps) {
   const canalModel = new CanalModel();
   const { data: dataCanales } = await canalModel.findMany(criteriaCanal);
 
+  const criteriaProducto = new CriteriaSqlServer<Productos>();
+  criteriaProducto.addConditition("UserId", userId);
+  const productoModel = new ProductosModel();
+  const { data: dataProductos } =
+    await productoModel.findMany(criteriaProducto);
+
   return (
     <PedidosClientesClientPage
       payload={pedidosResponse}
       paginationParams={searchParams}
       clientes={dataClientes}
       canales={dataCanales}
+      productos={dataProductos}
     />
   );
 }

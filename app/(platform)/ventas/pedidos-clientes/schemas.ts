@@ -9,4 +9,12 @@ export const pedidoClienteFormSchema = z.object({
   generar_instalacion: z.boolean().default(false),
   Notas: z.string().optional(),
   direccion: direccionSchema.optional(),
+  detalles: z
+    .array(
+      z.object({
+        id_producto: z.number().int().min(1, "El producto es requerido"),
+        cantidad: z.number().int().min(1, "La cantidad es requerida"),
+      })
+    )
+    .optional(),
 });

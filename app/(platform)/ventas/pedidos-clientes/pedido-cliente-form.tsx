@@ -24,9 +24,11 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { pedidoClienteFormSchema } from "./schemas";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
-import { Cliente, Canal, Pedido, Direccion } from "@/lib/db";
+import { Cliente, Canal, Pedido, Direccion, Productos } from "@/lib/db";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
+import { DetallePedidoTable } from "./detalle-pedido-table";
+
 type PedidoClienteFormValues = z.infer<typeof pedidoClienteFormSchema>;
 
 interface PedidoClienteFormProps {
@@ -34,6 +36,7 @@ interface PedidoClienteFormProps {
   infoExtra?: {
     clientes: Cliente[];
     canales: Canal[];
+    productos: Productos[];
   };
   onSubmit: (data: any) => void;
 }
@@ -52,6 +55,7 @@ export function PedidoClienteForm({
       generar_instalacion: initialData?.generar_instalacion || false,
       direccion: initialData?.direccion || undefined,
       Notas: initialData?.Notas || "",
+      detalles: initialData?.detalles || [],
     },
   });
   const error = form.formState.errors;
@@ -71,7 +75,7 @@ export function PedidoClienteForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="id_cliente"
@@ -182,6 +186,24 @@ export function PedidoClienteForm({
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="detalles"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Detalles del Pedido</FormLabel>
+              <FormControl>
+                <DetallePedidoTable
+                  detalles={field.value || []}
+                  onDetallesChange={field.onChange}
+                  infoExtra={infoExtra}
+                  
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <DireccionForm
           selectedDireccion={selectedDireccion}
           setSelectedDireccion={setSelectedDireccion}
