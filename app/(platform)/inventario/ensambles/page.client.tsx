@@ -14,6 +14,10 @@ import { Lote } from "@/lib/db/almacen/lotes/lote";
 import { Empresa } from "@/lib/db/catalogos/empresas/empresa";
 import { Bodega } from "@/lib/db/almacen/bodegas/bodega";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Ensamble, ProductoAEnsamblar } from "@/lib/db";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
+import { createEnsamble } from "./_actions";
 
 interface EmsamblesPageClientProps {
   productos: Productos[];
@@ -21,27 +25,19 @@ interface EmsamblesPageClientProps {
   empresas: Empresa[];
 }
 
-interface DetalleEnsamblaje {
-  ensamble_id: number;
-  producto_id: number;
-  producto: string;
-  cantidad: number;
-  unidad_medida_id: number;
-  unidad_medida: string;
-  lote_id: number;
-}
-
 export default function EmsamblesPageClient({ productos, bodegas, empresas }: EmsamblesPageClientProps) {
   const { data: session } = useSession();
-  const UserId = session?.user?.email || "";
+  const UserId = session?.user?.id || "";
 
   const [selectedProduct, setSelectedProduct] = useState<Productos>()
   const [selectedEmpresa, setSelectedEmpresa] = useState<Empresa>();
   const [filteredBodegas, setFilteredBodegas] = useState<Bodega[]>([]);
   const [selectedBodega, setSelectedBodega] = useState<Bodega | null>(null);
   const [productLots, setProductLots] = useState<Record<number, Lote[]>>({});
-  const [ensambles, setEnsambles] = useState<DetalleEnsamblaje[]>([]);
+  const [ensambles, setEnsambles] = useState<Ensamble[]>([]);
 
+  const [productoAEnsamblar, setProductoAEnsamblar] = useState<ProductoAEnsamblar>();
+  const [isLoadingProductoAEnsamblar, setIsLoadingProductoAEnsamblar] = useState(false);
   const [isLoadingLotes, setIsLoadingLotes] = useState(false);
 
 
@@ -53,21 +49,39 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
     }
   }, [selectedEmpresa, bodegas]);
 
+  const handleEmpresaSelect = (empresaId: string) => {
+    setSelectedEmpresa(empresas.find(e => e.id.toString() === empresaId) || undefined);
+    // setSelectedProduct({ id: 0, codigo: "", codigo_proveedor: "", descripcion: "", page: 1, pageSize: 10, materiales: [] });
+    setSelectedProduct(undefined);
+    setEnsambles([]);
+  };
+
+  const generarEnsamble = async (producto_id: number) => {
+    const ensamble = await fetch(`/api/almacen/generar-ensamble?producto_id=${producto_id}`).then(res => res.json());
+    return ensamble;
+  }
+
   const handleProductSelect = async (productId: string) => {
     const selectedProduct = productos.find((p) => p.id.toString() === productId) || undefined;
-    setSelectedProduct(selectedProduct);
-    setEnsambles([]);
-
+    
     if (selectedProduct) {
-      setEnsambles((selectedProduct.materiales || []).map((material) => ({
-        ensamble_id: 0,
-        producto_id: material.producto_id,
-        producto: material.producto || "",
-        cantidad: material.cantidad_necesaria,
-        unidad_medida_id: material.unidad_medida_id,
-        unidad_medida: material.unidad_medida || "",
-        lote_id: 0,
-      })));
+      setSelectedProduct(selectedProduct);
+      // setEnsambles([]);
+      setIsLoadingProductoAEnsamblar(true);
+      const ensamble = await generarEnsamble(selectedProduct.id);
+      console.log({ensamble});
+      setEnsambles(ensamble.ensambles);
+      setProductoAEnsamblar(ensamble.productoAEnsamblar);
+      setIsLoadingProductoAEnsamblar(false);
+      // setEnsambles((selectedProduct.materiales || []).map((material) => ({
+      //   ensamble_id: 0,
+      //   producto_id: material.producto_id,
+      //   producto: material.producto || "",
+      //   cantidad: material.cantidad_necesaria,
+      //   unidad_medida_id: material.unidad_medida_id,
+      //   unidad_medida: material.unidad_medida || "",
+      //   lote_id: 0,
+      // })));
 
       setIsLoadingLotes(true);
       const materialLots: Record<number, Lote[]> = {};
@@ -78,7 +92,11 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
       setProductLots(materialLots);
       setIsLoadingLotes(false);
     } else {
+      setProductLots({});
+      setSelectedProduct(undefined);
+      setEnsambles([]);
       setIsLoadingLotes(false);
+      setIsLoadingProductoAEnsamblar(false);
     }
   };
 
@@ -86,17 +104,18 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
     setEnsambles((prev) => prev.map((item) => item.producto_id === productoId ? { ...item, lote_id: lotId } : item));
   }
 
-  const handleAssembly = () => {
+  const handleAssembly = async () => {
     // Aquí iría la lógica para procesar el ensamblaje
     console.log("Ensamblaje completado", { selectedProduct, ensambles })
+    const result = await createEnsamble({
+      producto_id: selectedProduct?.id || 0,
+      numero_serie: productoAEnsamblar?.numero_serie || "",
+      notas: "",
+      detalle_ensamble: ensambles,
+      UserId: UserId
+    })
+    console.log({result});
   }
-
-  const handleEmpresaSelect = (empresaId: string) => {
-    setSelectedEmpresa(empresas.find(e => e.id.toString() === empresaId) || undefined);
-    // setSelectedProduct({ id: 0, codigo: "", codigo_proveedor: "", descripcion: "", page: 1, pageSize: 10, materiales: [] });
-    setSelectedProduct(undefined);
-    setEnsambles([]);
-  };
 
   return (
     <div className="container mx-auto p-4">
@@ -162,6 +181,52 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
         </CardContent>
       </Card>
 
+      {isLoadingProductoAEnsamblar ? (
+        <div className="space-y-4">
+          <Skeleton className="h-20 w-full" />
+          <div className="flex justify-center">
+            <Spinner className="h-8 w-8 animate-spin" />
+          </div>
+        </div>
+      ) : (
+        productoAEnsamblar && (
+          <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Producto a Ensamblar</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="flex items-center space-x-2">
+                <span className="font-semibold text-gray-700 dark:text-gray-300 min-w-[120px]">Nuevo Numero de Serie:</span>
+                <span className="bg-blue-100 dark:bg-blue-900 px-3 py-1 rounded-md font-mono text-blue-800 dark:text-blue-200 border border-blue-200 dark:border-blue-800">{productoAEnsamblar.numero_serie}</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(productoAEnsamblar.numero_serie);
+                    toast.info("Numero de serie copiado al portapapeles");
+                  }}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+                  title="Copiar número de serie"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="font-semibold text-gray-700 dark:text-gray-300 min-w-[120px]">Producto:</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-medium">{productoAEnsamblar.producto}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="font-semibold text-gray-700 dark:text-gray-300 min-w-[120px]">Descripción:</span>
+                <span className="text-purple-700 dark:text-purple-400">{productoAEnsamblar.descripcion}</span>
+              </div>
+            </div>
+          </CardContent>
+          </Card>
+        )
+      )}
+
       {selectedProduct && (
         <Card className="mb-6">
           <CardHeader>
@@ -181,7 +246,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
                 {ensambles.map((item) => (
                   <TableRow key={item.producto_id}>
                     <TableCell>{item.producto}</TableCell>
-                    <TableCell className="text-center">{item.cantidad}</TableCell>
+                    <TableCell className="text-center">{item.cantidad_necesaria}</TableCell>
                     <TableCell>{item.unidad_medida}</TableCell>
                     <TableCell>
                       {isLoadingLotes ? (
