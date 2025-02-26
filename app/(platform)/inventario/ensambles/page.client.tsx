@@ -7,7 +7,7 @@ import { Table } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Productos } from "@/lib/db/almacen/productos/productos";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import { Select } from "@/components/ui/select";
 import { useSession } from "next-auth/react";
 import { Lote } from "@/lib/db/almacen/lotes/lote";
@@ -18,7 +18,7 @@ import { Ensamble, ProductoAEnsamblar } from "@/lib/db";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { createEnsamble } from "./_actions";
-
+import { EstadoLoteEnum } from "@/lib/db/almacen/estados-lote/estado-lote";
 interface EmsamblesPageClientProps {
   productos: Productos[];
   bodegas: Bodega[];
@@ -35,11 +35,16 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
   const [selectedBodega, setSelectedBodega] = useState<Bodega | null>(null);
   const [productLots, setProductLots] = useState<Record<number, Lote[]>>({});
   const [ensambles, setEnsambles] = useState<Ensamble[]>([]);
+  const [lotesActivosProducto, setLotesActivosProducto] = useState<Lote[]>([]); 
 
   const [productoAEnsamblar, setProductoAEnsamblar] = useState<ProductoAEnsamblar>();
   const [isLoadingProductoAEnsamblar, setIsLoadingProductoAEnsamblar] = useState(false);
   const [isLoadingLotes, setIsLoadingLotes] = useState(false);
 
+  const fetchLotesActivosProducto = async (producto_id: number) => {
+    const lots = await fetch(`/api/almacen/lotes?producto_id=${producto_id}&estado_lote_id=${EstadoLoteEnum.ACTIVO}`).then(res => res.json());
+    return lots;
+  }
 
   useEffect(() => {
     if (selectedEmpresa) {
@@ -49,6 +54,20 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
     }
   }, [selectedEmpresa, bodegas]);
 
+  // useEffect(() => {
+  //   const fetchLotes = async () => {
+  //     if (selectedProduct) {
+  //       const lots = await fetchLotesActivosProducto(selectedProduct.id);
+  //       setLotesActivosProducto(lots);
+  //     } else {
+  //       setLotesActivosProducto([]);
+  //       setIsLoadingLotes(false);
+  //     }
+  //   };
+
+  //   fetchLotes();
+  // }, [selectedProduct, selectedBodega]);
+
   const handleEmpresaSelect = (empresaId: string) => {
     setSelectedEmpresa(empresas.find(e => e.id.toString() === empresaId) || undefined);
     // setSelectedProduct({ id: 0, codigo: "", codigo_proveedor: "", descripcion: "", page: 1, pageSize: 10, materiales: [] });
@@ -57,7 +76,8 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
   };
 
   const generarEnsamble = async (producto_id: number) => {
-    const ensamble = await fetch(`/api/almacen/generar-ensamble?producto_id=${producto_id}`).then(res => res.json());
+    const ensamble = await fetch(`/api/almacen/generar-ensamble?producto_id=${producto_id}`)
+                            .then(res => res.json());
     return ensamble;
   }
 
@@ -276,7 +296,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
       )}
 
       {/* <pre><code>{JSON.stringify(selectedProduct?.materiales, null, 2)}</code></pre> */}
-      <pre><code>{JSON.stringify(ensambles, null, 2)}</code></pre>
+      {/* <pre><code>{JSON.stringify(ensambles, null, 2)}</code></pre> */}
 
       <h2 className="text-lg font-semibold mb-2">Lote de destino del ensamble</h2>
 
