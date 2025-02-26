@@ -7,6 +7,7 @@ export const createPedidoCliente = async (
   data: Pedido
 ): Promise<ActionState<Pedido>> => {
   try {
+    console.log("data", data);
     const model = new PedidoModel();
     const result = await model.create(data);
     return { data: result };

@@ -67,7 +67,7 @@ export class PedidoModel implements IDBModel<Pedido> {
           : undefined;
         return item;
       });
-      console.log(parseData);
+      //console.log(parseData);
       return Promise.resolve({
         data: parseData,
         totalCount: data.length,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -22,55 +22,116 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { pedidoClienteFormSchema } from "./schemas";
+import { ordenInstalacionFormSchema } from "./schemas";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
-import { Cliente, Canal, Pedido, Direccion, Productos } from "@/lib/db";
+import {
+  Cliente,
+  Pedido,
+  Direccion,
+  Productos,
+  User,
+  OrdenInstalacion,
+} from "@/lib/db";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
 import { DetallePedidoTable } from "./detalle-pedido-table";
 
-type PedidoClienteFormValues = z.infer<typeof pedidoClienteFormSchema>;
+type OrdenInstalacionFormValues = z.infer<typeof ordenInstalacionFormSchema>;
 
-interface PedidoClienteFormProps {
+interface OrdenInstalacionFormProps {
   initialData?: any | null;
   infoExtra?: {
     clientes: Cliente[];
-    canales: Canal[];
+    pedidosClientes: Pedido[];
     productos: Productos[];
+    instaladores: User[];
   };
   onSubmit: (data: any) => void;
 }
 
-export function PedidoClienteForm({
+export function OrdenInstalacionForm({
   initialData,
   infoExtra,
   onSubmit,
-}: PedidoClienteFormProps) {
-  const form = useForm<PedidoClienteFormValues>({
-    resolver: zodResolver(pedidoClienteFormSchema),
+}: OrdenInstalacionFormProps) {
+  const form = useForm<OrdenInstalacionFormValues>({
+    resolver: zodResolver(ordenInstalacionFormSchema),
     defaultValues: {
-      id_cliente: initialData?.id_cliente || 0,
-      id_canal_venta: initialData?.id_canal_venta || 0,
-      generar_factura: initialData?.generar_factura || false,
-      generar_instalacion: initialData?.generar_instalacion || false,
-      direccion: initialData?.direccion || undefined,
+      id_cliente: initialData?.id_cliente || undefined,
+      id_pedido_cliente: initialData?.id_pedido_cliente || undefined,
+      instalador_id: initialData?.instalador_id || undefined,
+      FechaHoraInstalacion: initialData?.FechaHoraInstalacion || undefined,
       Notas: initialData?.Notas || "",
       detalles: initialData?.detalles || [],
+      direccion: initialData?.direccion || undefined,
     },
   });
   const error = form.formState.errors;
 
   console.log(form.formState);
+  console.log(initialData);
 
+  const handleSubmit = (values: OrdenInstalacionFormValues) => {
+    values.id = initialData?.id || 0;
+    values.id_cliente = Number(selectedCliente?.id);
+    values.id_pedido_cliente = Number(values.id_pedido_cliente);
+    values.instalador_id = values.instalador_id || undefined;
+    values.direccion = selectedDireccion || undefined;
+    console.log(values);
+    onSubmit(values as unknown as OrdenInstalacion);
+  };
+
+  const [selectedCliente, setSelectedCliente] = useState<Cliente>();
+  const [selectedPedidoCliente, setSelectedPedidoCliente] = useState<Pedido>();
+  const [filteredPedidosClientes, setFilteredPedidosClientes] = useState<
+    Pedido[]
+  >([]);
   const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(
     initialData?.direccion || null
   );
 
-  const handleSubmit = (values: PedidoClienteFormValues) => {
-    values.id = initialData?.id || 0;
-    values.direccion = selectedDireccion || undefined;
-    console.log(values);
-    onSubmit(values as Pedido);
+  useEffect(() => {
+    console.log(initialData?.id_cliente, { infoExtra });
+    if (initialData?.id_cliente) {
+      const pedidos =
+        infoExtra?.pedidosClientes.filter(
+          (pedido) => pedido.id_cliente === initialData?.id_cliente
+        ) || [];
+
+      console.log({ pedidos });
+      setFilteredPedidosClientes(
+        infoExtra?.pedidosClientes.filter(
+          (pedido) => pedido.id_cliente === initialData?.id_cliente
+        ) || []
+      );
+    } else {
+      setFilteredPedidosClientes([]);
+    }
+  }, [initialData?.id_cliente]);
+
+  useEffect(() => {
+    if (selectedCliente) {
+      setFilteredPedidosClientes(
+        infoExtra?.pedidosClientes.filter(
+          (pedido) => pedido.id_cliente === selectedCliente.id
+        ) || []
+      );
+    }
+    //  else {
+    //  console.log("selectedCliente", selectedCliente);
+    //   setFilteredPedidosClientes([]);
+    //  }
+  }, [selectedCliente]);
+
+  const handleClienteSelect = (clienteId: string) => {
+    console.log("clienteId", clienteId);
+    setSelectedCliente(
+      infoExtra?.clientes.find((e) => e.id.toString() === clienteId) ||
+        undefined
+    );
+    // setSelectedProduct({ id: 0, codigo: "", codigo_proveedor: "", descripcion: "", page: 1, pageSize: 10, materiales: [] });
+    setSelectedPedidoCliente(undefined);
+    setFilteredPedidosClientes([]);
   };
 
   return (
@@ -84,7 +145,7 @@ export function PedidoClienteForm({
               <FormItem>
                 <FormLabel>Cliente</FormLabel>
                 <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
+                  onValueChange={handleClienteSelect}
                   defaultValue={field.value?.toString()}
                 >
                   <FormControl>
@@ -109,23 +170,27 @@ export function PedidoClienteForm({
           />
           <FormField
             control={form.control}
-            name="id_canal_venta"
+            name="id_pedido_cliente"
+            disabled={initialData?.id_pedido_cliente > 0}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Canal de Venta</FormLabel>
+                <FormLabel>Pedido Cliente</FormLabel>
                 <Select
                   onValueChange={(value) => field.onChange(Number(value))}
                   defaultValue={field.value?.toString()}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un canal de venta" />
+                      <SelectValue placeholder="Seleccione un pedido cliente" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {infoExtra?.canales.map((canal) => (
-                      <SelectItem key={canal.id} value={canal.id.toString()}>
-                        {canal.descripcion}
+                    {filteredPedidosClientes.map((pedidoCliente) => (
+                      <SelectItem
+                        key={pedidoCliente.id}
+                        value={pedidoCliente.id.toString()}
+                      >
+                        {pedidoCliente.codigo}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -138,34 +203,44 @@ export function PedidoClienteForm({
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="generar_factura"
+            name="instalador_id"
             render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value || false}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Generar Factura</FormLabel>
-                </div>
+              <FormItem>
+                <FormLabel>Instalador</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(value)}
+                  defaultValue={field.value?.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un instalador" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {infoExtra?.instaladores.map((instalador) => (
+                      <SelectItem
+                        key={instalador.UserId}
+                        value={instalador.UserId}
+                      >
+                        {instalador.FirstName} {instalador.LastNameFather}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="generar_instalacion"
+            name="FechaHoraInstalacion"
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                 <FormControl>
-                  <Checkbox
-                    checked={field.value || false}
-                    onCheckedChange={field.onChange}
-                  />
+                  <DateTimePicker date={field.value} setDate={field.onChange} />
                 </FormControl>
                 <div className="space-y-1 leading-none">
-                  <FormLabel>Generar Instalación</FormLabel>
+                  <FormLabel>Fecha y Hora de Instalación</FormLabel>
                 </div>
               </FormItem>
             )}
