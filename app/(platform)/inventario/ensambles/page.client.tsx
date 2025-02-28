@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { createEnsamble } from "./_actions";
 import { EstadoLoteEnum } from "@/lib/db/almacen/estados-lote/estado-lote";
+import { tryCatch } from "@/lib/try-catch";
 interface EmsamblesPageClientProps {
   productos: Productos[];
   bodegas: Bodega[];
@@ -33,6 +34,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
   const [selectedEmpresa, setSelectedEmpresa] = useState<Empresa>();
   const [filteredBodegas, setFilteredBodegas] = useState<Bodega[]>([]);
   const [selectedBodega, setSelectedBodega] = useState<Bodega | null>(null);
+  const [selectedLoteDestino, setSelectedLoteDestino] = useState<Lote | null>(null);
   const [productLots, setProductLots] = useState<Record<number, Lote[]>>({});
   const [ensambles, setEnsambles] = useState<Ensamble[]>([]);
   const [lotesActivosProducto, setLotesActivosProducto] = useState<Lote[]>([]); 
@@ -42,7 +44,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
   const [isLoadingLotes, setIsLoadingLotes] = useState(false);
 
   const fetchLotesActivosProducto = async (producto_id: number) => {
-    const lots = await fetch(`/api/almacen/lotes?producto_id=${producto_id}&estado_lote_id=${EstadoLoteEnum.ACTIVO}`).then(res => res.json());
+    const lots = await fetch(`/api/almacen/lotes?producto_id=${producto_id}&bodega_id=${selectedBodega?.id}&estado_lote_id=${EstadoLoteEnum.ACTIVO}`).then(res => res.json());
     return lots;
   }
 
@@ -54,19 +56,19 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
     }
   }, [selectedEmpresa, bodegas]);
 
-  // useEffect(() => {
-  //   const fetchLotes = async () => {
-  //     if (selectedProduct) {
-  //       const lots = await fetchLotesActivosProducto(selectedProduct.id);
-  //       setLotesActivosProducto(lots);
-  //     } else {
-  //       setLotesActivosProducto([]);
-  //       setIsLoadingLotes(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchLotes = async () => {
+      if (selectedProduct) {
+        const lots = await fetchLotesActivosProducto(selectedProduct.id);
+        setLotesActivosProducto(lots?.data || []);
+      } else {
+        setLotesActivosProducto([]);
+        setIsLoadingLotes(false);
+      }
+    };
 
-  //   fetchLotes();
-  // }, [selectedProduct, selectedBodega]);
+    fetchLotes();
+  }, [selectedProduct, selectedBodega]);
 
   const handleEmpresaSelect = (empresaId: string) => {
     setSelectedEmpresa(empresas.find(e => e.id.toString() === empresaId) || undefined);
@@ -76,8 +78,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
   };
 
   const generarEnsamble = async (producto_id: number) => {
-    const ensamble = await fetch(`/api/almacen/generar-ensamble?producto_id=${producto_id}`)
-                            .then(res => res.json());
+    const ensamble = await fetch(`/api/almacen/generar-ensamble?producto_id=${producto_id}`).then(res => res.json());
     return ensamble;
   }
 
@@ -125,16 +126,39 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
   }
 
   const handleAssembly = async () => {
-    // Aquí iría la lógica para procesar el ensamblaje
-    console.log("Ensamblaje completado", { selectedProduct, ensambles })
-    const result = await createEnsamble({
+    const { data, error } = await tryCatch(createEnsamble({
       producto_id: selectedProduct?.id || 0,
       numero_serie: productoAEnsamblar?.numero_serie || "",
       notas: "",
       detalle_ensamble: ensambles,
+      lote_id: selectedLoteDestino?.id || 0,
       UserId: UserId
-    })
-    console.log({result});
+    }));
+
+    console.log({data, error});
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setEnsambles([]);
+      setProductoAEnsamblar(undefined);
+      setSelectedLoteDestino(null);
+      setProductLots({});
+      setSelectedProduct(undefined);
+      setIsLoadingProductoAEnsamblar(false);
+      setIsLoadingLotes(false);
+      toast.success("Ensamblaje completado");
+    }
+
+    // Aquí iría la lógica para procesar el ensamblaje
+    // console.log("Ensamblaje completado", { selectedProduct, ensambles })
+    //   producto_id: selectedProduct?.id || 0,
+    //   numero_serie: productoAEnsamblar?.numero_serie || "",
+    //   notas: "",
+    //   detalle_ensamble: ensambles,
+    //   lote_id: selectedLoteDestino?.id || 0,
+    //   UserId: UserId
+    // })
   }
 
   return (
@@ -178,26 +202,55 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
       )}
 
       <Card className="mb-6">
-        <CardHeader>
+        {/* <CardHeader>
           <CardTitle>Seleccionar Producto</CardTitle>
-        </CardHeader>
+        </CardHeader> */}
         <CardContent>
-          <Select
-            onValueChange={handleProductSelect}
-            value={selectedProduct?.id ? selectedProduct.id.toString() : "0"}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Seleccione un producto"/>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0">Seleccione un producto</SelectItem>
-              {productos.map((product) => (
-                <SelectItem key={product.id} value={product.id.toString()}>
-                  {product.codigo}-{product.descripcion}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Producto</h2>
+              <Select
+                onValueChange={handleProductSelect}
+                value={selectedProduct?.id ? selectedProduct.id.toString() : "0"}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccione un producto"/>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0">Seleccione un producto</SelectItem>
+                  {productos.map((product) => (
+                    <SelectItem key={product.id} value={product.id.toString()}>
+                      {product.codigo}-{product.descripcion}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedProduct && (
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Lotes destino del ensamble</h2>
+                <Select 
+                  onValueChange={(value) => setSelectedLoteDestino(lotesActivosProducto.find(lot => lot.id.toString() === value) || null)}
+                  value={selectedLoteDestino?.id ? selectedLoteDestino.id.toString() : "0"}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Seleccione un lote"/>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">Seleccione un lote</SelectItem>
+                    {lotesActivosProducto.map((lot) => (
+                      <SelectItem key={lot.id} value={lot.id.toString()}>
+                        {lot.codigo_lote} - Cant: {lot.cantidad_disponible}
+                        <br />
+                        Ubicación: {lot.ubicacion?.codigo} - {lot.ubicacion?.descripcion}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -280,7 +333,8 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
                             {productLots[item.producto_id]?.map((lot) => (
                               <SelectItem key={lot.id} value={lot.id.toString()}>
                                 Código: {lot.codigo_lote} <br />
-                                Cantidad Disponible: {lot.cantidad_disponible}
+                                Cantidad Disponible: {lot.cantidad_disponible} <br />
+                                Ubicación: {lot.ubicacion?.codigo} - {lot.ubicacion?.descripcion}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -302,7 +356,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
 
       <Button
         onClick={handleAssembly}
-        // disabled={!selectedProduct || Object.keys(selectedLots).length !== boms[selectedProduct]?.length}
+        disabled={!selectedProduct || !selectedLoteDestino || ensambles.some(item => item.lote_id === 0)}
       >
         Completar Ensamblaje
       </Button>

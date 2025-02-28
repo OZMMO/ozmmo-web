@@ -2,6 +2,7 @@ export interface IPagination {
   page: number;
   pageSize: number;
   totalPages?: number;
+  totalCount?: number;
   query?: string;
   orderByColumn?: string;
   orderDirection?: string;

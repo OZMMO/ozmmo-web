@@ -33,8 +33,8 @@ export class EnsambleModel {
   }
 
   async create(
-      {producto_id, numero_serie, notas, detalle_ensamble, UserId }: 
-      {producto_id: number, numero_serie: string, notas: string, detalle_ensamble: Ensamble[], UserId: string}) {
+      {producto_id, numero_serie, notas, detalle_ensamble, lote_id, UserId }: 
+      {producto_id: number, numero_serie: string, notas: string, detalle_ensamble: Ensamble[], lote_id: number, UserId: string}) {
 
     console.log(JSON.stringify(detalle_ensamble));
     try {
@@ -44,6 +44,7 @@ export class EnsambleModel {
       request.input("numero_serie", this.sql.dataTypes.VarChar, numero_serie);
       request.input("notas", this.sql.dataTypes.VarChar, notas);
       request.input("detalle_ensamble", this.sql.dataTypes.VarCharMAX, JSON.stringify(detalle_ensamble));
+      request.input("lote_id", this.sql.dataTypes.Int, lote_id);
       request.input("UserId", this.sql.dataTypes.VarChar, UserId);
       const result = await request.execute("[Almacen].[spIEnsamble]");
       return Promise.resolve(true);

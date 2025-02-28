@@ -144,7 +144,13 @@ async findUnique(criteria: ICriteria<Productos & { SoloEnsambles?: boolean, Solo
 
       const data = result.recordset as Lote[];
 
-      return Promise.resolve(data);
+      const parsedData = data.map(lote => {
+        lote.ubicacion = lote.ubicacion && typeof lote.ubicacion === "string" ? JSON.parse(lote.ubicacion) : lote.ubicacion;
+
+        return lote;
+      });
+
+      return Promise.resolve(parsedData);
     } catch (error) {
       return Promise.reject(error);
     }

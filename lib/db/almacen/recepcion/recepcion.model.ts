@@ -38,7 +38,7 @@ export class RecepcionModel implements IDBModel<Recepcion> {
 
       return Promise.resolve({
         data: data,
-        totalCount: data.length,
+        totalCount: data[0]?.totalCount || 0,
         totalPages: data[0]?.totalPages || 1,
       });
     } catch (error) {

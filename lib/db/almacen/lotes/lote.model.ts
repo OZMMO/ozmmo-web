@@ -19,7 +19,16 @@ export class LoteModel implements IDBModel<Lote> {
       criteria.toSql(request);
       const result = await request.execute("[Almacen].[spBuscarLotes]");
       const data = result.recordset as Lote[];
-      return Promise.resolve(data[0] || null);
+
+      const parsedData = data.map(lote => {
+        lote.ubicacion = lote.ubicacion && typeof lote.ubicacion === "string" ? JSON.parse(lote.ubicacion) : lote.ubicacion;
+        lote.trazabilidad_lotes = lote.trazabilidad_lotes && typeof lote.trazabilidad_lotes === "string" ? JSON.parse(lote.trazabilidad_lotes) : lote.trazabilidad_lotes;
+        lote.bodega = lote.bodega && typeof lote.bodega === "string" ? JSON.parse(lote.bodega) : lote.bodega;
+
+        return lote;
+      });
+
+      return Promise.resolve(parsedData[0] || null);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -35,8 +44,17 @@ export class LoteModel implements IDBModel<Lote> {
       if (criteria) criteria.toSql(request);
       const result = await request.execute("[Almacen].[spBuscarLotes]");
       const data = result.recordset as Lote[];
+
+      const parsedData = data.map(lote => {
+        lote.ubicacion = lote.ubicacion && typeof lote.ubicacion === "string" ? JSON.parse(lote.ubicacion) : lote.ubicacion;
+        lote.trazabilidad_lotes = lote.trazabilidad_lotes && typeof lote.trazabilidad_lotes === "string" ? JSON.parse(lote.trazabilidad_lotes) : lote.trazabilidad_lotes;
+        lote.bodega = lote.bodega && typeof lote.bodega === "string" ? JSON.parse(lote.bodega) : lote.bodega;
+
+        return lote;
+      });
+
       return Promise.resolve({
-        data: data,
+        data: parsedData,
         totalCount: data.length,
         totalPages: data[0]?.totalPages || 1,
       });
@@ -92,9 +110,17 @@ export class LoteModel implements IDBModel<Lote> {
       request.input("UserId", this.sql.dataTypes.VarChar, lote.UserId || "");
 
       const result = await request.execute("[Almacen].[spIULote]");
-      const data = (result.recordset[0] || null) as Lote;
+      const data = result.recordset as Lote[];
+      const parsedData = data.map(lote => {
+        lote.ubicacion = lote.ubicacion && typeof lote.ubicacion === "string" ? JSON.parse(lote.ubicacion) : lote.ubicacion;
+        lote.trazabilidad_lotes = lote.trazabilidad_lotes && typeof lote.trazabilidad_lotes === "string" ? JSON.parse(lote.trazabilidad_lotes) : lote.trazabilidad_lotes;
+        lote.bodega = lote.bodega && typeof lote.bodega === "string" ? JSON.parse(lote.bodega) : lote.bodega;
 
-      return data;
+        return lote;
+      });
+
+
+      return parsedData[0] || null;
     } catch (error) {
       console.error("Error in LoteModel.create:", error);
       return Promise.reject(error);
@@ -123,9 +149,16 @@ export class LoteModel implements IDBModel<Lote> {
       );
       request.input("UserId", lote.UserId);
       const result = await request.execute("[Almacen].[spIULote]");
-      console.log("data-return", "asdf");
       const data = result.recordset as Lote[];
-      return Promise.resolve(data[0] || null);
+      const parsedData = data.map(lote => {
+        lote.ubicacion = lote.ubicacion && typeof lote.ubicacion === "string" ? JSON.parse(lote.ubicacion) : lote.ubicacion;
+        lote.trazabilidad_lotes = lote.trazabilidad_lotes && typeof lote.trazabilidad_lotes === "string" ? JSON.parse(lote.trazabilidad_lotes) : lote.trazabilidad_lotes;
+        lote.bodega = lote.bodega && typeof lote.bodega === "string" ? JSON.parse(lote.bodega) : lote.bodega;
+
+        return lote;
+      });
+
+      return Promise.resolve(parsedData[0] || null);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -138,7 +171,15 @@ export class LoteModel implements IDBModel<Lote> {
       request.input("id", lote.id);
       const result = await request.execute("[Almacen].[spEliminarLote]");
       const data = result.recordset as Lote[];
-      return Promise.resolve(data[0] || null);
+      const parsedData = data.map(lote => {
+        lote.ubicacion = lote.ubicacion && typeof lote.ubicacion === "string" ? JSON.parse(lote.ubicacion) : lote.ubicacion;
+        lote.trazabilidad_lotes = lote.trazabilidad_lotes && typeof lote.trazabilidad_lotes === "string" ? JSON.parse(lote.trazabilidad_lotes) : lote.trazabilidad_lotes;
+        lote.bodega = lote.bodega && typeof lote.bodega === "string" ? JSON.parse(lote.bodega) : lote.bodega;
+
+        return lote;
+      });
+
+      return Promise.resolve(parsedData[0] || null);
     } catch (error) {
       return Promise.reject(error);
     }

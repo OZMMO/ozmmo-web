@@ -13,12 +13,14 @@ export async function GET(
     const producto_id = request?.nextUrl?.searchParams.get('producto_id');
     const recepcion_id = request?.nextUrl?.searchParams.get('recepcion_id');
     const estado_lote_id = request?.nextUrl?.searchParams.get('estado_lote_id');
-    
+    const bodega_id = request?.nextUrl?.searchParams.get('bodega_id');
+
     const loteModel = new LoteModel();
     const criteria = new CriteriaSqlServer<Lote>();
     criteria.addConditition('producto_id', producto_id);
     criteria.addConditition('recepcion_id', recepcion_id);
     criteria.addConditition('estado_lote_id', estado_lote_id);
+    criteria.addConditition('bodega_id', bodega_id);
     criteria.addConditition('UserId', userId);
     const lotes = await loteModel.findMany(criteria);
     

@@ -39,8 +39,6 @@ export class TrazabilidadLoteModel implements IDBModel<TrazabilidadLote>{
       const request = await db.request();
 
       request.input('codigo_lote', trazabilidadLote.codigo_lote);
-      request.input('ubicacion_origen_id', trazabilidadLote.ubicacion_origen_id);
-      request.input('ubicacion_destino_id', trazabilidadLote.ubicacion_destino_id);
       request.input('cantidad', trazabilidadLote.cantidad);
       request.input('tipo_movimiento_id', trazabilidadLote.tipo_movimiento_id);
       request.input('referencia_movimiento', trazabilidadLote.referencia_movimiento);
