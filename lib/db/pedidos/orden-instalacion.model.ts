@@ -1,8 +1,8 @@
 import { OrdenInstalacion } from "./orden-instalacion";
 import { MSSQLServer } from "@/lib/mssqlserver";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
-import  ICriteria  from "@/lib/interfaces/criteria.interface";
-import  IDBModel  from "@/lib/interfaces/db-model.interface";
+import ICriteria from "@/lib/interfaces/criteria.interface";
+import IDBModel from "@/lib/interfaces/db-model.interface";
 
 export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
   sql: MSSQLServer;
@@ -29,13 +29,12 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
           item.detalles && typeof item.detalles === "string"
             ? JSON.parse(item.detalles)
             : item.detalles;
-        item.direccion_instalacion =
-          item.direccion_instalacion &&
-          typeof item.direccion_instalacion === "string"
-            ? JSON.parse(item.direccion_instalacion)
-            : item.direccion_instalacion;
-        item.fecha_hora_instalacion = item.fecha_hora_instalacion
-          ? new Date(item.fecha_hora_instalacion)
+        item.direccion =
+          item.direccion && typeof item.direccion === "string"
+            ? JSON.parse(item.direccion)
+            : item.direccion;
+        item.FechaHoraInstalacion = item.FechaHoraInstalacion
+          ? new Date(item.FechaHoraInstalacion)
           : undefined;
         return item;
       });
@@ -65,13 +64,12 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
           item.detalles && typeof item.detalles === "string"
             ? JSON.parse(item.detalles)
             : item.detalles;
-        item.direccion_instalacion =
-          item.direccion_instalacion &&
-          typeof item.direccion_instalacion === "string"
-            ? JSON.parse(item.direccion_instalacion)
-            : item.direccion_instalacion;
-        item.fecha_hora_instalacion = item.fecha_hora_instalacion
-          ? new Date(item.fecha_hora_instalacion)
+        item.direccion =
+          item.direccion && typeof item.direccion === "string"
+            ? JSON.parse(item.direccion)
+            : item.direccion;
+        item.FechaHoraInstalacion = item.FechaHoraInstalacion
+          ? new Date(item.FechaHoraInstalacion)
           : undefined;
         return item;
       });
@@ -94,14 +92,11 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
         .input("id", ordenInstalacion.id)
         .input("codigo", ordenInstalacion.codigo)
         .input("id_pedido_cliente", ordenInstalacion.id_pedido_cliente)
-        .input("Notas", ordenInstalacion.notas)
-        .input("FechaHoraInstalacion", ordenInstalacion.fecha_hora_instalacion)
+        .input("Notas", ordenInstalacion.Notas)
+        .input("FechaHoraInstalacion", ordenInstalacion.FechaHoraInstalacion)
         .input("UserIdInstalador", ordenInstalacion.instalador_id)
         .input("detalles", JSON.stringify(ordenInstalacion.detalles))
-        .input(
-          "direccion",
-          JSON.stringify(ordenInstalacion.direccion_instalacion)
-        )
+        .input("direccion", JSON.stringify(ordenInstalacion.direccion))
         .input("UserId", ordenInstalacion.UserId)
         .execute("[Pedidos].[spIUOrdenInstalacionCliente]");
 
@@ -120,14 +115,11 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
         .input("id", ordenInstalacion.id)
         .input("codigo", ordenInstalacion.codigo)
         .input("id_pedido_cliente", ordenInstalacion.id_pedido_cliente)
-        .input("Notas", ordenInstalacion.notas)
-        .input("FechaHoraInstalacion", ordenInstalacion.fecha_hora_instalacion)
+        .input("Notas", ordenInstalacion.Notas)
+        .input("FechaHoraInstalacion", ordenInstalacion.FechaHoraInstalacion)
         .input("UserIdInstalador", ordenInstalacion.instalador_id)
         .input("detalles", JSON.stringify(ordenInstalacion.detalles))
-        .input(
-          "direccion",
-          JSON.stringify(ordenInstalacion.direccion_instalacion)
-        )
+        .input("direccion", JSON.stringify(ordenInstalacion.direccion))
         .input("UserId", ordenInstalacion.UserId)
         .execute("[Pedidos].[spIUOrdenInstalacionCliente]");
 

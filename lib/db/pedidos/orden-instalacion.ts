@@ -7,13 +7,13 @@ export interface OrdenInstalacion extends IPagination {
   codigo: string;
   id_pedido_cliente: number;
   pedido_codigo?: string;
-  notas?: string;
-  fecha_hora_instalacion?: Date;
+  Notas?: string;
+  FechaHoraInstalacion?: Date;
   instalador_id?: string;
   instalador_nombre_completo?: string;
   id_cliente?: number;
   cliente_razon_social?: string;
   detalles?: DetalleOrdenInstalacion[];
-  direccion_instalacion?: Direccion;
+  direccion?: Direccion;
   UserId?: string;
 }
