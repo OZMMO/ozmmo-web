@@ -4,6 +4,7 @@ import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
 import { Direccion } from "../../sat/direcciones/direccion";
+import { Sucursal } from "../sucursales/sucursal";
 
 export class EmpresaModel implements IDBModel<Empresa>{
   sql: MSSQLServer;
@@ -23,6 +24,8 @@ export class EmpresaModel implements IDBModel<Empresa>{
 
       const parsedData = data.map((empresa) => {
         empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+        empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+
         return empresa as Empresa;
       });
       
@@ -43,6 +46,8 @@ export class EmpresaModel implements IDBModel<Empresa>{
 
       const parsedData = data.map((empresa) => {
         empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+        empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+
         return empresa as Empresa;
       });
       
@@ -74,14 +79,22 @@ export class EmpresaModel implements IDBModel<Empresa>{
         .input('certificado_csd', this.sql.dataTypes.VarChar, empresa.certificado_csd)
         .input('llave_privada_csd', this.sql.dataTypes.VarChar, empresa.llave_privada_csd)
         .input('contrasena_csd', this.sql.dataTypes.VarChar, empresa.contrasena_csd)
-        .input('estatus', this.sql.dataTypes.VarChar, empresa.estatus)
+        .input('estatus', this.sql.dataTypes.Bit, empresa.estatus)
         .input('regimen_fiscal_id', this.sql.dataTypes.Int, empresa.regimen_fiscal_id)
         .input('direccion', this.sql.dataTypes.VarChar, empresa.direccion ? JSON.stringify(empresa.direccion) : null)
         .input('UserId', this.sql.dataTypes.VarChar, empresa.UserId)
         .execute('[Catalogos].[spIUEmpresa]');
 
-      const data = (result.recordset[0] || null) as Empresa || null;
-      return Promise.resolve(data)
+      let data =  result.recordset as Empresa[];
+
+      const parsedData = data.map((empresa) => {
+        empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+        empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+        
+        return empresa as Empresa;
+      });
+
+      return Promise.resolve(parsedData[0])
     } catch (error) {
       return Promise.reject(error)
     }
@@ -104,14 +117,22 @@ export class EmpresaModel implements IDBModel<Empresa>{
         .input('certificado_csd', this.sql.dataTypes.VarChar, empresa.certificado_csd)
         .input('llave_privada_csd', this.sql.dataTypes.VarChar, empresa.llave_privada_csd)
         .input('contrasena_csd', this.sql.dataTypes.VarChar, empresa.contrasena_csd)
-        .input('estatus', this.sql.dataTypes.VarChar, empresa.estatus)
+        .input('estatus', this.sql.dataTypes.Bit, empresa.estatus)
         .input('regimen_fiscal_id', this.sql.dataTypes.Int, empresa.regimen_fiscal_id)
         .input('direccion', this.sql.dataTypes.VarChar, empresa.direccion ? JSON.stringify(empresa.direccion) : null)
         .input('UserId', this.sql.dataTypes.VarChar, empresa.UserId)
         .execute('[Catalogos].[spIUEmpresa]');
 
-      const data = (result.recordset[0] || null) as Empresa || null;
-    return Promise.resolve(data)
+        let data =  result.recordset as Empresa[];
+
+        const parsedData = data.map((empresa) => {
+          empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+          empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+          
+          return empresa as Empresa;
+        });
+  
+        return Promise.resolve(parsedData[0])
     } catch (error) {
       return Promise.reject(error)
     }
@@ -125,8 +146,16 @@ export class EmpresaModel implements IDBModel<Empresa>{
         .input('UserId', this.sql.dataTypes.VarChar, empresa.UserId)
         .execute(`[Catalogos].[sp_borrar_tbl_empresas]`);
 
-      const dataResult = (result.recordset[0] || null) as Empresa || null;
-      return Promise.resolve(dataResult)
+        let data =  result.recordset as Empresa[];
+
+        const parsedData = data.map((empresa) => {
+          empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
+          empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+          
+          return empresa as Empresa;
+        });
+  
+        return Promise.resolve(parsedData[0])
     } catch (error) {
       return Promise.reject(error)
     }

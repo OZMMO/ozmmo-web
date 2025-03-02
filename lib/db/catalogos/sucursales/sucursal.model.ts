@@ -64,7 +64,7 @@ export class SucursalModel implements IDBModel<Sucursal> {
       const result = await db
         .request()
         .input("id", this.sql.dataTypes.Int, sucursal.id)
-        .input("codigo", this.sql.dataTypes.VarChar, sucursal.codigo)
+        // .input("codigo", this.sql.dataTypes.VarChar, sucursal.codigo)
         .input("nombre", this.sql.dataTypes.VarChar, sucursal.nombre)
         .input("empresa_id", this.sql.dataTypes.Int, sucursal.empresa_id)
         .input("correo_electronico", this.sql.dataTypes.VarChar, sucursal.correo_electronico)
@@ -87,7 +87,7 @@ export class SucursalModel implements IDBModel<Sucursal> {
       const result = await db
         .request()
         .input("id", this.sql.dataTypes.Int, sucursal.id)
-        .input("codigo", this.sql.dataTypes.VarChar, sucursal.codigo)
+        // .input("codigo", this.sql.dataTypes.VarChar, sucursal.codigo)
         .input("nombre", this.sql.dataTypes.VarChar, sucursal.nombre)
         .input("empresa_id", this.sql.dataTypes.Int, sucursal.empresa_id)
         .input("correo_electronico", this.sql.dataTypes.VarChar, sucursal.correo_electronico)

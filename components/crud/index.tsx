@@ -263,7 +263,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   const allActions = [...localActions, ...extraActions];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {title && <h1 className="text-2xl font-bold">{title}</h1>}
       <div className="flex justify-between items-center">
         {searchable && (
@@ -323,7 +323,10 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           </TableHeader>
           <TableBody>
             {data.map((item: T) => (
-              <TableRow key={String(item[columns[0].key])} className="hover:bg-sky-200/50">
+              <TableRow 
+                key={`${String(item[columns[0].key])}-${String(columns[0].key)}`}
+                className="hover:bg-sky-200/50"
+              >
                 <TableCell className="p-0">
                   <div className="flex items-center gap-2">
                     <DropdownMenu>
@@ -418,7 +421,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           <SheetHeader>
             <SheetTitle>Add new</SheetTitle>
           </SheetHeader>
-          <div className="py-4">
+          <div className="py-2">
             <FormComponent
               onSubmit={handleCreate}
               errors={errors}
@@ -441,7 +444,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           <SheetHeader>
             <SheetTitle>Editing</SheetTitle>
           </SheetHeader>
-          <div className="py-4">
+          <div className="py-2">
             <FormComponent
               initialData={editItem || undefined}
               onSubmit={handleUpdate}

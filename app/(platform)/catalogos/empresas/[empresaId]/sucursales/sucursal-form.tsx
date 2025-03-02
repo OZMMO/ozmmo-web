@@ -43,17 +43,18 @@ export function SucursalForm({
   const form = useForm<SucursalFormValues>({
     resolver: zodResolver(sucursalSchema),
     defaultValues: {
-      empresa_id: initialData?.empresa_id || 0,
-      codigo: initialData?.codigo || "",
+      empresa_id: initialData?.empresa_id || infoExtra?.empresa?.id || 0,
+      codigo: initialData?.codigo || "AUTOGENERADO",
       nombre: initialData?.nombre || "",
       telefono: initialData?.telefono || "",
       responsable: initialData?.responsable || "",
       correo_electronico: initialData?.correo_electronico || "",
-      estatus: initialData?.estatus || true,
+      estatus: initialData?.estatus || false,
       direccion: initialData?.direccion || undefined
     },
   });
 
+  const { isSubmitting } = form.formState;
 
   const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
 
@@ -70,13 +71,21 @@ export function SucursalForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-4 py-4"
+        className="space-y-2 py-2"
       >
         <input type="hidden" name="id" value={initialData?.id} />
+        <input type="hidden" name="empresa_id" value={initialData?.empresa_id || infoExtra?.empresa?.id} />
+
+        <div className="flex items-centergap-2 p-2 mb-4 bg-sky-100 rounded-lg border border-sky-200">
+          <span className="font-semibold text-sky-700">Empresa:</span>
+          <span className="text-sky-900">&nbsp;{infoExtra?.empresa?.codigo} - {infoExtra?.empresa?.nombre_comercial}</span>
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="codigo"
+            disabled={true}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Código</FormLabel>
@@ -102,7 +111,7 @@ export function SucursalForm({
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        {/* <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="empresa_id"
@@ -133,7 +142,7 @@ export function SucursalForm({
               </FormItem>
             )}
           />
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -190,7 +199,9 @@ export function SucursalForm({
 
         <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
 
-        <Button type="submit">Guardar</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );

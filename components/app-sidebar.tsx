@@ -85,14 +85,14 @@ const data = {
           //   },
           // ],
         },
-        {
-          title: "Sucursales",
-          url: "/catalogos/sucursales",
-          // items: [
-          //   { title: "CRUD", url: "/catalogos/sucursales/crud" },
-          //   { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
-          // ],
-        },
+        // {
+        //   title: "Sucursales",
+        //   url: "/catalogos/sucursales",
+        //   // items: [
+        //   //   { title: "CRUD", url: "/catalogos/sucursales/crud" },
+        //   //   { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
+        //   // ],
+        // },
         {
           title: "Clientes",
           url: "/catalogos/clientes",

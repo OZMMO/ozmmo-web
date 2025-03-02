@@ -9,38 +9,46 @@ import { createSucursal, deleteSucursal, updateSucursal } from "./actions";
 // import { Sucursal } from '@/lib/db/catalogos/sucursal.model';
 import { SucursalForm } from "./sucursal-form";
 import { MoreHorizontal } from "lucide-react";
-import { Sucursal } from "@/lib/db";
+import { Empresa, Sucursal } from "@/lib/db";
+import { Badge } from "@/components/ui/badge";
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
 const columns: Column<any>[] = [
-  { key: "empresa", label: "Empresa", sortable: true },
   { key: "codigo", label: "Código", sortable: true },
   { key: "nombre", label: "Nombre", sortable: true },
+  { key: "empresa", label: "Empresa", sortable: true },
   { key: "responsable", label: "Responsable", sortable: true },
   // { key: 'correo_electronico', label: 'Correo', sortable: true },
   // { key: 'telefono', label: 'Teléfono', sortable: true },
-  {
-    key: "estatus",
-    label: "Estatus",
-    sortable: true,
-    render: (value) => (value ? "Activo" : "Inactivo"),
-  },
+  { key: 'estatus', label: 'Estatus', sortable: true,
+    render: (value: any) => {
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
 ];
 
 interface PageProps {
   payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
-  catalogoEmpresas: any[];
+  empresa: Empresa;
 }
 
 export interface SucursalInfoExtra {
-  catalogoEmpresas: any[];
+  empresa: Empresa;
 }
 
 export default function SucursalesClientPage({
   payload,
   paginationParams,
-  catalogoEmpresas,
+  empresa,
 }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false);
@@ -55,7 +63,7 @@ export default function SucursalesClientPage({
 
   return (
     <CRUD<Sucursal, SucursalInfoExtra>
-      title="Catálogo deSucursales"
+      title={`Sucursales de ${empresa.nombre_comercial}`}
       columns={columns}
       data={data}
       totalCount={totalCount}
@@ -68,7 +76,7 @@ export default function SucursalesClientPage({
         update: updateSucursal,
         delete: deleteSucursal,
       }}
-      infoExtra={{ catalogoEmpresas }}
+      infoExtra={{ empresa }}
     />
   );
 }

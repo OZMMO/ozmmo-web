@@ -1,6 +1,7 @@
 'use client';
-import {CRUD, Column} from '@/components/crud';
+import {Action, CRUD, Column} from '@/components/crud';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interface';
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createEmpresa, updateEmpresa, deleteEmpresa } from './actions';
@@ -8,6 +9,8 @@ import { EmpresaForm, InfoExtraEmpresa } from './empresa-form';
 import { Empresa } from '@/lib/db/catalogos/empresas/empresa';
 import { TipoContribuyente } from '@/lib/db/sat/tipos_contribuyentes/tipo_contribuyente';
 import { RegimenFiscal } from '@/lib/db/sat/regimenes_fiscales/regimen_fiscal';
+import { Badge } from '@/components/ui/badge';
+import { Building2, PlusIcon } from 'lucide-react';
 
 const columns: Column<Empresa>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -26,10 +29,20 @@ const columns: Column<Empresa>[] = [
   // },
   { key: 'estatus', label: 'Estatus', sortable: true,
     render: (value: any) => {
-      if (typeof value === 'object' && value !== null && 'estatus' in value) {
-        return value.estatus ? 'Activo' : 'Inactivo';
-      }
-      return value ? 'Activo' : 'Inactivo';
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
+   { key: 'sucursales', label: 'Sucursales', sortable: true, 
+    render: (value: any) => {
+      return <div className="text-center">{value?.length || 0}</div>;
     }
    }
 ];
@@ -43,8 +56,9 @@ interface PageProps {
 
 export default function EmpresasClientPage({ payload, paginationParams, tiposContribuyentes, regimenesFiscales }: PageProps) {
   const { data, totalCount, totalPages } = payload;
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false)
- 
+
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -53,11 +67,25 @@ export default function EmpresasClientPage({ payload, paginationParams, tiposCon
     return null;
   }
 
+  const extraActions: Action<Empresa>[] = [
+    {
+      title: 'Sucursales',
+      icon: <Building2 />,
+      onClick: (empresa: Empresa) => {
+        console.log(empresa);
+        router.push(`/catalogos/empresas/${empresa.id}/sucursales`);
+      },
+      variant: 'default',
+      size: 'icon'
+    }
+  ]
+
   return (
     <CRUD<Empresa, InfoExtraEmpresa>
       title="Catálogo de Empresas"
       columns={columns}
       data={data}
+      extraActions={extraActions}
       totalCount={totalCount}
       totalPages={totalPages}
       currentPage={Number(paginationParams.page) || 1}

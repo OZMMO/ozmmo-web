@@ -29,8 +29,9 @@ import DireccionForm from "@/components/direccion"
 import { TipoContribuyente } from "@/lib/db"
 import { RegimenFiscal } from "@/lib/db/sat/regimenes_fiscales/regimen_fiscal"
 import { Label } from "@/components/ui/label"
-import { Upload } from "lucide-react"
+import { Upload, Trash2 } from "lucide-react"
 import { FormSubmit } from "@/components/form-submit"
+import { Switch } from "@/components/ui/switch"
 // import { Empresa } from "@/lib/db"
 // import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
@@ -64,6 +65,7 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
       certificado_csd: initialData?.certificado_csd || undefined,
       llave_privada_csd: initialData?.llave_privada_csd || undefined,
       contrasena_csd: initialData?.contrasena_csd || "",
+      estatus: initialData?.estatus || false,
       direccion: initialData?.direccion || undefined
     },
   })
@@ -304,6 +306,17 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
                 aria-errormessage="error-certificado_csd"
               />
               <Upload className="text-muted-foreground" />
+              {form.watch("certificado_csd") && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.setValue("certificado_csd", undefined)}
+                  className="flex items-center gap-1 text-destructive hover:text-red-600"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove
+                </Button>
+              )}
             </div>
             {form.formState.errors?.certificado_csd && (
               <p id="error-certificado_csd" className="text-destructive text-sm">
@@ -337,6 +350,17 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
                 aria-errormessage="error-llave_privada_csd"
               />
               <Upload className="text-muted-foreground" />
+              {form.watch("llave_privada_csd") && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.setValue("llave_privada_csd", undefined)}
+                  className="flex items-center gap-1 text-destructive hover:text-red-600"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove
+                </Button>
+              )}
             </div>
             {form.formState.errors?.llave_privada_csd && (
               <p id="error-llave_privada_csd" className="text-destructive text-sm">
@@ -354,6 +378,23 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
               <FormLabel>Contraseña CSD</FormLabel>
               <FormControl>
                 <Input type="password" placeholder="Contraseña del certificado" {...field}  />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="estatus"
+          render={({ field }) => (
+            <FormItem className="flex items-center gap-2">
+              <FormLabel>Estatus</FormLabel>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

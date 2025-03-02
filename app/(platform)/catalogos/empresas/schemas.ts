@@ -38,6 +38,7 @@ export const empresaFormSchema = z.object({
     }
   }, "Debe ser una cadena en formato Base64 válido").optional(),
   contrasena_csd: z.string(),
+  estatus: z.boolean(),
   direccion: direccionSchema.optional(),
 })
 

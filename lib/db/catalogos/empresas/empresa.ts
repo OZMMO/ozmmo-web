@@ -1,5 +1,6 @@
 import { IPagination } from "@/lib/interfaces/paginations.interface";
 import { Direccion } from "../../sat/direcciones/direccion";
+import { Sucursal } from "../sucursales/sucursal";
 
 export interface Empresa extends IPagination{
   id: number;
@@ -22,4 +23,6 @@ export interface Empresa extends IPagination{
   regimen_fiscal?: string;
   direccion?: Direccion;
   UserId?: string;
+
+  sucursales?: Sucursal[];
 } 
