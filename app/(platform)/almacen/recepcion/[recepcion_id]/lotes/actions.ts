@@ -5,13 +5,12 @@ import { Lote, LoteModel } from "@/lib/db";
 
 export const createLote = async (data: Lote): Promise<ActionState<Lote>> => {
   try { 
-    console.log('data-server', data);
     const model = new LoteModel();
     const result = await model.create(data);
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };
 
@@ -22,7 +21,7 @@ export const updateLote = async (data: Lote): Promise<ActionState<Lote>> => {
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };
 
@@ -33,6 +32,6 @@ export const deleteLote = async (data: Lote): Promise<ActionState<Lote>> => {
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };

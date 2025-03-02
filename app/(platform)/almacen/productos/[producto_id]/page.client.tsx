@@ -71,7 +71,6 @@ export default function MaterialProductoClientPage({
 }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false);
-  console.log({ producto_parent_id, producto_parent });
   useEffect(() => {
     setIsClient(true);
   }, []);

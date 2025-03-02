@@ -39,7 +39,6 @@ export function UbicacionForm({
   infoExtra,
   onSubmit,
 }: UbicacionFormProps) {
-  console.log({ initialData });
 
   const form = useForm<UbicacionFormValues>({
     resolver: zodResolver(ubicacionesFormSchema),

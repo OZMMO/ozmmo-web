@@ -12,7 +12,7 @@ export const createOrdenInstalacion = async (
     const result = await model.create(data);
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };
 
@@ -24,7 +24,7 @@ export const updateOrdenInstalacion = async (
     const result = await model.update(data);
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };
 
@@ -36,6 +36,6 @@ export const deleteOrdenInstalacion = async (
     const result = await model.delete(data);
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };

@@ -131,10 +131,7 @@ export default function LoteForm({
     },
   });
 
-  console.log("errors", errors);
-  console.log("form", getValues());
   const onSubmit = async (data: LoteFormData) => {
-    console.log("Form data:", data);
     data.UserId = userId;
     setIsSubmitting(true);
     setSubmitError(null);
@@ -143,7 +140,6 @@ export default function LoteForm({
       // Here you would typically send the form data to your server
       const response = await createLote(data as Lote);
       setClose();
-      console.log("response", response);
       // Simulating an API call
       // await new Promise((resolve) => setTimeout(resolve, 1000))
       // createLote(data as Lote);

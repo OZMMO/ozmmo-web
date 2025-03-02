@@ -62,7 +62,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const db = await this.sql.connect();
       const result = await db.request()
         .input('id', this.sql.dataTypes.Int, empresa.id)
-        .input('codigo',this.sql.dataTypes.VarChar, empresa.codigo)
+        // .input('codigo',this.sql.dataTypes.VarChar, empresa.codigo)
         .input('rfc', this.sql.dataTypes.VarChar, empresa.rfc)
         .input('razon_social', this.sql.dataTypes.VarChar, empresa.razon_social)
         .input('nombre_comercial', this.sql.dataTypes.VarChar, empresa.nombre_comercial)
@@ -92,7 +92,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const db = await this.sql.connect();
       const result = await db.request()
         .input('id', this.sql.dataTypes.Int, empresa.id)
-        .input('codigo',this.sql.dataTypes.VarChar, empresa.codigo)
+        // .input('codigo',this.sql.dataTypes.VarChar, empresa.codigo)
         .input('rfc', this.sql.dataTypes.VarChar, empresa.rfc)
         .input('razon_social', this.sql.dataTypes.VarChar, empresa.razon_social)
         .input('nombre_comercial', this.sql.dataTypes.VarChar, empresa.nombre_comercial)

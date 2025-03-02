@@ -3,7 +3,7 @@ import { direccionSchema } from "@/lib/db/sat/direcciones/schema"
 
 export const empresaFormSchema = z.object({
   id: z.number().optional(),
-  codigo: z.string().min(1, "El código es requerido"),
+  codigo: z.string().optional(),
   rfc: z.string().min(12, "RFC debe tener 12-13 caracteres").max(13),
   razon_social: z.string().min(1, "La razón social es requerida"),
   nombre_comercial: z.string().optional(),

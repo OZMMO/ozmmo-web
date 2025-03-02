@@ -41,8 +41,6 @@ export function RecepcionForm({
   infoExtra,
   onSubmit,
 }: RecepcionFormProps) {
-  console.log({ initialData });
-
   const form = useForm<RecepcionFormValues>({
     resolver: zodResolver(recepcionesFormSchema),
     defaultValues: {
@@ -55,7 +53,6 @@ export function RecepcionForm({
   });
 
   const handleSubmit = (data: RecepcionFormValues) => {
-    console.log({ data });
     data.id = initialData?.id || 0;
     data.proveedor_id = data.proveedor_id ? Number(data.proveedor_id) : null;
     data.bodega_id = data.bodega_id ? Number(data.bodega_id) : null;

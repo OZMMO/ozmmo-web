@@ -18,7 +18,7 @@ export const createEmpresa = async (data: Empresa): Promise<ActionState<Empresa>
 
     return { data: result }; 
   } catch (error: any) {
-    return { error }
+    return { error: { message: error.message, name: error.name } }
   }
 } 
 
@@ -32,27 +32,21 @@ export const updateEmpresa = async (data: Empresa): Promise<ActionState<Empresa>
   }
 
   try {
-    console.log({data})
     const model = new EmpresaModel();
     const result = await model.update(data);
 
     return { data: result }; 
   } catch (error: any) {
-    return { error}
+    return { error: { message: error.message, name: error.name } }
   }
 }
 
 export const deleteEmpresa = async (data: Empresa): Promise<ActionState<Empresa>> => {
-
-  // const { error } = await sql
-  //   .from('catalogos_tbl_empresas')
-  //   .delete()
-  //   .eq('id', data.id)
-
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data }; 
+  try {
+    const model = new EmpresaModel();
+    const result = await model.delete(data);
+    return { data: result };
+  } catch (error: any) {
+    return { error: { message: error.message, name: error.name } }
+  }
 }

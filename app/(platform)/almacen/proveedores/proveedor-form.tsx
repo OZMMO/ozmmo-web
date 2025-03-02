@@ -39,7 +39,6 @@ export function ProveedorForm({
   infoExtra,
   onSubmit,
 }: ProveedorFormProps) {
-  console.log({ initialData });
 
   const form = useForm<ProveedorFormValues>({
     resolver: zodResolver(proveedoresFormSchema),
@@ -52,9 +51,7 @@ export function ProveedorForm({
       estatus: initialData?.estatus || true,
     },
   });
-  console.log({ form });
   const handleSubmit = (data: ProveedorFormValues) => {
-    console.log({ data });
     data.id = initialData?.id || 0;
     data.nombre = data.nombre;
     data.estatus = data.estatus ? data.estatus : false;

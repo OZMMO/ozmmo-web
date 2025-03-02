@@ -39,7 +39,6 @@ export function BodegaForm({
   infoExtra,
   onSubmit,
 }: BodegaFormProps) {
-  console.log({ initialData });
 
   const form = useForm<BodegaFormValues>({
     resolver: zodResolver(bodegaFormSchema),
@@ -55,7 +54,6 @@ export function BodegaForm({
   });
 
   const handleSubmit = (data: BodegaFormValues) => {
-    console.log({ data });
     data.id = initialData?.id || 0;
     data.empresa_id = data.empresa_id ? Number(data.empresa_id) : null;
     data.sucursal_id = data.sucursal_id ? Number(data.sucursal_id) : null;

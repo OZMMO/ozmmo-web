@@ -45,7 +45,7 @@ export const {
         account?: Account | null,
         profile?: Profile | undefined
       }): Promise<boolean> {
-        console.log({user, account, profile})  
+        // console.log({user, account, profile})  
       // if (account?.provider === "google") {
       //   return profile?.email_verified && profile?.email?.endsWith("@adagio.com.mx") ? true : false;
       // }

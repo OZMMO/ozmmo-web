@@ -90,14 +90,12 @@ export default function DetalleRecepcionClientPage({
       const response = await fetch(`/api/almacen/ubicaciones?bodega_id=${recepcion?.bodega_id}`);
       const dataJson = await response.json();
       const data = dataJson.data;
-      console.log('ubicaciones', data);
       setUbicaciones(data);
     };
 
     const fetchTiposMovimientos = async () => {
       const response = await fetch(`/api/almacen/tipos-movimientos?SoloActivos=true&Categorias=Entrada`);
       const data = await response.json();
-      console.log('tiposMovimientos', data);
       setTiposMovimientos(data);
     };
 
@@ -171,7 +169,6 @@ export default function DetalleRecepcionClientPage({
   const fetchLotes = async (producto_id: number) => {
     const response = await fetch(`/api/almacen/lotes?recepcion_id=${recepcion_id.toString()}&producto_id=${producto_id.toString()}`);
     const data = await response.json();
-    console.log('lotes', data);
     setLotes(data.data);
   };
 

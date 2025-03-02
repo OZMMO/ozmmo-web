@@ -30,6 +30,7 @@ import { TipoContribuyente } from "@/lib/db"
 import { RegimenFiscal } from "@/lib/db/sat/regimenes_fiscales/regimen_fiscal"
 import { Label } from "@/components/ui/label"
 import { Upload } from "lucide-react"
+import { FormSubmit } from "@/components/form-submit"
 // import { Empresa } from "@/lib/db"
 // import { Empresa } from "@/lib/db/catalogos/empresa.model"
 
@@ -50,7 +51,7 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
   const form = useForm<EmpresaFormValues>({
     resolver: zodResolver(empresaFormSchema),
     defaultValues: {
-      codigo: initialData?.codigo || "",
+      codigo: initialData?.codigo || "AUTOGENERADO",
       rfc: initialData?.rfc || "",
       razon_social: initialData?.razon_social || "",
       nombre_comercial: initialData?.nombre_comercial || "",
@@ -67,6 +68,8 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
     },
   })
 
+  const { isSubmitting } = form.formState;
+
   const [listaRegimenesFiscales, setListaRegimenesFiscales] = useState<RegimenFiscal[]>([])
   const tipoContribuyente = form.watch("tipo_contribuyente_id")
 
@@ -80,12 +83,15 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
     }
   }, [tipoContribuyente])
 
+  const handleSubmit = async (data: EmpresaFormValues) => {
+    try {
+      data.id = initialData?.id || 0
+      data.direccion = selectedDireccion || undefined
 
-  const handleSubmit = (data: EmpresaFormValues) => {
-    data.id = initialData?.id || 0
-    data.direccion = selectedDireccion || undefined
-
-    onSubmit(data as Empresa)
+      await onSubmit(data as Empresa)
+    } catch (error) {
+      console.log('Error al guardar la empresa:', { error })
+    }
   }
 
   return (
@@ -95,6 +101,7 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
         <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
+            disabled={true}
             name="codigo"
             render={({ field }) => (
               <FormItem>
@@ -143,85 +150,89 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
           />
         </div>
 
-        <FormField
-          control={form.control}
-          name="razon_social"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Razón Social</FormLabel>
-              <FormControl>
-                <Input placeholder="Nombre legal completo de la empresa" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="nombre_comercial"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre Comercial</FormLabel>
-              <FormControl>
-                <Input placeholder="Nombre comercial o de marca" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {tipoContribuyente?.toString() === "fisica" && (
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="curp"
+            name="razon_social"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>CURP</FormLabel>
+                <FormLabel>Razón Social</FormLabel>
                 <FormControl>
-                  <Input 
-                    placeholder="Ej: XAXX010101HDFXXX01" 
-                    maxLength={18} 
-                    {...field} 
-                    value={field.value || ''} 
-                  />
+                  <Input placeholder="Nombre legal completo de la empresa" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
 
-        <FormField
-          control={form.control}
-          name="regimen_fiscal_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Régimen Fiscal</FormLabel>
-              <FormControl>
-                <Select 
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={field.value?.toString()}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione régimen fiscal" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {listaRegimenesFiscales.map((regimen) => (
-                      <SelectItem 
-                        key={regimen.id} 
-                        value={regimen.id.toString()}
-                      >
-                        {regimen.descripcion}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          <FormField
+            control={form.control}
+            name="nombre_comercial"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nombre Comercial</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nombre comercial o de marca" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          {tipoContribuyente?.toString() === "fisica" && (
+            <FormField
+              control={form.control}
+              name="curp"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>CURP</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Ej: XAXX010101HDFXXX01" 
+                      maxLength={18} 
+                      {...field} 
+                      value={field.value || ''} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           )}
-        />
+
+          <FormField
+            control={form.control}
+            name="regimen_fiscal_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Régimen Fiscal</FormLabel>
+                <FormControl>
+                  <Select 
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={field.value?.toString()}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione régimen fiscal" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {listaRegimenesFiscales.map((regimen) => (
+                        <SelectItem 
+                          key={regimen.id} 
+                          value={regimen.id.toString()}
+                        >
+                          {regimen.descripcion}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <FormField
@@ -351,7 +362,9 @@ export function EmpresaForm({ initialData, onSubmit, infoExtra }: EmpresaFormPro
 
         <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
 
-        <Button type="submit">Guardar</Button>
+        <FormSubmit disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </FormSubmit>
       </form>
     </Form>
   )

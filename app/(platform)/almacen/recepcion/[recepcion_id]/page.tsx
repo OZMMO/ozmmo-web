@@ -25,7 +25,6 @@ export default async function DetalleRecepcionPage({
 }: PageProps) {
   const session = await auth();
   const userId = session?.user.id as string;
-  console.log(params.recepcion_id, searchParams);
   //unidades de medida
   const unidadesMedidaModel = new UnidadesMedidaModel();
   const criteriaUnidadesMedida = new CriteriaSqlServer<UnidadesMedida>();

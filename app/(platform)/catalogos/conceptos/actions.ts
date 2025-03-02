@@ -12,7 +12,7 @@ export const createConcepto = async (
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };
 
@@ -26,7 +26,7 @@ export const updateConcepto = async (
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 };
 
@@ -39,13 +39,7 @@ export const deleteConcepto = async (
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 
-  // if (error) {
-  //   console.error('Error:', error)
-  //   return { error }
-  // }
-
-  return { data };
 };

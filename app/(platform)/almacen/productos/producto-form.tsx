@@ -39,7 +39,6 @@ export function ProductosForm({
   infoExtra,
   onSubmit,
 }: ProductosFormProps) {
-  console.log({ initialData });
 
   const form = useForm<ProductosFormValues>({
     resolver: zodResolver(productosFormSchema),
@@ -56,7 +55,6 @@ export function ProductosForm({
   });
 
   const handleSubmit = (data: ProductosFormValues) => {
-    console.log({ data });
     data.id = initialData?.id || 0;
     data.unidad_medida_id = data.unidad_medida_id
       ? Number(data.unidad_medida_id)

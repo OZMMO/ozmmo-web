@@ -24,7 +24,6 @@ export default async function MaterialProductoPage({
 }: PageProps) {
   const session = await auth();
   const userId = session?.user.id as string;
-  console.log(params.producto_id, searchParams);
   //unidades de medida
   const unidadesMedidaModel = new UnidadesMedidaModel();
   const criteriaUnidadesMedida = new CriteriaSqlServer<UnidadesMedida>();

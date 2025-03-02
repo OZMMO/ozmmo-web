@@ -40,8 +40,6 @@ export function MaterialProductoForm({
   infoExtra,
   onSubmit,
 }: MaterialProductoFormProps) {
-  console.log({ infoExtra });
-
   const form = useForm<MaterialProductoFormValues>({
     resolver: zodResolver(materialProductoFormSchema),
     defaultValues: {
@@ -56,9 +54,7 @@ export function MaterialProductoForm({
   const {
     formState: { errors },
   } = form;
-  console.log({ form, errors });
   const handleSubmit = (data: MaterialProductoFormValues) => {
-    console.log({ data });
     data.id = initialData?.id || 0;
     data.unidad_medida_id = Number(data.unidad_medida_id);
     data.producto_id = Number(data.producto_id);

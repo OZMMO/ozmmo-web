@@ -92,7 +92,6 @@ export function DetalleRecepcionForm({
                     const producto = infoExtra?.catalogoProductos?.find(
                       (p: any) => p.id === Number(value)
                     );
-                    console.log({ producto });
                     if (producto) {
                       const unidadMedida = infoExtra?.catalogoUnidadMedida?.find(
                         (u: any) => u.id === producto.unidad_medida_id

@@ -21,7 +21,7 @@ export const createEnsamble = async (data: CreateEnsambleData): Promise<ActionSt
     const result = await model.create(data);
     revalidatePath("/inventario/ensambles");
     return { data: result };
-  } catch (error) {
-    return { error: error as Error };
+  } catch (error: any) {
+    return { error: { message: error.message, name: error.name } }
   }
 };

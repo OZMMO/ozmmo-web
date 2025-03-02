@@ -19,7 +19,7 @@ export const createCliente = async (data: Cliente): Promise<ActionState<Cliente>
 
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 }
 
@@ -37,10 +37,16 @@ export const updateCliente = async (data: Cliente): Promise<ActionState<Cliente>
     const result = await model.update(data);
     return { data: result };
   } catch (error: any) {
-    return { error };
+    return { error: { message: error.message, name: error.name } }
   }
 }
 
 export const deleteCliente = async (data: Cliente): Promise<ActionState<Cliente>> => {
-  return { data };
+  try {
+    const model = new ClienteModel();
+    const result = await model.delete(data);
+    return { data: result };
+  } catch (error: any) {
+    return { error: { message: error.message, name: error.name } }
+  }
 }
