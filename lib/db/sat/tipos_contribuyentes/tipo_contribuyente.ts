@@ -3,3 +3,9 @@ export interface TipoContribuyente {
   nombre: string;
   descripcion?: string;
 }
+
+
+export enum TipoContribuyenteEnum {
+  FISICA = 'fisica',
+  MORAL = 'moral',
+}
