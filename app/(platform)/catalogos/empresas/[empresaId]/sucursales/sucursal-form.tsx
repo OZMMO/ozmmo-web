@@ -27,6 +27,8 @@ import { useState } from "react";
 import DireccionForm from "@/components/direccion";
 import { Direccion } from "@/lib/db/sat/direcciones/direccion";
 import { Sucursal } from "@/lib/db/catalogos/sucursales/sucursal";
+import { FormSubmit } from "@/components/form-submit";
+import { Switch } from "@/components/ui/switch";
 type SucursalFormValues = z.infer<typeof sucursalSchema>;
 
 interface SucursalFormProps {
@@ -46,9 +48,9 @@ export function SucursalForm({
       empresa_id: initialData?.empresa_id || infoExtra?.empresa?.id || 0,
       codigo: initialData?.codigo || "AUTOGENERADO",
       nombre: initialData?.nombre || "",
-      telefono: initialData?.telefono || "",
-      responsable: initialData?.responsable || "",
-      correo_electronico: initialData?.correo_electronico || "",
+      telefono: initialData?.telefono || undefined,
+      responsable: initialData?.responsable || undefined,
+      correo_electronico: initialData?.correo_electronico || undefined,
       estatus: initialData?.estatus || false,
       direccion: initialData?.direccion || undefined
     },
@@ -58,13 +60,16 @@ export function SucursalForm({
 
   const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
 
-  const handleSubmit = (data: SucursalFormValues) => {
-    console.log({ data });
-    data.id = initialData?.id || 0;
-    data.empresa_id = data.empresa_id ? Number(data.empresa_id) : null;
-    
-    data.direccion = selectedDireccion || undefined
-    onSubmit(data as Sucursal);
+  const handleSubmit = async (data: SucursalFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.empresa_id = data.empresa_id ? Number(data.empresa_id) : null;
+      
+      data.direccion = selectedDireccion || undefined
+      await onSubmit(data as Sucursal);
+    } catch (error) {
+      console.log('Error al guardar la sucursal:', { error });
+    }
   };
 
   return (
@@ -111,39 +116,6 @@ export function SucursalForm({
           />
         </div>
 
-        {/* <div className="grid grid-cols-1 gap-4">
-          <FormField
-            control={form.control}
-            name="empresa_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Empresa</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={field.value?.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar empresa" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {infoExtra?.catalogoEmpresas?.map((empresa) => (
-                      <SelectItem
-                        key={empresa.id}
-                        value={empresa.id.toString()}
-                      >
-                        {empresa.codigo}-{empresa.razon_social}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div> */}
-
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -178,7 +150,7 @@ export function SucursalForm({
         </div>
 
         <div className="grid grid-cols-1 gap-4">
-          <FormField
+          {/* <FormField
             control={form.control}
             name="estatus"
             render={({ field }) => (
@@ -194,14 +166,31 @@ export function SucursalForm({
                 </div>
               </FormItem>
             )}
+          /> */}
+
+          <FormField
+            control={form.control}
+            name="estatus"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
 
         <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
 
-        <Button type="submit" disabled={isSubmitting}>
+        <FormSubmit disabled={isSubmitting}>
           {isSubmitting ? "Guardando..." : "Guardar"}
-        </Button>
+        </FormSubmit>
       </form>
     </Form>
   );

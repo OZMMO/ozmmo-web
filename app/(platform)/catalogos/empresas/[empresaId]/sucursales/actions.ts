@@ -9,6 +9,9 @@ export const createSucursal = async (
 ): Promise<ActionState<any>> => {
   try {
     const model = new SucursalModel();
+    if (!data.direccion) {
+      data.direccion = undefined
+    }
     const result = await model.create(data);
 
     return { data: result };
@@ -22,6 +25,9 @@ export const updateSucursal = async (
 ): Promise<ActionState<any>> => {
   try {
     const model = new SucursalModel();
+    if (!data.direccion) {
+      data.direccion = undefined
+    }
     const result = await model.update(data);
 
     return { data: result };

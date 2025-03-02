@@ -62,7 +62,7 @@ export class ClienteModel implements IDBModel<Cliente>{
       const db = await this.sql.connect();
       const result = await db.request()
         .input('id', this.sql.dataTypes.Int, cliente.id)
-        .input('codigo',this.sql.dataTypes.VarChar, cliente.codigo)
+        // .input('codigo',this.sql.dataTypes.VarChar, cliente.codigo)
         .input('razon_social', this.sql.dataTypes.VarChar, cliente.razon_social)
         .input('rfc', this.sql.dataTypes.VarChar, cliente.rfc)
         .input('tipo_contribuyente_id', this.sql.dataTypes.VarChar, cliente.tipo_contribuyente_id)
@@ -88,7 +88,7 @@ export class ClienteModel implements IDBModel<Cliente>{
       const db = await this.sql.connect();
       const result = await db.request()
         .input('id', this.sql.dataTypes.Int, cliente.id)
-        .input('codigo',this.sql.dataTypes.VarChar, cliente.codigo)
+        // .input('codigo',this.sql.dataTypes.VarChar, cliente.codigo)
         .input('razon_social', this.sql.dataTypes.VarChar, cliente.razon_social)
         .input('rfc', this.sql.dataTypes.VarChar, cliente.rfc)
         .input('tipo_contribuyente_id', this.sql.dataTypes.VarChar, cliente.tipo_contribuyente_id)

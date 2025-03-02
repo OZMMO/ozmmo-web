@@ -9,6 +9,7 @@ import { ClienteForm, InfoExtraCliente } from './cliente-form';
 import { Cliente } from '@/lib/db/catalogos/clientes/cliente';
 import { RegimenFiscal } from '@/lib/db/sat/regimenes_fiscales/regimen_fiscal';
 import { TipoContribuyente } from '@/lib/db/sat/tipos_contribuyentes/tipo_contribuyente';
+import { Badge } from '@/components/ui/badge';
 
 const columns: Column<Cliente>[] = [
   { key: 'codigo', label: 'Código', sortable: true },
@@ -18,9 +19,9 @@ const columns: Column<Cliente>[] = [
   { key: 'estatus', label: 'Estatus', sortable: true,
     render: (value: any) => {
       if (typeof value === 'object' && value !== null && 'estatus' in value) {
-        return value.estatus ? 'Activo' : 'Inactivo';
+        return value.estatus ? <Badge variant="default">Activo</Badge> : <Badge variant="destructive">Inactivo</Badge>;
       }
-      return value ? 'Activo' : 'Inactivo';
+      return value ? <Badge variant="default">Activo</Badge> : <Badge variant="destructive">Inactivo</Badge>;
     }
    }
 ];

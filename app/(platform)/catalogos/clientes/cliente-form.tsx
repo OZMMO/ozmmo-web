@@ -12,10 +12,10 @@ import { Direccion } from '@/lib/db/sat/direcciones/direccion';
 import { useEffect, useState } from 'react';
 import { Cliente } from '@/lib/db/catalogos/clientes/cliente';
 import DireccionForm from '@/components/direccion';
-import { Empresa, TipoContribuyente } from '@/lib/db';
+import { TipoContribuyente, TipoContribuyenteEnum } from '@/lib/db/sat/tipos_contribuyentes/tipo_contribuyente';
 import { RegimenFiscal } from '@/lib/db/sat/regimenes_fiscales/regimen_fiscal';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Switch } from '@/components/ui/switch';
+import { FormSubmit } from '@/components/form-submit';
 
 type ClienteFormValues = z.infer<typeof clienteFormSchema>
 
@@ -35,24 +35,24 @@ export function ClienteForm({ initialData, onSubmit, infoExtra }: ClienteFormPro
     resolver: zodResolver(clienteFormSchema),
     defaultValues: {
       id: initialData?.id || 0,
-      codigo: initialData?.codigo || "",
+      codigo: initialData?.codigo || "AUTOGENERADO",
       razon_social: initialData?.razon_social || "",
       rfc: initialData?.rfc || "",
-      tipo_contribuyente_id: initialData?.tipo_contribuyente_id || undefined,
+      tipo_contribuyente_id: initialData?.tipo_contribuyente_id || TipoContribuyenteEnum.FISICA,
       curp: initialData?.curp || "",
       regimen_fiscal_id: initialData?.regimen_fiscal_id || undefined,
       fecha_nacimiento: initialData?.fecha_nacimiento || undefined,
-      correo_electronico: initialData?.correo_electronico || "",
-      telefono: initialData?.telefono || "",
-      estatus: initialData?.estatus || true,
+      correo_electronico: initialData?.correo_electronico || undefined,
+      telefono: initialData?.telefono || undefined,
+      estatus: initialData?.estatus || false,
       direccion: initialData?.direccion || undefined,
       UserId: initialData?.UserId || undefined
     },
   })
 
-  const error = form.formState.errors
+  const { isSubmitting } = form.formState;
 
-  console.log(error)
+  const error = form.formState.errors
 
   const [listaRegimenesFiscales, setListaRegimenesFiscales] = useState<RegimenFiscal[]>([])
   const tipoContribuyente = form.watch("tipo_contribuyente_id")
@@ -60,7 +60,7 @@ export function ClienteForm({ initialData, onSubmit, infoExtra }: ClienteFormPro
   const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
 
   useEffect(() => {
-    if (tipoContribuyente === "fisica") {
+    if (tipoContribuyente === TipoContribuyenteEnum.FISICA) {
       setListaRegimenesFiscales(infoExtra?.regimenesFiscales.filter(regimen => regimen.persona_fisica) as RegimenFiscal[])
     } else {
       setListaRegimenesFiscales(infoExtra?.regimenesFiscales.filter(regimen => regimen.persona_moral) as RegimenFiscal[])
@@ -68,13 +68,15 @@ export function ClienteForm({ initialData, onSubmit, infoExtra }: ClienteFormPro
   }, [tipoContribuyente])
 
 
-  const handleSubmit = (data: ClienteFormValues) => {
-    console.log({ data });
+  const handleSubmit = async (data: ClienteFormValues) => {
+    try {
+      data.id = initialData?.id || 0
+      data.direccion = selectedDireccion || undefined
 
-    data.id = initialData?.id || 0
-    data.direccion = selectedDireccion || undefined
-
-    onSubmit(data as Cliente)
+      await onSubmit(data as Cliente)
+    } catch (error) {
+      console.log('Error al guardar el cliente:', { error });
+    }
   }
 
   return (
@@ -84,6 +86,7 @@ export function ClienteForm({ initialData, onSubmit, infoExtra }: ClienteFormPro
         <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
+            disabled={true}
             name="codigo"
             render={({ field }) => (
               <FormItem>
@@ -145,7 +148,7 @@ export function ClienteForm({ initialData, onSubmit, infoExtra }: ClienteFormPro
               </FormItem>
             )}
           />
-          {tipoContribuyente?.toString() === "fisica" && (
+          {tipoContribuyente?.toString() === TipoContribuyenteEnum.FISICA && (
           <FormField
             control={form.control}
             name="curp"
@@ -215,35 +218,39 @@ export function ClienteForm({ initialData, onSubmit, infoExtra }: ClienteFormPro
               </FormItem>
             )}
           />
+
+          <div className="flex justify-center items-center">
+            <FormField
+              control={form.control}
+              name="estatus"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2">
+                  <FormLabel>Estatus</FormLabel>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
-          <FormField
-            control={form.control}
-            name="estatus"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value || false}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Estatus</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-        </div>
+        {/* <div className="grid grid-cols-1 gap-4">
+        </div> */}
         
         <DireccionForm
           selectedDireccion={selectedDireccion}
           setSelectedDireccion={setSelectedDireccion}
         />
-        <div className="flex justify-end">
-          <Button type="submit">Guardar</Button>
-        </div>
+        {/* <div className="flex justify-end">
+        </div> */}
+        <FormSubmit disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </FormSubmit>
       </form>
     </Form>
   )

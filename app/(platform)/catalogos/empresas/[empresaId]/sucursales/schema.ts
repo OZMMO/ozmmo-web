@@ -7,7 +7,7 @@ export const sucursalSchema = z.object({
   codigo: z.string().optional(),
   nombre: z.string(),
   telefono: z.string().optional(),
-  correo_electronico: z.string().email().optional(),
+  correo_electronico: z.string().email().optional().or(z.literal("")),
   responsable: z.string().optional(),
   estatus: z.boolean(),
   direccion: direccionSchema.optional(),

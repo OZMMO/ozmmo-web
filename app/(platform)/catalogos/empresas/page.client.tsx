@@ -15,9 +15,9 @@ import { Building2, PlusIcon } from 'lucide-react';
 const columns: Column<Empresa>[] = [
   // { key: 'id', label: 'ID', sortable: true },
   { key: 'codigo', label: 'Código', sortable: true },
+  { key: 'rfc', label: 'RFC', sortable: true },
   { key: 'razon_social', label: 'Razón Social', sortable: true },
   { key: 'nombre_comercial', label: 'Nombre Comercial', sortable: true }, 
-  { key: 'rfc', label: 'RFC', sortable: true },
   { key: 'correo_electronico', label: 'Correo', sortable: true },
   // { key: 'telefono', label: 'Teléfono', sortable: true },
   // { 
