@@ -1,6 +1,7 @@
 import { IPagination } from "@/lib/interfaces/paginations.interface";
 import { Empresa } from "../../catalogos/empresas/empresa";
 import { Sucursal } from "../../catalogos/sucursales/sucursal";
+import { Ubicacion } from "../ubicaciones/ubicaciones";
 
 export interface Bodega extends IPagination{
   id: number;
@@ -13,4 +14,6 @@ export interface Bodega extends IPagination{
   estatus?: boolean;
   fecha_registro?: Date;
   UserId?: string
+
+  ubicaciones?: Ubicacion[];
 } 

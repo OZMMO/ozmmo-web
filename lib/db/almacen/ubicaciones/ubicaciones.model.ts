@@ -52,7 +52,6 @@ export class UbicacionesModel implements IDBModel<Ubicacion> {
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("codigo", ubicacion.codigo)
         .input("descripcion", ubicacion.descripcion)
         .input("capacidad_maxima", ubicacion.capacidad_maxima)
         .input("estado_ubicacion_id", ubicacion.estado_ubicacion_id)
@@ -72,7 +71,6 @@ export class UbicacionesModel implements IDBModel<Ubicacion> {
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("codigo", ubicacion.codigo)
         .input("descripcion", ubicacion.descripcion)
         .input("capacidad_maxima", ubicacion.capacidad_maxima)
         .input("estado_ubicacion_id", ubicacion.estado_ubicacion_id)

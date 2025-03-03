@@ -23,6 +23,7 @@ export class BodegaModel implements IDBModel<Bodega>{
       const parseData = data.map(item => {
         item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
         item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
+        item.ubicaciones = item.ubicaciones && typeof item.ubicaciones === 'string' ? JSON.parse(item.ubicaciones) : undefined;
       
         return item;
       });
@@ -45,7 +46,8 @@ export class BodegaModel implements IDBModel<Bodega>{
       const parseData = data.map(item => {
         item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
         item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
-      
+        item.ubicaciones = item.ubicaciones && typeof item.ubicaciones === 'string' ? JSON.parse(item.ubicaciones) : undefined;
+
         return item;
       });
 
@@ -62,17 +64,24 @@ export class BodegaModel implements IDBModel<Bodega>{
     try {
       const db = await this.sql.connect();
       const result = await db.request()
-        .input('codigo', bodega.codigo)
         .input('descripcion', bodega.descripcion)
         .input('empresa_id', bodega.empresa_id)
         .input('sucursal_id', bodega.sucursal_id)
         .input('estatus', bodega.estatus)
-        .input('UserId', bodega.UserId)
-        
-        .execute('[Almacen].[sp_iu_tbl_bodegas]');
+        .input('UserId', bodega.UserId)        
+        .execute('[Almacen].[spIUBodega]');
 
-      const data = (result.recordset[0] || null) as Bodega || null;
-      return Promise.resolve(data)
+        const data =  result.recordset as Bodega[];
+      
+        const parseData = data.map(item => {
+          item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
+          item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
+          item.ubicaciones = item.ubicaciones && typeof item.ubicaciones === 'string' ? JSON.parse(item.ubicaciones) : undefined;
+          
+        return item;
+      });
+
+      return Promise.resolve(parseData[0] || null)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -82,16 +91,24 @@ export class BodegaModel implements IDBModel<Bodega>{
       const db = await this.sql.connect();
       const result = await db.request()
         .input('id', bodega.id)
-        .input('codigo', bodega.codigo)
         .input('descripcion', bodega.descripcion)
         .input('empresa_id', bodega.empresa_id)
         .input('sucursal_id', bodega.sucursal_id)
         .input('estatus', bodega.estatus)
         .input('UserId', bodega.UserId)
-      .execute('[Almacen].[sp_iu_tbl_bodegas]');
+      .execute('[Almacen].[spIUBodega]');
 
-      const data = (result.recordset[0] || null) as Bodega || null;
-    return Promise.resolve(data)
+      const data =  result.recordset as Bodega[];
+      
+      const parseData = data.map(item => {
+        item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
+        item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
+        item.ubicaciones = item.ubicaciones && typeof item.ubicaciones === 'string' ? JSON.parse(item.ubicaciones) : undefined;
+        
+        return item;
+      });
+
+      return Promise.resolve(parseData[0] || null)
     } catch (error) {
       return Promise.reject(error)
     }
@@ -104,8 +121,17 @@ export class BodegaModel implements IDBModel<Bodega>{
         .input('UserId', this.sql.dataTypes.VarChar, bodega.UserId)
         .execute(`[Almacen].[sp_borrar_tbl_bodegas]`);
 
-      const dataResult = (result.recordset[0] || null) as Bodega || null;
-      return Promise.resolve(dataResult)
+        const data =  result.recordset as Bodega[];
+      
+        const parseData = data.map(item => {
+          item.empresa = item.empresa && typeof item.empresa === 'string' ? JSON.parse(item.empresa) : undefined;
+          item.sucursal = item.sucursal && typeof item.sucursal === 'string' ? JSON.parse(item.sucursal) : undefined;
+          item.ubicaciones = item.ubicaciones && typeof item.ubicaciones === 'string' ? JSON.parse(item.ubicaciones) : undefined;
+          
+          return item;
+        });
+
+      return Promise.resolve(parseData[0] || null)
     } catch (error) {
       return Promise.reject(error)
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from 'next/navigation';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -25,44 +26,58 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ubicacionesFormSchema } from "./schemas";
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { UbicacionInfoExtra } from "./page.client";
-
+import { Ubicacion } from "@/lib/db";
+import { Switch } from "@/components/ui/switch";
+import { Warehouse } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 type UbicacionFormValues = z.infer<typeof ubicacionesFormSchema>;
 
 interface UbicacionFormProps {
-  initialData?: any | null;
-  infoExtra?: any;
-  onSubmit: (data: any) => void;
+  initialData?: Ubicacion;
+  infoExtra?: UbicacionInfoExtra;
+  onSubmit: (data: Ubicacion) => void;
 }
 
 export function UbicacionForm({
   initialData,
   infoExtra,
-  onSubmit,
+  onSubmit
 }: UbicacionFormProps) {
+  const params = useParams();
+  const { bodegaId } = params;
+  const bodega = infoExtra?.bodega || { codigo: '', descripcion: '' };
 
   const form = useForm<UbicacionFormValues>({
     resolver: zodResolver(ubicacionesFormSchema),
     defaultValues: {
-      codigo: initialData?.codigo || "",
+      codigo: initialData?.codigo || "AUTOGENERADO",
       descripcion: initialData?.descripcion || "",
       capacidad_maxima: initialData?.capacidad_maxima || 0,
       estado_ubicacion_id: initialData?.estado_ubicacion_id || 0,
-      estatus: initialData?.estatus || true,
-      bodega_id: initialData?.bodega_id || 0,
+      estatus: initialData?.estatus || false,
+      bodega_id: initialData?.bodega_id ? Number(initialData?.bodega_id) : (Number(bodegaId) ? Number(bodegaId) : 0),
     },
   });
 
-  const handleSubmit = (data: UbicacionFormValues) => {
-    console.log({ data });
-    data.id = initialData?.id || 0;
-    data.bodega_id = data.bodega_id ? Number(data.bodega_id) : null;
-    data.capacidad_maxima = data.capacidad_maxima
-      ? Number(data.capacidad_maxima)
-      : undefined;
-    data.estado_ubicacion_id = data.estado_ubicacion_id
-      ? Number(data.estado_ubicacion_id)
-      : undefined;
-    onSubmit(data as any);
+  const { isSubmitting } = form.formState;
+
+  const handleSubmit = async (data: UbicacionFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.bodega_id = data.bodega_id ? Number(data.bodega_id) : null;
+      data.capacidad_maxima = data.capacidad_maxima
+        ? Number(data.capacidad_maxima)
+        : undefined;
+      data.estado_ubicacion_id = data.estado_ubicacion_id
+        ? Number(data.estado_ubicacion_id)
+        : undefined;
+      await onSubmit(data as any);
+      toast.success("Ubicación guardada correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar la ubicación");
+    }
   };
 
   return (
@@ -72,10 +87,50 @@ export function UbicacionForm({
         className="space-y-4 py-4"
       >
         <input type="hidden" name="id" value={initialData?.id} />
+        <div className="grid grid-cols-1 gap-4">
+          <div className="flex flex-col space-y-1.5 rounded-lg border p-4">
+            <div className="flex items-center gap-2">
+              <Warehouse className="h-4 w-4 text-muted-foreground" />
+              <h4 className="font-medium">Bodega seleccionada</h4>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="font-mono">{bodega.codigo}</Badge>
+              <span className="text-sm text-muted-foreground">{bodega.descripcion}</span>
+            </div>
+          </div>
+          {/* <FormField
+            control={form.control}
+            name="bodega_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bodega</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  defaultValue={field.value?.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccionar Bodega" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {infoExtra?.catalogoBodegas?.map((bodega: any) => (
+                      <SelectItem key={bodega.id} value={bodega.id.toString()}>
+                        {bodega.codigo}-{bodega.descripcion}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="codigo"
+            disabled={true}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Código</FormLabel>
@@ -123,37 +178,8 @@ export function UbicacionForm({
               </FormItem>
             )}
           />
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          <FormField
-            control={form.control}
-            name="bodega_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bodega</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={field.value?.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar Bodega" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {infoExtra?.catalogoBodegas?.map((bodega: any) => (
-                      <SelectItem key={bodega.id} value={bodega.id.toString()}>
-                        {bodega.codigo}-{bodega.descripcion}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-1 gap-4">
+        </div>        
+        <div className="grid grid-cols-2 gap-4 items-center">
           <FormField
             control={form.control}
             name="estado_ubicacion_id"
@@ -186,8 +212,24 @@ export function UbicacionForm({
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="estatus"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-        <div className="grid grid-cols-1 gap-4">
+        {/* <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="estatus"
@@ -204,9 +246,11 @@ export function UbicacionForm({
                 </div>
               </FormItem>
             )}
-          />
-        </div>
-        <Button type="submit">Guardar</Button>
+          /> 
+        </div>*/}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );

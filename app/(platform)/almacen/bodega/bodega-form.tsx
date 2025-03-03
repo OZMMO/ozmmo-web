@@ -25,12 +25,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { bodegaFormSchema } from "./schemas";
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { BodegaInfoExtra } from "./page.client";
-
+import { toast } from "sonner";
+import { Bodega } from "@/lib/db";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
 type BodegaFormValues = z.infer<typeof bodegaFormSchema>;
 
 interface BodegaFormProps {
-  initialData?: any | null;
-  infoExtra?: any;
+  initialData?: Bodega | null;
+  infoExtra?: BodegaInfoExtra;
   onSubmit: (data: any) => void;
 }
 
@@ -39,25 +42,33 @@ export function BodegaForm({
   infoExtra,
   onSubmit,
 }: BodegaFormProps) {
+  const searchParams = useSearchParams();
+  const empresaId = searchParams.get("empresaId");
 
   const form = useForm<BodegaFormValues>({
     resolver: zodResolver(bodegaFormSchema),
     defaultValues: {
-      codigo: initialData?.codigo || "",
+      codigo: initialData?.codigo || "AUTOGENERADO",
       descripcion: initialData?.descripcion || "",
-      empresa_id: initialData?.empresa_id || 0,
-      empresa: initialData?.empresa || "",
+      empresa_id: initialData?.empresa_id ? initialData?.empresa_id : (empresaId ? Number(empresaId) : 0),
       sucursal_id: initialData?.sucursal_id || 0,
-      sucursal: initialData?.sucursal || "",
-      estatus: initialData?.estatus || true,
+      estatus: initialData?.estatus || false,
     },
   });
 
-  const handleSubmit = (data: BodegaFormValues) => {
-    data.id = initialData?.id || 0;
-    data.empresa_id = data.empresa_id ? Number(data.empresa_id) : null;
-    data.sucursal_id = data.sucursal_id ? Number(data.sucursal_id) : null;
-    onSubmit(data as any);
+  const { isSubmitting } = form.formState;
+
+  const handleSubmit = async (data: BodegaFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.empresa_id = data.empresa_id ? Number(data.empresa_id) : null;
+      data.sucursal_id = data.sucursal_id ? Number(data.sucursal_id) : null;
+      await onSubmit(data as any);
+      toast.success("Bodega guardada correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar la bodega");
+    }
   };
 
   return (
@@ -71,11 +82,12 @@ export function BodegaForm({
           <FormField
             control={form.control}
             name="codigo"
+            disabled={true}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Código</FormLabel>
                 <FormControl>
-                  <Input placeholder="Ej: BOD001" {...field} />
+                  <Input placeholder="Ej: 0001" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -104,6 +116,7 @@ export function BodegaForm({
               <FormItem>
                 <FormLabel>Empresa - Razón Social</FormLabel>
                 <Select
+                  disabled={empresaId ? true : false}
                   onValueChange={(value) => field.onChange(Number(value))}
                   defaultValue={field.value?.toString()}
                 >
@@ -133,6 +146,24 @@ export function BodegaForm({
             control={form.control}
             name="estatus"
             render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          </div>
+        {/* <div className="grid grid-cols-1 gap-4">
+          <FormField
+            control={form.control}
+            name="estatus"
+            render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                 <FormControl>
                   <Checkbox
@@ -146,8 +177,10 @@ export function BodegaForm({
               </FormItem>
             )}
           />
-        </div>
-        <Button type="submit">Guardar</Button>
+        </div> */}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );

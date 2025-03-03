@@ -1,6 +1,7 @@
 import { IPagination } from "@/lib/interfaces/paginations.interface";
 import { Direccion } from "../../sat/direcciones/direccion";
 import { Sucursal } from "../sucursales/sucursal";
+import { Bodega } from "../../almacen/bodegas/bodega";
 
 export interface Empresa extends IPagination{
   id: number;
@@ -25,4 +26,5 @@ export interface Empresa extends IPagination{
   UserId?: string;
 
   sucursales?: Sucursal[];
+  bodegas?: Bodega[];
 } 

@@ -5,6 +5,7 @@ import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
 import { Direccion } from "../../sat/direcciones/direccion";
 import { Sucursal } from "../sucursales/sucursal";
+import { Bodega } from "../../almacen/bodegas/bodega";
 
 export class EmpresaModel implements IDBModel<Empresa>{
   sql: MSSQLServer;
@@ -25,6 +26,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const parsedData = data.map((empresa) => {
         empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
         empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+        empresa.bodegas = (empresa.bodegas && typeof empresa.bodegas === 'string') ? JSON.parse(empresa.bodegas) as Bodega[] : undefined;
 
         return empresa as Empresa;
       });
@@ -47,6 +49,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const parsedData = data.map((empresa) => {
         empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
         empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+        empresa.bodegas = (empresa.bodegas && typeof empresa.bodegas === 'string') ? JSON.parse(empresa.bodegas) as Bodega[] : undefined;
 
         return empresa as Empresa;
       });
@@ -90,7 +93,8 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const parsedData = data.map((empresa) => {
         empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
         empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
-        
+        empresa.bodegas = (empresa.bodegas && typeof empresa.bodegas === 'string') ? JSON.parse(empresa.bodegas) as Bodega[] : undefined;
+
         return empresa as Empresa;
       });
 
@@ -128,7 +132,8 @@ export class EmpresaModel implements IDBModel<Empresa>{
         const parsedData = data.map((empresa) => {
           empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
           empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
-          
+          empresa.bodegas = (empresa.bodegas && typeof empresa.bodegas === 'string') ? JSON.parse(empresa.bodegas) as Bodega[] : undefined;
+
           return empresa as Empresa;
         });
   
@@ -151,6 +156,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
         const parsedData = data.map((empresa) => {
           empresa.direccion = (empresa.direccion && typeof empresa.direccion === 'string') ? JSON.parse(empresa.direccion) as Direccion : undefined;
           empresa.sucursales = (empresa.sucursales && typeof empresa.sucursales === 'string') ? JSON.parse(empresa.sucursales) as Sucursal[] : undefined;
+          empresa.bodegas = (empresa.bodegas && typeof empresa.bodegas === 'string') ? JSON.parse(empresa.bodegas) as Bodega[] : undefined;
           
           return empresa as Empresa;
         });

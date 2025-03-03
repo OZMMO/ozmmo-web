@@ -48,7 +48,6 @@ export default async function SucursalesPage({ searchParams, params }: PageProps
   criteria.addConditition("UserId", userId);
 
   const { data, totalCount, totalPages } = await sucursalModel.findMany(criteria);
-  console.log(data);
 
   return (
     <SucursalesClientPage

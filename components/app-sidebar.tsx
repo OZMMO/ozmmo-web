@@ -116,14 +116,14 @@ const data = {
             { title: "Vinculación", url: "/almacen/sucursales/vinculacion" },
           ],
         },
-        {
-          title: "Ubicaciones",
-          url: "/almacen/ubicaciones",
-          items: [
-            { title: "CRUD", url: "/almacen/ubicaciones/crud" },
-            { title: "Vinculación", url: "/almacen/ubicaciones/vinculacion" },
-          ],
-        },
+        // {
+        //   title: "Ubicaciones",
+        //   url: "/almacen/ubicaciones",
+        //   items: [
+        //     { title: "CRUD", url: "/almacen/ubicaciones/crud" },
+        //     { title: "Vinculación", url: "/almacen/ubicaciones/vinculacion" },
+        //   ],
+        // },
         {
           title: "Productos",
           url: "/almacen/productos",

@@ -5,7 +5,8 @@ import { IPageSearchPaginationParams } from '@/lib/interfaces/paginations.interf
 import { IResponseModel } from '@/lib/interfaces/response-model.interface';
 import { createServer, deleteServer, updateServer } from './actions';
 import { UbicacionForm } from './ubicacion-form';
-import { Ubicacion } from '@/lib/db';
+import { Bodega, Ubicacion } from '@/lib/db';
+import { Badge } from '@/components/ui/badge';
   // import { Bodega } from '@/lib/db/catalogos/bodega.model';
   // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
@@ -16,22 +17,34 @@ const columns: Column<Ubicacion>[] = [
   { key: 'bodega', label: 'Bodega', sortable: true },
   { key: 'estado_ubicacion', label: 'Estado de Ubicación', sortable: true },
   { key: 'capacidad_maxima', label: 'Capacidad Máxima', sortable: true },
-  { key: 'estatus', label: 'Estatus', sortable: true, render: (value) => value ? 'Activo' : 'Inactivo' }
+  { key: 'estatus', label: 'Estatus', sortable: true,
+    render: (value: any) => {
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
 ];
 
 interface PageProps {
   payload: IResponseModel<any[]>;
   paginationParams: IPageSearchPaginationParams;
-  catalogoBodegas: any[];
+  bodega: Bodega;
   catalogoEstadosUbicacion: any[];
 }
 
 export interface UbicacionInfoExtra {
-    catalogoBodegas: any[]
+    bodega: Bodega;
     catalogoEstadosUbicacion: any[]
   }
 
-export default function BodegasClientPage({ payload, paginationParams, catalogoBodegas, catalogoEstadosUbicacion }: PageProps) {
+export default function UbicacionesClientPage({ payload, paginationParams, bodega, catalogoEstadosUbicacion }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false)
  
@@ -59,7 +72,7 @@ export default function BodegasClientPage({ payload, paginationParams, catalogoB
         update: updateServer,
         delete: deleteServer,
       }}
-      infoExtra={{ catalogoBodegas, catalogoEstadosUbicacion }}
+      infoExtra={{ bodega, catalogoEstadosUbicacion }}
     />
   );
 }
