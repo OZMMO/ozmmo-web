@@ -3,6 +3,7 @@ import { Proveedor } from "./proveedores";
 import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
+import { Direccion } from "../../sat/direcciones/direccion";
 
 export class ProveedoresModel implements IDBModel<Proveedor> {
   sql: MSSQLServer;
@@ -19,7 +20,14 @@ export class ProveedoresModel implements IDBModel<Proveedor> {
       criteria.toSql(request);
       const result = await request.execute("[Almacen].[spBuscarProveedor]");
       const data = result.recordset as Proveedor[];
-      return Promise.resolve(data[0] || null);
+
+      const parsedData = data.map((proveedor) => {
+        proveedor.direccion = (proveedor.direccion && typeof proveedor.direccion === 'string') ? JSON.parse(proveedor.direccion) as Direccion : undefined;
+
+        return proveedor as Proveedor;
+      });
+
+      return Promise.resolve(parsedData[0] || null);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -36,10 +44,16 @@ export class ProveedoresModel implements IDBModel<Proveedor> {
 
       const data = result.recordset as Proveedor[];
 
+      const parsedData = data.map((proveedor) => {
+        proveedor.direccion = (proveedor.direccion && typeof proveedor.direccion === 'string') ? JSON.parse(proveedor.direccion) as Direccion : undefined;
+        
+        return proveedor as Proveedor;
+      });
+
       return Promise.resolve({
-        data: data,
-        totalCount: data.length,
-        totalPages: data[0]?.totalPages || 1,
+        data: parsedData,
+        totalCount: parsedData[0]?.totalCount || 0,
+        totalPages: parsedData[0]?.totalPages || 1,
       });
     } catch (error) {
       return Promise.reject(error);
@@ -54,13 +68,21 @@ export class ProveedoresModel implements IDBModel<Proveedor> {
         .input("contacto", proveedor.contacto)
         .input("telefono", proveedor.telefono)
         .input("email", proveedor.email)
-        .input("direccion", proveedor.direccion)
+        .input("direccion", proveedor.direccion ? JSON.stringify(proveedor.direccion) : null)
         .input("estatus", proveedor.estatus)
         .input("UserId", proveedor.UserId)
         .execute("[Almacen].[spIUProveedores]");
 
-      const data = ((result.recordset[0] || null) as Proveedor) || null;
-      return Promise.resolve(data);
+        const data = result.recordset as Proveedor[];
+
+        const parsedData = data.map((proveedor) => {
+          proveedor.direccion = (proveedor.direccion && typeof proveedor.direccion === 'string') ? JSON.parse(proveedor.direccion) as Direccion : undefined;
+          
+          return proveedor as Proveedor;
+        });
+
+
+      return Promise.resolve(parsedData[0]);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -74,14 +96,22 @@ export class ProveedoresModel implements IDBModel<Proveedor> {
         .input("contacto", proveedor.contacto)
         .input("telefono", proveedor.telefono)
         .input("email", proveedor.email)
-        .input("direccion", proveedor.direccion)
+        .input("direccion", proveedor.direccion ? JSON.stringify(proveedor.direccion) : null)
         .input("estatus", proveedor.estatus)
         .input("UserId", proveedor.UserId)
         .input("id", proveedor.id)
         .execute("[Almacen].[spIUProveedores]");
 
-      const data = ((result.recordset[0] || null) as Proveedor) || null;
-      return Promise.resolve(data);
+        const data = result.recordset as Proveedor[];
+
+        const parsedData = data.map((proveedor) => {
+          proveedor.direccion = (proveedor.direccion && typeof proveedor.direccion === 'string') ? JSON.parse(proveedor.direccion) as Direccion : undefined;
+          
+          return proveedor as Proveedor;
+        });
+
+
+      return Promise.resolve(parsedData[0]);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -95,8 +125,16 @@ export class ProveedoresModel implements IDBModel<Proveedor> {
         .input("UserId", this.sql.dataTypes.VarChar, proveedor.UserId)
         .execute(`[Catalogos].[spBorrarProveedores]`);
 
-      const dataResult = ((result.recordset[0] || null) as Proveedor) || null;
-      return Promise.resolve(dataResult);
+        const data = result.recordset as Proveedor[];
+
+        const parsedData = data.map((proveedor) => {
+          proveedor.direccion = (proveedor.direccion && typeof proveedor.direccion === 'string') ? JSON.parse(proveedor.direccion) as Direccion : undefined;
+          
+          return proveedor as Proveedor;
+        });
+
+
+      return Promise.resolve(parsedData[0]);
     } catch (error) {
       return Promise.reject(error);
     }

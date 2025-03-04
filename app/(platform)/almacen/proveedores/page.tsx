@@ -21,18 +21,11 @@ export default async function ProveedoresPage({ searchParams }: PageProps) {
   criteria.addConditition("page", Number(searchParams.page) || 1);
   criteria.addConditition("pageSize", Number(searchParams.pageSize) || 10);
   criteria.addConditition("query", searchParams.query || "");
-  criteria.addConditition(
-    "orderByColumn",
-    searchParams.orderByColumn || "nombre"
-  );
-  criteria.addConditition(
-    "orderDirection",
-    searchParams.orderDirection || "asc"
-  );
+  criteria.addConditition("orderByColumn",  searchParams.orderByColumn || "codigo");
+  criteria.addConditition("orderDirection", searchParams.orderDirection || "asc");
   criteria.addConditition("UserId", userId);
 
-  const { data, totalCount, totalPages } =
-    await proveedoresModel.findMany(criteria);
+  const { data, totalCount, totalPages } = await proveedoresModel.findMany(criteria);
 
   return (
     <ProveedoresClientPage

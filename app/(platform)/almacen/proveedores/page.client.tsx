@@ -3,25 +3,34 @@ import { CRUD, Column } from "@/components/crud";
 import { useEffect, useState } from "react";
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
-import { createServer, deleteServer, updateServer } from "./actions";
+import { createProveedor, deleteProveedor, updateProveedor } from "./actions";
 import { ProveedorForm } from "./proveedor-form";
 import { Proveedor } from "@/lib/db";
+import { Badge } from "@/components/ui/badge";
 // import { Bodega } from '@/lib/db/catalogos/bodega.model';
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
 const columns: Column<Proveedor>[] = [
   // { key: 'id', label: 'ID', sortable: true },
+  { key: "codigo", label: "Código", sortable: true },
   { key: "nombre", label: "Nombre", sortable: true },
   { key: "contacto", label: "Contacto", sortable: true },
   { key: "telefono", label: "Teléfono", sortable: true },
   { key: "email", label: "Email", sortable: true },
-  { key: "direccion", label: "Dirección", sortable: true },
-  {
-    key: "estatus",
-    label: "Estatus",
-    sortable: true,
-    render: (value) => (value ? "Activo" : "Inactivo"),
-  },
+  // { key: "direccion", label: "Dirección", sortable: true },
+  { key: 'estatus', label: 'Estatus', sortable: true,
+    render: (value: any) => {
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
 ];
 
 interface PageProps {
@@ -58,9 +67,9 @@ export default function ProveedoresClientPage({
       formComponent={ProveedorForm}
       // jsClassName="Empresa"
       actions={{
-        create: createServer,
-        update: updateServer,
-        delete: deleteServer,
+        create: createProveedor,
+        update: updateProveedor,
+        delete: deleteProveedor,
       }}
       infoExtra={{}}
     />

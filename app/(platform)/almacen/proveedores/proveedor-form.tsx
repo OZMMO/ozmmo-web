@@ -25,6 +25,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { proveedoresFormSchema } from "./schemas";
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { ProveedorInfoExtra } from "./page.client";
+import { Direccion } from "@/lib/db/sat/direcciones/direccion";
+import { toast } from "sonner";
+import DireccionForm from "@/components/direccion";
+import { Switch } from "@/components/ui/switch";
 
 type ProveedorFormValues = z.infer<typeof proveedoresFormSchema>;
 
@@ -47,19 +51,31 @@ export function ProveedorForm({
       contacto: initialData?.contacto || "",
       telefono: initialData?.telefono || "",
       email: initialData?.email || "",
-      direccion: initialData?.direccion || "",
-      estatus: initialData?.estatus || true,
+      direccion: initialData?.direccion || undefined,
+      estatus: initialData?.estatus || false,
     },
   });
-  const handleSubmit = (data: ProveedorFormValues) => {
-    data.id = initialData?.id || 0;
-    data.nombre = data.nombre;
-    data.estatus = data.estatus ? data.estatus : false;
-    data.telefono = data.telefono ? data.telefono : null;
-    data.email = data.email ? data.email : null;
-    data.direccion = data.direccion ? data.direccion : null;
-    data.contacto = data.contacto ? data.contacto : null;
-    onSubmit(data as any);
+
+  const { isSubmitting } = form.formState;
+
+  const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(initialData?.direccion || null)
+  
+  const handleSubmit = async (data: ProveedorFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.nombre = data.nombre;
+      data.estatus = data.estatus ? data.estatus : false;
+      data.telefono = data.telefono ? data.telefono : null;
+      data.email = data.email ? data.email : null;
+      data.direccion = selectedDireccion || undefined
+      data.contacto = data.contacto ? data.contacto : null;
+
+      await onSubmit(data as any);
+      toast.success("Proveedor guardado correctamente");
+    } catch (error) {
+      console.log('Error al guardar el proveedor:', { error });
+      toast.error("Error al guardar el proveedor");
+    }
   };
 
   return (
@@ -122,7 +138,7 @@ export function ProveedorForm({
             )}
           />
         </div>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="email"
@@ -140,19 +156,16 @@ export function ProveedorForm({
               </FormItem>
             )}
           />
-        </div>
-        <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
-            name="direccion"
+            name="estatus"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Dirección</FormLabel>
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Dirección del Proveedor..."
-                    {...field}
-                    value={field.value?.toString() ?? ""}
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -160,26 +173,12 @@ export function ProveedorForm({
             )}
           />
         </div>
-        <div className="grid grid-cols-1 gap-4">
-          <FormField
-            control={form.control}
-            name="estatus"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value || false}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Estatus</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-        </div>
-        <Button type="submit">Guardar</Button>
+      
+        <DireccionForm selectedDireccion={selectedDireccion} setSelectedDireccion={setSelectedDireccion} />
+
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );

@@ -3,7 +3,7 @@
 import { ActionState } from "@/components/crud";
 import { Proveedor, ProveedoresModel } from "@/lib/db";
 
-export const createServer = async (
+export const createProveedor = async (
   data: Proveedor
 ): Promise<ActionState<any>> => {
   try {
@@ -16,7 +16,7 @@ export const createServer = async (
   }
 };
 
-export const updateServer = async (
+export const updateProveedor = async (
   data: Proveedor
 ): Promise<ActionState<any>> => {
   try {
@@ -29,7 +29,7 @@ export const updateServer = async (
   }
 };
 
-export const deleteServer = async (
+export const deleteProveedor = async (
   data: Proveedor
 ): Promise<ActionState<any>> => {
   try {
