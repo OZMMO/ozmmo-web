@@ -26,12 +26,12 @@ export default async function RecepcionesPage({ searchParams }: PageProps) {
   const proveedoresModel = new ProveedoresModel();
   const criteriaProveedores = new CriteriaSqlServer<Proveedor>();
   criteriaProveedores.addConditition("UserId", userId);
-  const { data: dataProveedores } =
-    await proveedoresModel.findMany(criteriaProveedores);
+  const { data: dataProveedores } = await proveedoresModel.findMany(criteriaProveedores);
 
   const bodegaModel = new BodegaModel();
   const criteriaBodega = new CriteriaSqlServer<Bodega>();
   criteriaBodega.addConditition("UserId", userId);
+
   const { data: dataBodegas } = await bodegaModel.findMany(criteriaBodega);
 
   const recepcionModel = new RecepcionModel();
@@ -40,19 +40,13 @@ export default async function RecepcionesPage({ searchParams }: PageProps) {
   criteria.addConditition("page", Number(searchParams.page) || 1);
   criteria.addConditition("pageSize", Number(searchParams.pageSize) || 10);
   criteria.addConditition("query", searchParams.query || "");
-  criteria.addConditition(
-    "orderByColumn",
-    searchParams.orderByColumn || "Name"
-  );
-  criteria.addConditition(
-    "orderDirection",
-    searchParams.orderDirection || "asc"
-  );
+  criteria.addConditition("orderByColumn",searchParams.orderByColumn || "numero_recepcion");
+  criteria.addConditition("orderDirection",searchParams.orderDirection || "desc");
   criteria.addConditition("UserId", userId);
 
-  const { data, totalCount, totalPages } =
-    await recepcionModel.findMany(criteria);
+  const { data, totalCount, totalPages } = await recepcionModel.findMany(criteria);
 
+  console.log(dataBodegas[0]?.empresa);
   return (
     <RecepcionesClientPage
       payload={{

@@ -27,6 +27,8 @@ import { recepcionesFormSchema } from "./schemas";
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { RecepcionInfoExtra } from "./page.client";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 type RecepcionFormValues = z.infer<typeof recepcionesFormSchema>;
 
@@ -48,17 +50,25 @@ export function RecepcionForm({
       proveedor_id: initialData?.proveedor_id || 0,
       bodega_id: initialData?.bodega_id || 0,
       completado: initialData?.completado || false,
-      estatus: initialData?.estatus || true,
+      estatus: initialData?.estatus || false,
     },
   });
 
-  const handleSubmit = (data: RecepcionFormValues) => {
-    data.id = initialData?.id || 0;
-    data.proveedor_id = data.proveedor_id ? Number(data.proveedor_id) : null;
-    data.bodega_id = data.bodega_id ? Number(data.bodega_id) : null;
-    data.completado = data.completado ? Boolean(data.completado) : undefined;
-    data.estatus = data.estatus ? Boolean(data.estatus) : undefined;
-    onSubmit(data as any);
+  const { isSubmitting } = form.formState;
+
+  const handleSubmit = async (data: RecepcionFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.proveedor_id = data.proveedor_id ? Number(data.proveedor_id) : null;
+      data.bodega_id = data.bodega_id ? Number(data.bodega_id) : null;
+      data.completado = data.completado ? Boolean(data.completado) : undefined;
+      data.estatus = data.estatus ? Boolean(data.estatus) : undefined;
+      await onSubmit(data as any);
+      toast.success("Recepcion guardada correctamente");
+    } catch (error) {
+      console.error("Error al guardar la recepcion:", error);
+      toast.error("Error al guardar la recepcion");
+    }
   };
 
   return (
@@ -130,8 +140,15 @@ export function RecepcionForm({
                   </FormControl>
                   <SelectContent>
                     {infoExtra?.catalogoBodegas?.map((bodega: any) => (
-                      <SelectItem key={bodega.id} value={bodega.id.toString()}>
-                        {bodega.codigo}-{bodega.descripcion}
+                      <SelectItem key={bodega.id} value={bodega.id.toString()} className="">
+                        <div className="flex flex-col items-start gap-1">
+                          <div className="font-medium">
+                            Bodega: {bodega.codigo} - {bodega.descripcion}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            Empresa: {bodega.empresa?.codigo} - {bodega.empresa?.nombre_comercial}
+                          </div>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -141,7 +158,7 @@ export function RecepcionForm({
             )}
           />
         </div>
-        <div className="grid grid-cols-1 gap-4">
+        {/* <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="completado"
@@ -159,8 +176,41 @@ export function RecepcionForm({
               </FormItem>
             )}
           />
-        </div>
-        <div className="grid grid-cols-1 gap-4">
+        </div> */}
+        <div className="grid grid-cols-2 gap-4">
+        <FormField
+            control={form.control}
+            name="completado"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Completado</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="estatus"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+{/*           
           <FormField
             control={form.control}
             name="estatus"
@@ -177,9 +227,11 @@ export function RecepcionForm({
                 </div>
               </FormItem>
             )}
-          />
+          /> */}
         </div>
-        <Button type="submit">Guardar</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );

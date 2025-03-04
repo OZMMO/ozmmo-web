@@ -9,11 +9,13 @@ import { Recepcion } from "@/lib/db";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 // import { Bodega } from '@/lib/db/catalogos/bodega.model';
 // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
 const columns: Column<Recepcion>[] = [
   // { key: 'id', label: 'ID', sortable: true },
+  { key: "numero_recepcion", label: "Número de Recepción", sortable: true },
   { key: "fecha_recepcion", label: "Fecha de Recepcion", sortable: true },
   { key: "proveedor", label: "Proveedor", sortable: true },
   { key: "bodega", label: "Bodega", sortable: true },
@@ -21,14 +23,25 @@ const columns: Column<Recepcion>[] = [
     key: "completado",
     label: "Completado",
     sortable: true,
-    render: (value) => (value ? "Sí" : "No"),
+    render: (value) => (
+      <Badge variant={value ? "default" : "secondary"}>
+        {value ? "Sí" : "No"}
+      </Badge>
+    ),
   },
-  {
-    key: "estatus",
-    label: "Estatus",
-    sortable: true,
-    render: (value) => (value ? "Activo" : "Inactivo"),
-  },
+  { key: 'estatus', label: 'Estatus', sortable: true,
+    render: (value: any) => {
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
 ];
 
 interface PageProps {

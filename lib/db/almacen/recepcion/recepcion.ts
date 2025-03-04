@@ -2,6 +2,7 @@ import { IPagination } from "@/lib/interfaces/paginations.interface";
 
 export interface Recepcion extends IPagination {
   id: number;
+  numero_recepcion: string;
   fecha_recepcion: Date;
   proveedor_id?: number;
   proveedor?: string;
