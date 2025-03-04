@@ -56,7 +56,7 @@ export default async function MaterialProductoPage({
   criteria.addConditition("page", Number(searchParams.page) || 1);
   criteria.addConditition("pageSize", Number(searchParams.pageSize) || 10);
   criteria.addConditition("query", searchParams.query || "");
-  criteria.addConditition("orderByColumn",searchParams.orderByColumn || "Name");
+  criteria.addConditition("orderByColumn",searchParams.orderByColumn || "codigo");
   criteria.addConditition("orderDirection",searchParams.orderDirection || "asc");
   criteria.addConditition("UserId", userId);
 

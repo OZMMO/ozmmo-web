@@ -7,6 +7,7 @@ import { createServer, deleteServer, updateServer } from './actions';
 import { UbicacionForm } from './ubicacion-form';
 import { Bodega, Ubicacion } from '@/lib/db';
 import { Badge } from '@/components/ui/badge';
+import { Warehouse } from 'lucide-react';
   // import { Bodega } from '@/lib/db/catalogos/bodega.model';
   // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
@@ -57,22 +58,36 @@ export default function UbicacionesClientPage({ payload, paginationParams, bodeg
   }
 
   return (
-    <CRUD<Ubicacion, UbicacionInfoExtra>
-      title="Catálogo de Ubicaciones"
-      columns={columns}
-      data={data}
-      totalCount={totalCount}
-      totalPages={totalPages}
-      currentPage={Number(paginationParams.page) || 1}
-      pageSize={Number(paginationParams.pageSize) || 10}
-      formComponent={UbicacionForm}
-      // jsClassName="Empresa"
-      actions={{
-        create: createServer,
-        update: updateServer,
-        delete: deleteServer,
-      }}
-      infoExtra={{ bodega, catalogoEstadosUbicacion }}
-    />
+    <>
+      <div className="grid grid-cols-1 gap-4">
+        <div className="flex flex-col space-y-1.5 rounded-lg border p-4">
+          <div className="flex items-center gap-2">
+            <Warehouse className="h-4 w-4 text-muted-foreground" />
+            <h4 className="font-medium">Bodega seleccionada</h4>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="font-mono">{bodega.codigo}</Badge>
+            <span className="text-sm text-muted-foreground">{bodega.descripcion}</span>
+          </div>
+        </div>
+      </div>
+      <CRUD<Ubicacion, UbicacionInfoExtra>
+        title="Catálogo de Ubicaciones"
+        columns={columns}
+        data={data}
+        totalCount={totalCount}
+        totalPages={totalPages}
+        currentPage={Number(paginationParams.page) || 1}
+        pageSize={Number(paginationParams.pageSize) || 10}
+        formComponent={UbicacionForm}
+        // jsClassName="Empresa"
+        actions={{
+          create: createServer,
+          update: updateServer,
+          delete: deleteServer,
+        }}
+        infoExtra={{ bodega, catalogoEstadosUbicacion }}
+      />
+    </>
   );
 }

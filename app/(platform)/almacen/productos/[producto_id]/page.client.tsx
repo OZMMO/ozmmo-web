@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 const columns: Column<MaterialProducto>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -34,12 +35,19 @@ const columns: Column<MaterialProducto>[] = [
       return <p className="text-sm text-wrap">{value?.toString()}</p>;
     },
   },
-  {
-    key: "estatus",
-    label: "Estatus",
-    sortable: true,
-    render: (value) => (value ? "Activo" : "Inactivo"),
-  },
+  { key: 'estatus', label: 'Estatus', sortable: true,
+    render: (value: any) => {
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
   { key: "fecha_registro", label: "Fecha de Registro", sortable: true },
 ];
 
@@ -100,9 +108,9 @@ export default function MaterialProductoClientPage({
               Números de parte que incluyen el siguiente producto.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-4">
-            <div className="grid grid-cols-3 gap-4">
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+          <CardContent className="grid gap-2">
+            <div className="grid grid-cols-3 gap-2">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">Codigo</p>
                   <p className="text-sm text-muted-foreground">
@@ -110,7 +118,7 @@ export default function MaterialProductoClientPage({
                   </p>
                 </div>
               </div>
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">
                     Descripción
@@ -120,7 +128,7 @@ export default function MaterialProductoClientPage({
                   </p>
                 </div>
               </div>
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">
                     Codigo Proveedor
@@ -131,8 +139,8 @@ export default function MaterialProductoClientPage({
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+            <div className="grid grid-cols-3 gap-2">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">
                     Unidad de Medida
@@ -142,7 +150,7 @@ export default function MaterialProductoClientPage({
                   </p>
                 </div>
               </div>
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">Peso</p>
                   <p className="text-sm text-muted-foreground">
@@ -150,7 +158,7 @@ export default function MaterialProductoClientPage({
                   </p>
                 </div>
               </div>
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">Volumen</p>
                   <p className="text-sm text-muted-foreground">
@@ -160,7 +168,7 @@ export default function MaterialProductoClientPage({
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">
                     Es Ensamble
@@ -170,15 +178,15 @@ export default function MaterialProductoClientPage({
                   </p>
                 </div>
               </div>
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">Estatus</p>
                   <p className="text-sm text-muted-foreground">
-                    {producto_parent?.estatus ? "Activo" : "Inactivo"}
+                    {producto_parent?.estatus ? <Badge variant="default">Activo</Badge> : <Badge variant="destructive">Inactivo</Badge>}
                   </p>
                 </div>
               </div>
-              <div className=" flex items-center space-x-4 rounded-md border p-4">
+              <div className=" flex items-center space-x-2 rounded-md border p-2">
                 <div className="flex-1 space-y-1">
                   <p className="text-sm font-medium leading-none">
                     Fecha de Registro

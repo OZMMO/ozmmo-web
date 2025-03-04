@@ -9,6 +9,7 @@ import { Productos } from "@/lib/db";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 const columns: Column<Productos>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -24,12 +25,19 @@ const columns: Column<Productos>[] = [
   },
   { key: "peso", label: "Peso", sortable: true },
   { key: "volumen", label: "Volumen", sortable: true },
-  {
-    key: "estatus",
-    label: "Estatus",
-    sortable: true,
-    render: (value) => (value ? "Activo" : "Inactivo"),
-  },
+  { key: 'estatus', label: 'Estatus', sortable: true,
+    render: (value: any) => {
+      const status = (typeof value === 'object' && value !== null && 'estatus' in value) 
+        ? value.estatus 
+        : value;
+
+      return (
+        <Badge variant={status ? "default" : "destructive"}>
+          {status ? "Activo" : "Inactivo"}
+        </Badge>
+      );
+    }
+   },
 ];
 
 interface PageProps {

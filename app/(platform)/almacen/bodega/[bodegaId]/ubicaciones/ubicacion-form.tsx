@@ -98,33 +98,6 @@ export function UbicacionForm({
               <span className="text-sm text-muted-foreground">{bodega.descripcion}</span>
             </div>
           </div>
-          {/* <FormField
-            control={form.control}
-            name="bodega_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Bodega</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={field.value?.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar Bodega" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {infoExtra?.catalogoBodegas?.map((bodega: any) => (
-                      <SelectItem key={bodega.id} value={bodega.id.toString()}>
-                        {bodega.codigo}-{bodega.descripcion}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
         </div>
         <div className="grid grid-cols-2 gap-4">
           <FormField

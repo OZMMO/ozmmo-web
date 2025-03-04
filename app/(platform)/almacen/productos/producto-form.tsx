@@ -25,6 +25,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { productosFormSchema } from "./schemas";
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { ProductosInfoExtra } from "./page.client";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 type ProductosFormValues = z.infer<typeof productosFormSchema>;
 
@@ -43,23 +45,31 @@ export function ProductosForm({
   const form = useForm<ProductosFormValues>({
     resolver: zodResolver(productosFormSchema),
     defaultValues: {
-      codigo: initialData?.codigo || "",
+      codigo: initialData?.codigo || "AUTOGENERADO",
       codigo_proveedor: initialData?.codigo_proveedor || "",
       descripcion: initialData?.descripcion || "",
       unidad_medida_id: initialData?.unidad_medida_id || 0,
       peso: initialData?.peso || 0,
       volumen: initialData?.volumen || 0,
       es_ensamble: initialData?.es_ensamble || false,
-      estatus: initialData?.estatus || true,
+      estatus: initialData?.estatus || false,
     },
   });
 
-  const handleSubmit = (data: ProductosFormValues) => {
-    data.id = initialData?.id || 0;
-    data.unidad_medida_id = data.unidad_medida_id
-      ? Number(data.unidad_medida_id)
-      : undefined;
-    onSubmit(data as any);
+  const { isSubmitting } = form.formState;
+
+  const handleSubmit = async (data: ProductosFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.unidad_medida_id = data.unidad_medida_id
+        ? Number(data.unidad_medida_id)
+        : undefined;
+      await onSubmit(data as any);
+      toast.success("Producto guardado correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al guardar el producto");
+    }
   };
 
   return (
@@ -73,6 +83,7 @@ export function ProductosForm({
           <FormField
             control={form.control}
             name="codigo"
+            disabled={true}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Código</FormLabel>
@@ -194,8 +205,41 @@ export function ProductosForm({
             )}
           />
         </div>
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <FormField
+            control={form.control}
+            name="es_ensamble"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Es Ensamblado</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="estatus"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* <FormField
             control={form.control}
             name="es_ensamble"
             render={({ field }) => (
@@ -211,9 +255,9 @@ export function ProductosForm({
                 </div>
               </FormItem>
             )}
-          />
+          /> */}
         </div>
-        <div className="grid grid-cols-1 gap-4">
+        {/* <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
             name="estatus"
@@ -231,8 +275,10 @@ export function ProductosForm({
               </FormItem>
             )}
           />
-        </div>
-        <Button type="submit">Guardar</Button>
+        </div> */}
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );

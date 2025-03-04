@@ -146,8 +146,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   const [errors, setErrors] = useState<FieldErrors<T>>({} as FieldErrors<T>);
 
   const query = searchParams.get("query") || "";
-  const orderByColumn =
-    (searchParams.get("orderByColumn") as keyof T) || columns[0].key;
+  const orderByColumn = (searchParams.get("orderByColumn") as keyof T) || columns[0].key;
   const orderDirection = (searchParams.get("orderDirection") || "asc") as
     | "asc"
     | "desc";

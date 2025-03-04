@@ -57,8 +57,8 @@ async findUnique(criteria: ICriteria<Productos & { SoloEnsambles?: boolean, Solo
 
       return Promise.resolve({
         data: parseData,
-        totalCount: data.length,
-        totalPages: data[0]?.totalPages || 1,
+        totalCount: parseData[0]?.totalCount || 0,
+        totalPages: parseData[0]?.totalPages || 1,
       });
     } catch (error) {
       return Promise.reject(error);
@@ -70,7 +70,6 @@ async findUnique(criteria: ICriteria<Productos & { SoloEnsambles?: boolean, Solo
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("codigo", producto.codigo)
         .input("codigo_proveedor", producto.codigo_proveedor)
         .input("descripcion", producto.descripcion)
         .input("unidad_medida_id", producto.unidad_medida_id)
@@ -93,7 +92,6 @@ async findUnique(criteria: ICriteria<Productos & { SoloEnsambles?: boolean, Solo
       const db = await this.sql.connect();
       const result = await db
         .request()
-        .input("codigo", producto.codigo)
         .input("codigo_proveedor", producto.codigo_proveedor)
         .input("descripcion", producto.descripcion)
         .input("unidad_medida_id", producto.unidad_medida_id)

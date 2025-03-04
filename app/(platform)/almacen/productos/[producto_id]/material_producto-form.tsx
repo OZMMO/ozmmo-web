@@ -26,6 +26,8 @@ import { materialProductoFormSchema } from "./schemas";
 // import { Bodega } from "@/lib/db/catalogos/bodega.model"
 import { MaterialProductoInfoExtra } from "./page.client";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 
 type MaterialProductoFormValues = z.infer<typeof materialProductoFormSchema>;
 
@@ -45,22 +47,28 @@ export function MaterialProductoForm({
     defaultValues: {
       producto_id: initialData?.producto_id || 0,
       producto_parent_id: Number(infoExtra?.producto_parent_id) || 0,
-      cantidad_necesaria: initialData?.cantidad_necesaria || 0,
+      cantidad_necesaria: initialData?.cantidad_necesaria || 1,
       unidad_medida_id: initialData?.unidad_medida_id || 0,
       nota: initialData?.nota || "",
       estatus: initialData?.estatus || true,
     },
   });
   const {
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = form;
-  const handleSubmit = (data: MaterialProductoFormValues) => {
-    data.id = initialData?.id || 0;
-    data.unidad_medida_id = Number(data.unidad_medida_id);
-    data.producto_id = Number(data.producto_id);
-    data.producto_parent_id = Number(data.producto_parent_id);
-    data.cantidad_necesaria = Number(data.cantidad_necesaria);
-    onSubmit(data as any);
+  const handleSubmit = async (data: MaterialProductoFormValues) => {
+    try {
+      data.id = initialData?.id || 0;
+      data.unidad_medida_id = Number(data.unidad_medida_id);
+      data.producto_id = Number(data.producto_id);
+      data.producto_parent_id = Number(data.producto_parent_id);
+      data.cantidad_necesaria = Number(data.cantidad_necesaria);
+      await onSubmit(data as any);
+      toast.success("Material producto creado correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al crear el material producto");
+    }
   };
 
   return (
@@ -188,6 +196,22 @@ export function MaterialProductoForm({
             control={form.control}
             name="estatus"
             render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormLabel>Estatus</FormLabel>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* <FormField
+            control={form.control}
+            name="estatus"
+            render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
                 <FormControl>
                   <Checkbox
@@ -200,9 +224,11 @@ export function MaterialProductoForm({
                 </div>
               </FormItem>
             )}
-          />
+          /> */}
         </div>
-        <Button type="submit">Guardar</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Guardando..." : "Guardar"}
+        </Button>
       </form>
     </Form>
   );
