@@ -48,6 +48,13 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
     return lots;
   }
 
+  const handleEmpresaSelect = (empresaId: string) => {
+    setSelectedEmpresa(empresas.find(e => e.id.toString() === empresaId) || undefined);
+    // setSelectedProduct({ id: 0, codigo: "", codigo_proveedor: "", descripcion: "", page: 1, pageSize: 10, materiales: [] });
+    setSelectedProduct(undefined);
+    setEnsambles([]);
+  };
+  
   useEffect(() => {
     if (selectedEmpresa) {
       setFilteredBodegas(bodegas.filter(bodega => bodega.empresa_id === selectedEmpresa.id));
@@ -70,12 +77,7 @@ export default function EmsamblesPageClient({ productos, bodegas, empresas }: Em
     fetchLotes();
   }, [selectedProduct, selectedBodega]);
 
-  const handleEmpresaSelect = (empresaId: string) => {
-    setSelectedEmpresa(empresas.find(e => e.id.toString() === empresaId) || undefined);
-    // setSelectedProduct({ id: 0, codigo: "", codigo_proveedor: "", descripcion: "", page: 1, pageSize: 10, materiales: [] });
-    setSelectedProduct(undefined);
-    setEnsambles([]);
-  };
+ 
 
   const generarEnsamble = async (producto_id: number) => {
     const ensamble = await fetch(`/api/almacen/generar-ensamble?producto_id=${producto_id}`).then(res => res.json());

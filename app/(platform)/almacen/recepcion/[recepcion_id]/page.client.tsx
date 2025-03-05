@@ -242,7 +242,7 @@ export default function DetalleRecepcionClientPage({
                           {lote.estado_lote}
                         </CustomBadge>
                       </TableCell>
-                      <TableCell>{lote.ubicacion}</TableCell>
+                      <TableCell>{lote?.ubicacion?.codigo}-{lote?.ubicacion?.descripcion}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

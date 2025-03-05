@@ -27,4 +27,6 @@ export interface Empresa extends IPagination{
 
   sucursales?: Sucursal[];
   bodegas?: Bodega[];
+
+  SoloActivas?: boolean;
 } 
