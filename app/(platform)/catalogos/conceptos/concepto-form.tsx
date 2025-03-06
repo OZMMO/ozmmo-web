@@ -31,10 +31,11 @@ import {
   TipoFactor,
   ClaveProdServ,
   ClaveUnidad,
+  Productos,
 } from "@/lib/db";
 import { Label } from "@/components/ui/label";
 import { Upload } from "lucide-react";
-
+import { DetalleConceptoTable } from "./detalle-concepto-table";
 export type ConceptoFormValues = z.infer<typeof conceptoFormSchema>;
 
 export interface InfoExtraConcepto {
@@ -44,6 +45,7 @@ export interface InfoExtraConcepto {
   dataTipoFactor: TipoFactor[];
   dataClaveProdServ: ClaveProdServ[];
   dataClaveUnidad: ClaveUnidad[];
+  productos: Productos[];
   // tiposContribuyentes: TipoContribuyente[]
   // regimenesFiscales: RegimenFiscal[]
 }
@@ -71,6 +73,7 @@ export function ConceptoForm({
       ObjetoImp: initialData?.ObjetoImp || "",
       Impuesto: initialData?.Impuesto || "",
       TipoFactor: initialData?.TipoFactor || "",
+      detalles: initialData?.detalles || [],
     },
   });
 
@@ -309,7 +312,23 @@ export function ConceptoForm({
             )}
           />
         </div>
-
+        <FormField
+          control={form.control}
+          name="detalles"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Detalles del Concepto</FormLabel>
+              <FormControl>
+                <DetalleConceptoTable
+                  detalles={field.value || []}
+                  onDetallesChange={field.onChange}
+                  infoExtra={infoExtra}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit">Guardar</Button>
       </form>
     </Form>

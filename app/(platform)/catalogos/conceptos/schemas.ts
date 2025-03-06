@@ -11,4 +11,10 @@ export const conceptoFormSchema = z.object({
   ObjetoImp: z.string().min(1, "El objeto de impuesto es requerido"),
   Impuesto: z.string().min(1, "El impuesto es requerido"),
   TipoFactor: z.string().min(1, "El tipo de factor es requerido"),
+  detalles: z.array(
+    z.object({
+      id_producto: z.number().min(1, "El producto es requerido"),
+      cantidad: z.number().min(0, "La cantidad debe ser mayor que 0"),
+    })
+  ),
 });
