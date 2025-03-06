@@ -8,6 +8,9 @@ import SeleccionarProducto from "./_components/seleccionar-producto";
 import SeleccionarBodega from "./_components/seleccionar-bodega";
 import { Ensamble, ProductoAEnsamblar } from "@/lib/db/almacen/inventario/ensamble";
 import BomMateriales from "./_components/bom-materiales";
+import { tryCatch } from "@/lib/try-catch";
+import { toast } from "sonner";
+import { Lote } from "@/lib/db/almacen/lotes/lote";
 
 interface EmpresaPageClientProps {
   empresaSeleccionada: Empresa;
@@ -17,6 +20,7 @@ interface EmpresaPageClientProps {
 export default function EmpresaPageClient({ empresaSeleccionada, productos }: EmpresaPageClientProps) {
   const [selectedProduct, setSelectedProduct] = useState<Productos | null>(null)
   const [selectedWarehouse, setSelectedWarehouse] = useState<Bodega | null>(null)
+  const [selectedLoteDestino, setSelectedLoteDestino] = useState<Lote | null>(null);
   const [ensambles, setEnsambles] = useState<Ensamble[]>([]);
   
   const [isLoadingProductoAEnsamblar, setIsLoadingProductoAEnsamblar] = useState(false);
@@ -30,15 +34,19 @@ export default function EmpresaPageClient({ empresaSeleccionada, productos }: Em
   const handleProductSelect = async (product: Productos) => {
     setIsLoadingProductoAEnsamblar(true);
     setSelectedProduct(product)
-    const ensamble = await generarEnsamble(product.id);
-    console.log({ensamble});
-    setEnsambles(ensamble.ensambles);
-    setProductoAEnsamblar(ensamble.productoAEnsamblar);
+    const {data: ensamble, error} = await tryCatch(generarEnsamble(product.id));
+    if (error) {
+      toast.error(error.message);
+    } else {
+      setEnsambles(ensamble.ensambles);
+      setProductoAEnsamblar(ensamble.productoAEnsamblar);
+    }
+
     setSelectedWarehouse(null) // Reset warehouse when product changes
     setIsLoadingProductoAEnsamblar(false);
   }
 
-  const handleWarehouseSelect = (warehouse: Bodega) => {
+  const handleWarehouseSelect = (warehouse: Bodega | null) => {
     setSelectedWarehouse(warehouse)
   }
 
@@ -46,6 +54,8 @@ export default function EmpresaPageClient({ empresaSeleccionada, productos }: Em
     setSelectedWarehouse(null)
     setSelectedProduct(null)
   }
+
+
   
   return (
     <div className="min-h-screen min-w-screen overflow-hidden relative">
@@ -76,13 +86,21 @@ export default function EmpresaPageClient({ empresaSeleccionada, productos }: Em
                 productId={selectedProduct.id}
                 onSelectWarehouse={handleWarehouseSelect}
                 selectedWarehouse={selectedWarehouse}
+                onSelectLoteDestino={setSelectedLoteDestino}
+                selectedLoteDestino={selectedLoteDestino}
               />
             </div>
           )}
 
           {selectedProduct && selectedWarehouse && (
             <div className="lg:col-span-6">
-              <BomMateriales productId={selectedProduct.id} bodegaId={selectedWarehouse.id} productMaterials={selectedProduct.materiales || []} />
+              <BomMateriales 
+                productoAEnsamblar={productoAEnsamblar || null}
+                bodegaId={selectedWarehouse.id} 
+                selectedLoteDestino={selectedLoteDestino}
+                productMaterials={selectedProduct.materiales || []} 
+                reset={resetSelections}
+              />
             </div>
           )}
         </div>

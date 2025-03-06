@@ -8,6 +8,7 @@ import { UbicacionForm } from './ubicacion-form';
 import { Bodega, Ubicacion } from '@/lib/db';
 import { Badge } from '@/components/ui/badge';
 import { Warehouse } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
   // import { Bodega } from '@/lib/db/catalogos/bodega.model';
   // import { Empresa } from '@/lib/db/catalogos/empresa.model';
 
@@ -18,6 +19,23 @@ const columns: Column<Ubicacion>[] = [
   { key: 'bodega', label: 'Bodega', sortable: true },
   { key: 'estado_ubicacion', label: 'Estado de Ubicación', sortable: true },
   { key: 'capacidad_maxima', label: 'Capacidad Máxima', sortable: true },
+  { key: 'ocupado', label: 'Ocupado', sortable: true },
+  { 
+    key: 'porcentaje_ocupado', 
+    label: 'Porcentaje ocupado', 
+    sortable: true,
+    render: (value: any) => {
+      const porcentaje = (typeof value === 'object' && value !== null && 'porcentaje_ocupado' in value)
+        ? value.porcentaje_ocupado
+        : value;
+      return (
+        <div className="w-full">
+          <Progress value={porcentaje} className="h-2" />
+          <span className="text-xs text-muted-foreground">{Math.round(porcentaje)}%</span>
+        </div>
+      );
+    }
+  },
   { key: 'estatus', label: 'Estatus', sortable: true,
     render: (value: any) => {
       const status = (typeof value === 'object' && value !== null && 'estatus' in value) 

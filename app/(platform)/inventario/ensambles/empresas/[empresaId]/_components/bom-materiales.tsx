@@ -18,16 +18,28 @@ import { Progress } from "@/components/ui/progress"
 import { MaterialProducto } from "@/lib/db/almacen/lista_materiales_producto/material_producto"
 import { Lote } from "@/lib/db/almacen/lotes/lote"
 import BatchMonitor from "./batch-monitor"
+import { Ensamble, ProductoAEnsamblar } from "@/lib/db/almacen/inventario/ensamble"
+import { useSession } from "next-auth/react"
+import { toast } from "sonner"
+import { tryCatch } from "@/lib/try-catch"
+import { createEnsamble } from "../../../_actions"
 
 export default function BomMateriales({
-  productId,
+  productoAEnsamblar,
   bodegaId,
-  productMaterials
+  selectedLoteDestino,
+  productMaterials,
+  reset
 }: {
-  productId: number
-    bodegaId: number
+  productoAEnsamblar: ProductoAEnsamblar | null
+  bodegaId: number
+  selectedLoteDestino: Lote | null
   productMaterials: MaterialProducto[]
+  reset: () => void
 }) {
+  const { data: session } = useSession();
+  const UserId = session?.user?.id || "";
+
   const [materials, setMaterials] = useState<MaterialProducto[]>([])
   const [materialLotes, setMaterialLotes] = useState<Record<number, Lote[]>>({})
   const [selectedLotes, setSelectedLotes] = useState<Record<number, Lote | null>>({})
@@ -146,7 +158,7 @@ export default function BomMateriales({
     }
     fetchMateriales()
    
-  }, [productId])
+  }, [productoAEnsamblar])
 
   // Evaluar los mejores lotes cuando cambian los materiales o lotes
   useEffect(() => {
@@ -254,6 +266,51 @@ export default function BomMateriales({
     }))
   }
 
+  const handleGenerateEnsamble = async () => {
+    console.log("Generar nuevo ensamble")
+
+    const ensambles: Ensamble[] = materials.map((material) => {
+      return {
+        producto_id: material.producto_id,
+        cantidad_necesaria: material.cantidad_necesaria,
+        unidad_medida_id: material.unidad_medida_id,
+        lote_id: selectedLotes[material.producto_id]?.id || 0,
+        ensamble_id: 0,
+      }
+    })
+
+    const { data, error } = await tryCatch(createEnsamble({
+      producto_id: productoAEnsamblar?.producto_id || 0,
+      numero_serie: productoAEnsamblar?.numero_serie || "",
+      notas: "",
+      detalle_ensamble: ensambles,
+      lote_id: selectedLoteDestino?.id || 0,
+      UserId: UserId
+    }));
+
+    console.log({data, error});
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Ensamblaje completado");
+      reset();
+    }
+
+
+    console.log(
+      {materials, selectedLotes},
+      {
+        producto_id: productoAEnsamblar?.producto_id || 0,
+        numero_serie: productoAEnsamblar?.numero_serie || "",
+        notas: "",
+        detalle_ensamble: ensambles,
+        lote_id: selectedLoteDestino?.id || 0,
+        UserId: UserId
+      }
+    )
+  }
+
   return (
     <div className="space-y-4">
       <div className="rounded-2xl overflow-hidden">
@@ -261,8 +318,7 @@ export default function BomMateriales({
           <h2 className="text-xl font-bold flex items-center gap-2">
             <Layers className="h-5 w-5" />
             Lista de Materiales (BOM)
-          </h2>
-          <label htmlFor="">Generar ensamble</label>
+          </h2>         
           <Badge
             onClick={() => setShowMonitor(!showMonitor)}
             className="cursor-pointer bg-white/20 hover:bg-white/30 text-white"
@@ -278,7 +334,43 @@ export default function BomMateriales({
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex justify-center my-2">
+                  <button className="relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg 
+                    transition-all duration-300 ease-in-out
+                    hover:scale-105 hover:shadow-lg
+                    before:absolute before:inset-0 before:rounded-lg
+                    after:absolute after:inset-0 after:rounded-lg after:border-2 after:border-amber-400
+                    after:animate-[border-dance_2s_linear_infinite]"
+                    onClick={handleGenerateEnsamble}
+                    >
+                    <span className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      Generar nuevo ensamble
+                    </span>
+                    <style jsx>{`
+                      @keyframes border-dance {
+                        0% {
+                          clip-path: inset(0 0 95% 0);
+                        }
+                        25% {
+                          clip-path: inset(0 0 0 95%);
+                        }
+                        50% {
+                          clip-path: inset(95% 0 0 0);
+                        }
+                        75% {
+                          clip-path: inset(0 95% 0 0);
+                        }
+                        100% {
+                          clip-path: inset(0 0 95% 0);
+                        }
+                      }
+                    `}</style>
+                  </button>
+                </div>
                 {materials.map((material) => {
                   const lotes = materialLotes[material.producto_id] || []
                   const selectedLote = selectedLotes[material.producto_id]
