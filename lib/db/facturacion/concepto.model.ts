@@ -21,6 +21,10 @@ export class ConceptoModel implements IDBModel<Concepto> {
       const data = result.recordset as Concepto[];
 
       const parseData = data.map((item) => {
+        item.detalles =
+          item.detalles && typeof item.detalles === "string"
+            ? JSON.parse(item.detalles)
+            : item.detalles;
         return item;
       });
 
@@ -43,6 +47,10 @@ export class ConceptoModel implements IDBModel<Concepto> {
       const data = result.recordset as Concepto[];
 
       const parseData = data.map((item) => {
+        item.detalles =
+          item.detalles && typeof item.detalles === "string"
+            ? JSON.parse(item.detalles)
+            : item.detalles;
         return item;
       });
 
@@ -71,6 +79,7 @@ export class ConceptoModel implements IDBModel<Concepto> {
         .input("ObjetoImp", concepto.ObjetoImp)
         .input("Impuesto", concepto.Impuesto)
         .input("TipoFactor", concepto.TipoFactor)
+        .input("detalles", JSON.stringify(concepto.detalles))
         .input("UserId", concepto.UserId)
         .execute("[Facturacion].[spIUConceptos]");
 
@@ -96,6 +105,7 @@ export class ConceptoModel implements IDBModel<Concepto> {
         .input("ObjetoImp", concepto.ObjetoImp)
         .input("Impuesto", concepto.Impuesto)
         .input("TipoFactor", concepto.TipoFactor)
+        .input("detalles", JSON.stringify(concepto.detalles))
         .input("UserId", concepto.UserId)
         .execute("[Facturacion].[spIUConceptos]");
 

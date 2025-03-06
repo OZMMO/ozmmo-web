@@ -24,7 +24,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { pedidoClienteFormSchema } from "./schemas";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
-import { Cliente, Canal, Pedido, Direccion, Productos } from "@/lib/db";
+import { Cliente, Canal, Pedido, Direccion, Concepto } from "@/lib/db";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
 import { DetallePedidoTable } from "./detalle-pedido-table";
@@ -36,7 +36,7 @@ interface PedidoClienteFormProps {
   infoExtra?: {
     clientes: Cliente[];
     canales: Canal[];
-    productos: Productos[];
+    conceptos: Concepto[];
   };
   onSubmit: (data: any) => void;
 }

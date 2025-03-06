@@ -100,6 +100,13 @@ const data = {
           //   { title: "CRUD", url: "/catalogos/clientes/crud" },
           // ],
         },
+        {
+          title: "Conceptos",
+          url: "/catalogos/conceptos",
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/conceptos/crud" },
+          // ],
+        },
       ],
     },
     {

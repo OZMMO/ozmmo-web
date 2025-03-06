@@ -12,7 +12,7 @@ export const pedidoClienteFormSchema = z.object({
   detalles: z
     .array(
       z.object({
-        id_producto: z.number().int().min(1, "El producto es requerido"),
+        id_concepto: z.number().int().min(1, "El concepto es requerido"),
         cantidad: z.number().int().min(1, "La cantidad es requerida"),
       })
     )

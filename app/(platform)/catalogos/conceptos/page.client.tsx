@@ -14,6 +14,7 @@ import {
   TipoFactor,
   ClaveProdServ,
   ClaveUnidad,
+  Productos,
 } from "@/lib/db";
 const columns: Column<Concepto>[] = [
   // { key: 'id', label: 'ID', sortable: true },
@@ -37,6 +38,7 @@ interface PageProps {
   dataTipoFactor: TipoFactor[];
   dataClaveProdServ: ClaveProdServ[];
   dataClaveUnidad: ClaveUnidad[];
+  productos: Productos[];
   // tiposContribuyentes: TipoContribuyente[];
   // regimenesFiscales: RegimenFiscal[];
 }
@@ -50,6 +52,7 @@ export default function ConceptosClientPage({
   dataTipoFactor,
   dataClaveProdServ,
   dataClaveUnidad,
+  productos,
 }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false);
@@ -86,6 +89,7 @@ export default function ConceptosClientPage({
         dataTipoFactor,
         dataClaveProdServ,
         dataClaveUnidad,
+        productos,
       }}
     />
   );

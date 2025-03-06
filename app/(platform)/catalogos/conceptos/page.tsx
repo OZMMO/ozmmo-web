@@ -10,6 +10,8 @@ import {
   UsoCFDIModel,
   ClaveUnidadModel,
   Concepto,
+  ProductosModel,
+  Productos,
 } from "@/lib/db";
 import { CriteriaSqlServer } from "@/lib/db";
 
@@ -45,6 +47,10 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
   const tipoFactorModel = new TipoFactorModel();
   const claveProdServModel = new ClaveProdServModel();
   const claveUnidadModel = new ClaveUnidadModel();
+  const productosModel = new ProductosModel();
+
+  const criteriaProductos = new CriteriaSqlServer<Productos>();
+  criteriaProductos.addConditition("UserId", userId);
 
   const promiseAll = Promise.all([
     conceptoModel.findMany(criteria),
@@ -54,6 +60,7 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
     tipoFactorModel.findMany(),
     claveProdServModel.findMany(),
     claveUnidadModel.findMany(),
+    productosModel.findMany(criteriaProductos),
   ]);
 
   const [
@@ -64,8 +71,9 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
     dataTipoFactor,
     dataClaveProdServ,
     dataClaveUnidad,
+    dataProductos,
   ] = await promiseAll;
-
+  console.log(dataConceptos.data[1].detalles);
   const { data, totalCount, totalPages } = dataConceptos;
 
   return (
@@ -82,6 +90,7 @@ export default async function SucursalesPage({ searchParams }: PageProps) {
       dataTipoFactor={dataTipoFactor}
       dataClaveProdServ={dataClaveProdServ}
       dataClaveUnidad={dataClaveUnidad}
+      productos={dataProductos.data}
     />
   );
 

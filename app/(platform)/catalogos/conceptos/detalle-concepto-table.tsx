@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DetallePedido, Concepto } from "@/lib/db";
+import { ConceptoDetalle, Concepto, Productos } from "@/lib/db";
 import { SelectValue } from "@/components/ui/select";
 import { Select, SelectTrigger, SelectItem } from "@/components/ui/select";
 import { SelectContent } from "@/components/ui/select";
@@ -23,24 +23,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
-interface DetallePedidoTableProps {
-  detalles: DetallePedido[];
-  onDetallesChange: (detalles: DetallePedido[]) => void;
+interface DetalleConceptoTableProps {
+  detalles: ConceptoDetalle[];
+  onDetallesChange: (detalles: ConceptoDetalle[]) => void;
   infoExtra?: {
-    conceptos: Concepto[];
+    productos: Productos[];
   };
 }
 
-export function DetallePedidoTable({
+export function DetalleConceptoTable({
   detalles,
   onDetallesChange,
   infoExtra,
-}: DetallePedidoTableProps) {
-  const [localDetalles, setLocalDetalles] = useState<DetallePedido[]>(detalles);
+}: DetalleConceptoTableProps) {
+  const [localDetalles, setLocalDetalles] =
+    useState<ConceptoDetalle[]>(detalles);
 
   const handleAddRow = () => {
-    const newDetalle: DetallePedido = {
-      id_concepto: 0,
+    const newDetalle: ConceptoDetalle = {
+      id_producto: 0,
       cantidad: 0,
     };
     const updatedDetalles = [...localDetalles, newDetalle];
@@ -56,7 +57,7 @@ export function DetallePedidoTable({
 
   const handleChange = (
     index: number,
-    field: keyof DetallePedido,
+    field: keyof ConceptoDetalle,
     value: any
   ) => {
     const updatedDetalles = localDetalles.map((detalle, i) =>
@@ -71,7 +72,7 @@ export function DetallePedidoTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Concepto</TableHead>
+            <TableHead>Producto</TableHead>
             <TableHead>Cantidad</TableHead>
             <TableHead>Acciones</TableHead>
           </TableRow>
@@ -81,21 +82,21 @@ export function DetallePedidoTable({
             <TableRow key={index}>
               <TableCell>
                 <Select
-                  value={detalle.id_concepto.toString()}
+                  value={detalle.id_producto.toString()}
                   onValueChange={(value) =>
-                    handleChange(index, "id_concepto", parseInt(value))
+                    handleChange(index, "id_producto", parseInt(value))
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Seleccione un concepto" />
+                    <SelectValue placeholder="Seleccione un producto" />
                   </SelectTrigger>
                   <SelectContent>
-                    {infoExtra?.conceptos.map((concepto) => (
+                    {infoExtra?.productos.map((producto) => (
                       <SelectItem
-                        key={concepto.id}
-                        value={concepto.id.toString()}
+                        key={producto.id}
+                        value={producto.id.toString()}
                       >
-                        {concepto.descripcion}
+                        {producto.descripcion}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -122,7 +123,7 @@ export function DetallePedidoTable({
           ))}
         </TableBody>
       </Table>
-      <Button onClick={handleAddRow}>Agregar Concepto</Button>
+      <Button onClick={handleAddRow}>Agregar Producto</Button>
     </div>
   );
 }

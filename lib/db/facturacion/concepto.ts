@@ -1,5 +1,5 @@
 import { IPagination } from "@/lib/interfaces/paginations.interface";
-
+import { ConceptoDetalle } from "./concepto-detalle";
 export interface Concepto extends IPagination {
   id: number;
   codigo: string;
@@ -18,4 +18,5 @@ export interface Concepto extends IPagination {
   TipoFactor: string;
   tipo_factor_descripcion: string;
   UserId?: string;
+  detalles?: ConceptoDetalle[];
 }

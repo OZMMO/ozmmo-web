@@ -1,8 +1,8 @@
 export interface DetallePedido {
   id?: number; // Opcional para nuevos detalles
   id_pedido_cliente?: number; // Opcional, se asigna al crear el pedido
-  id_producto: number;
-  producto?: string; // Opcional, se puede obtener al consultar
+  id_concepto: number;
+  concepto?: string; // Opcional, se puede obtener al consultar
   cantidad: number;
   id_ensamble?: number; // Opcional, si el detalle es un ensamble
   ensamble?: string; // Opcional, se puede obtener al consultar

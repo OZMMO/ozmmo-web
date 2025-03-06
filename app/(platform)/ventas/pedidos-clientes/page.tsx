@@ -6,8 +6,8 @@ import {
   Cliente,
   Pedido,
   PedidoModel,
-  Productos,
-  ProductosModel,
+  Concepto,
+  ConceptoModel,
 } from "@/lib/db";
 import { CriteriaSqlServer } from "@/lib/db";
 import { ClienteModel, CanalModel } from "@/lib/db";
@@ -56,11 +56,11 @@ export default async function PedidosClientesPage({ searchParams }: PageProps) {
   const canalModel = new CanalModel();
   const { data: dataCanales } = await canalModel.findMany(criteriaCanal);
 
-  const criteriaProducto = new CriteriaSqlServer<Productos>();
-  criteriaProducto.addConditition("UserId", userId);
-  const productoModel = new ProductosModel();
-  const { data: dataProductos } =
-    await productoModel.findMany(criteriaProducto);
+  const criteriaConcepto = new CriteriaSqlServer<Concepto>();
+  criteriaConcepto.addConditition("UserId", userId);
+  const conceptoModel = new ConceptoModel();
+  const { data: dataConceptos } =
+    await conceptoModel.findMany(criteriaConcepto);
 
   return (
     <PedidosClientesClientPage
@@ -68,7 +68,7 @@ export default async function PedidosClientesPage({ searchParams }: PageProps) {
       paginationParams={searchParams}
       clientes={dataClientes}
       canales={dataCanales}
-      productos={dataProductos}
+      conceptos={dataConceptos}
     />
   );
 }
