@@ -159,7 +159,7 @@ const data = {
         },
         {
           title: "Ensambles",
-          url: "/inventario/ensambles",
+          url: "/inventario/ensambles/empresas",
           items: [
             { title: "Dashboard", url: "/inventario/ensambles/dashboard" },
           ],
