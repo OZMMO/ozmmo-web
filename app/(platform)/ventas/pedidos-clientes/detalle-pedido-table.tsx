@@ -81,7 +81,7 @@ export function DetallePedidoTable({
             <TableRow key={index}>
               <TableCell>
                 <Select
-                  value={detalle.id_concepto.toString()}
+                  value={detalle.id_concepto?.toString() || ""}
                   onValueChange={(value) =>
                     handleChange(index, "id_concepto", parseInt(value))
                   }

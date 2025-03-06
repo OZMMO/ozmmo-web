@@ -40,7 +40,7 @@ export function DetallePedidoTable({
 
   const handleAddRow = () => {
     const newDetalle: DetallePedido = {
-      id_producto: 0,
+      id_concepto: 0,
       cantidad: 0,
     };
     const updatedDetalles = [...localDetalles, newDetalle];
@@ -81,9 +81,9 @@ export function DetallePedidoTable({
             <TableRow key={index}>
               <TableCell>
                 <Select
-                  value={detalle.id_producto.toString()}
+                  value={detalle.id_concepto?.toString() || ""}
                   onValueChange={(value) =>
-                    handleChange(index, "id_producto", parseInt(value))
+                    handleChange(index, "id_concepto", parseInt(value))
                   }
                 >
                   <SelectTrigger>
