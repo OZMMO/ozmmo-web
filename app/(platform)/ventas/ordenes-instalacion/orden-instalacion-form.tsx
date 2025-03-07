@@ -34,7 +34,7 @@ import {
 } from "@/lib/db";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
-import { DetallePedidoTable } from "./detalle-pedido-table";
+import { DetalleOrdenInstalacionTable } from "./detalle-orden-instalacion-table";
 
 type OrdenInstalacionFormValues = z.infer<typeof ordenInstalacionFormSchema>;
 
@@ -67,18 +67,23 @@ export function OrdenInstalacionForm({
     },
   });
   const error = form.formState.errors;
+  const { isSubmitting } = form.formState;
 
   console.log(form.formState);
   console.log(initialData);
 
-  const handleSubmit = (values: OrdenInstalacionFormValues) => {
-    values.id = initialData?.id || 0;
-    values.id_cliente = Number(selectedCliente?.id);
-    values.id_pedido_cliente = Number(values.id_pedido_cliente);
-    values.instalador_id = values.instalador_id || undefined;
-    values.direccion = selectedDireccion || undefined;
-    console.log(values);
-    onSubmit(values as unknown as OrdenInstalacion);
+  const handleSubmit = async (values: OrdenInstalacionFormValues) => {
+    try {
+      values.id = initialData?.id || 0;
+      values.id_cliente = Number(selectedCliente?.id);
+      values.id_pedido_cliente = Number(values.id_pedido_cliente);
+      values.instalador_id = values.instalador_id || undefined;
+      values.direccion = selectedDireccion || undefined;
+      console.log(values);
+      await onSubmit(values as unknown as OrdenInstalacion);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const [selectedCliente, setSelectedCliente] = useState<Cliente>();
@@ -269,7 +274,7 @@ export function OrdenInstalacionForm({
             <FormItem>
               <FormLabel>Detalles del Pedido</FormLabel>
               <FormControl>
-                <DetallePedidoTable
+                <DetalleOrdenInstalacionTable
                   detalles={field.value || []}
                   onDetallesChange={field.onChange}
                   infoExtra={infoExtra}
@@ -284,7 +289,9 @@ export function OrdenInstalacionForm({
           setSelectedDireccion={setSelectedDireccion}
         />
         <div className="flex justify-end">
-          <Button type="submit">Guardar</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Guardando..." : "Guardar"}
+          </Button>
         </div>
       </form>
     </Form>

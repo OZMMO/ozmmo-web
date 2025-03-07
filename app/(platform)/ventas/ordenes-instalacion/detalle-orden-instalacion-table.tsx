@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DetallePedido, Productos } from "@/lib/db";
+import {  DetalleOrdenInstalacion, Productos } from "@/lib/db";
 import { SelectValue } from "@/components/ui/select";
 import { Select, SelectTrigger, SelectItem } from "@/components/ui/select";
 import { SelectContent } from "@/components/ui/select";
@@ -23,24 +23,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
-interface DetallePedidoTableProps {
-  detalles: DetallePedido[];
-  onDetallesChange: (detalles: DetallePedido[]) => void;
+interface DetalleOrdenInstalacionTableProps {
+  detalles: DetalleOrdenInstalacion[];
+  onDetallesChange: (detalles: DetalleOrdenInstalacion[]) => void;
   infoExtra?: {
     productos: Productos[];
   };
 }
 
-export function DetallePedidoTable({
+export function DetalleOrdenInstalacionTable({
   detalles,
   onDetallesChange,
   infoExtra,
-}: DetallePedidoTableProps) {
-  const [localDetalles, setLocalDetalles] = useState<DetallePedido[]>(detalles);
+}: DetalleOrdenInstalacionTableProps) {
+  const [localDetalles, setLocalDetalles] = useState<DetalleOrdenInstalacion[]>(
+    detalles
+  );
 
   const handleAddRow = () => {
-    const newDetalle: DetallePedido = {
-      id_concepto: 0,
+    const newDetalle: DetalleOrdenInstalacion = {
+      id_producto: 0,
       cantidad: 0,
     };
     const updatedDetalles = [...localDetalles, newDetalle];
@@ -56,7 +58,7 @@ export function DetallePedidoTable({
 
   const handleChange = (
     index: number,
-    field: keyof DetallePedido,
+    field: keyof DetalleOrdenInstalacion,
     value: any
   ) => {
     const updatedDetalles = localDetalles.map((detalle, i) =>
@@ -81,9 +83,9 @@ export function DetallePedidoTable({
             <TableRow key={index}>
               <TableCell>
                 <Select
-                  value={detalle.id_concepto?.toString() || ""}
+                  value={detalle.id_producto?.toString() || ""}
                   onValueChange={(value) =>
-                    handleChange(index, "id_concepto", parseInt(value))
+                    handleChange(index, "id_producto", parseInt(value))
                   }
                 >
                   <SelectTrigger>

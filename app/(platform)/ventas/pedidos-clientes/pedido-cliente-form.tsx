@@ -58,7 +58,8 @@ export function PedidoClienteForm({
       detalles: initialData?.detalles || [],
     },
   });
-  const error = form.formState.errors;
+
+  const { isSubmitting } = form.formState;
 
   console.log(form.formState);
 
@@ -66,11 +67,15 @@ export function PedidoClienteForm({
     initialData?.direccion || null
   );
 
-  const handleSubmit = (values: PedidoClienteFormValues) => {
-    values.id = initialData?.id || 0;
-    values.direccion = selectedDireccion || undefined;
-    console.log(values);
-    onSubmit(values as Pedido);
+  const handleSubmit = async (values: PedidoClienteFormValues) => {
+    try {
+      values.id = initialData?.id || 0;
+      values.direccion = selectedDireccion || undefined;
+      console.log(values);
+      await onSubmit(values as Pedido);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -209,7 +214,9 @@ export function PedidoClienteForm({
           setSelectedDireccion={setSelectedDireccion}
         />
         <div className="flex justify-end">
-          <Button type="submit">Guardar</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Guardando..." : "Guardar"}
+          </Button>
         </div>
       </form>
     </Form>
