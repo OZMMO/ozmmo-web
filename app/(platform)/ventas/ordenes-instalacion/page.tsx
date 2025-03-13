@@ -11,6 +11,8 @@ import {
   OrdenInstalacionModel,
   User,
   UserModel,
+  EstatusOrdenInstalacion,
+  EstatusOrdenInstalacionModel,
 } from "@/lib/db";
 import { CriteriaSqlServer } from "@/lib/db";
 import { ClienteModel, CanalModel } from "@/lib/db";
@@ -78,6 +80,14 @@ export default async function OrdenesInstalacionPage({
   const usuario = { Email: "", UserId: "" };
   const dataInstaladores = await instaladorModel.findMany(usuario);
 
+  const criteriaEstatusOrdenInstalacion =
+    new CriteriaSqlServer<EstatusOrdenInstalacion>();
+  const estatusOrdenInstalacionModel = new EstatusOrdenInstalacionModel();
+  const { data: dataEstatusOrdenInstalacion } =
+    await estatusOrdenInstalacionModel.findMany(
+      criteriaEstatusOrdenInstalacion
+    );
+
   return (
     <OrdenesInstalacionClientPage
       payload={{
@@ -90,6 +100,7 @@ export default async function OrdenesInstalacionPage({
       pedidosClientes={dataPedidosClientes}
       productos={dataProductos}
       instaladores={dataInstaladores}
+      estatusOrdenInstalacion={dataEstatusOrdenInstalacion}
     />
   );
 }

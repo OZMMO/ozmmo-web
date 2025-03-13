@@ -71,6 +71,10 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
         item.FechaHoraInstalacion = item.FechaHoraInstalacion
           ? new Date(item.FechaHoraInstalacion)
           : undefined;
+        item.surtidos =
+          item.surtidos && typeof item.surtidos === "string"
+            ? JSON.parse(item.surtidos)
+            : item.surtidos;
         return item;
       });
 
@@ -95,6 +99,10 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
         .input("Notas", ordenInstalacion.Notas)
         .input("FechaHoraInstalacion", ordenInstalacion.FechaHoraInstalacion)
         .input("UserIdInstalador", ordenInstalacion.instalador_id)
+        .input(
+          "id_estatus_ordenes_instalacion",
+          ordenInstalacion.id_estatus_ordenes_instalacion
+        )
         .input("detalles", JSON.stringify(ordenInstalacion.detalles))
         .input("direccion", JSON.stringify(ordenInstalacion.direccion))
         .input("UserId", ordenInstalacion.UserId)
@@ -118,6 +126,10 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
         .input("Notas", ordenInstalacion.Notas)
         .input("FechaHoraInstalacion", ordenInstalacion.FechaHoraInstalacion)
         .input("UserIdInstalador", ordenInstalacion.instalador_id)
+        .input(
+          "id_estatus_ordenes_instalacion",
+          ordenInstalacion.id_estatus_ordenes_instalacion
+        )
         .input("detalles", JSON.stringify(ordenInstalacion.detalles))
         .input("direccion", JSON.stringify(ordenInstalacion.direccion))
         .input("UserId", ordenInstalacion.UserId)

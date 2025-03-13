@@ -1,6 +1,6 @@
 "use client";
 
-import { CRUD, Column } from "@/components/crud";
+import { Action, CRUD, Column } from "@/components/crud";
 import { useEffect, useState } from "react";
 import { IPageSearchPaginationParams } from "@/lib/interfaces/paginations.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
@@ -10,7 +10,17 @@ import {
   deleteOrdenInstalacion,
 } from "./actions";
 import { OrdenInstalacionForm } from "./orden-instalacion-form";
-import { OrdenInstalacion, Cliente, Pedido, Productos, User } from "@/lib/db";
+import {
+  OrdenInstalacion,
+  Cliente,
+  Pedido,
+  Productos,
+  User,
+  EstatusOrdenInstalacion,
+} from "@/lib/db";
+import { MapPin } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
 
 const columns: Column<OrdenInstalacion>[] = [
   { key: "cliente_razon_social", label: "Cliente", sortable: true },
@@ -22,6 +32,11 @@ const columns: Column<OrdenInstalacion>[] = [
     label: "Instalador",
     sortable: true,
   },
+  {
+    key: "estatus_ordenes_instalacion",
+    label: "Estatus",
+    sortable: true,
+  },
 ];
 
 interface PageProps {
@@ -31,6 +46,7 @@ interface PageProps {
   pedidosClientes: Pedido[];
   productos: Productos[];
   instaladores: User[];
+  estatusOrdenInstalacion: EstatusOrdenInstalacion[];
 }
 
 export default function OrdenesInstalacionClientPage({
@@ -40,11 +56,12 @@ export default function OrdenesInstalacionClientPage({
   pedidosClientes,
   productos,
   instaladores,
+  estatusOrdenInstalacion,
 }: PageProps) {
   const { data, totalCount, totalPages } = payload;
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
- 
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -52,7 +69,18 @@ export default function OrdenesInstalacionClientPage({
   if (!isClient) {
     return null;
   }
-  
+
+  const extraActions: Action<OrdenInstalacion>[] = [
+    {
+      title: "Surtir",
+      icon: <MapPin />,
+      onClick: (row: OrdenInstalacion) => {
+        router.push(`/ventas/ordenes-instalacion/surtir/${row.id}/`);
+      },
+      variant: "default",
+      size: "icon",
+    },
+  ];
 
   return (
     <CRUD
@@ -70,7 +98,14 @@ export default function OrdenesInstalacionClientPage({
         update: updateOrdenInstalacion,
         delete: deleteOrdenInstalacion,
       }}
-      infoExtra={{ clientes, pedidosClientes, productos, instaladores }}
+      infoExtra={{
+        clientes,
+        pedidosClientes,
+        productos,
+        instaladores,
+        estatusOrdenInstalacion,
+      }}
+      extraActions={extraActions}
     />
   );
 }

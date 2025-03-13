@@ -31,6 +31,7 @@ import {
   Productos,
   User,
   OrdenInstalacion,
+  EstatusOrdenInstalacion,
 } from "@/lib/db";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
@@ -45,6 +46,7 @@ interface OrdenInstalacionFormProps {
     pedidosClientes: Pedido[];
     productos: Productos[];
     instaladores: User[];
+    estatusOrdenInstalacion: EstatusOrdenInstalacion[];
   };
   onSubmit: (data: any) => void;
 }
@@ -59,6 +61,8 @@ export function OrdenInstalacionForm({
     defaultValues: {
       id_cliente: initialData?.id_cliente || undefined,
       id_pedido_cliente: initialData?.id_pedido_cliente || undefined,
+      id_estatus_ordenes_instalacion:
+        initialData?.id_estatus_ordenes_instalacion || undefined,
       instalador_id: initialData?.instalador_id || undefined,
       FechaHoraInstalacion: initialData?.FechaHoraInstalacion || undefined,
       Notas: initialData?.Notas || "",
@@ -77,6 +81,9 @@ export function OrdenInstalacionForm({
       values.id = initialData?.id || 0;
       values.id_cliente = Number(selectedCliente?.id);
       values.id_pedido_cliente = Number(values.id_pedido_cliente);
+      values.id_estatus_ordenes_instalacion = Number(
+        values.id_estatus_ordenes_instalacion
+      );
       values.instalador_id = values.instalador_id || undefined;
       values.direccion = selectedDireccion || undefined;
       console.log(values);
@@ -205,7 +212,7 @@ export function OrdenInstalacionForm({
             )}
           />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="instalador_id"
@@ -250,7 +257,36 @@ export function OrdenInstalacionForm({
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="id_estatus_ordenes_instalacion"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Estatus de la Orden de Instalación</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  defaultValue={field.value?.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un estatus de la orden de instalación" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {infoExtra?.estatusOrdenInstalacion.map((estatus) => (
+                      <SelectItem key={estatus.id} value={estatus.id.toString()}>
+                        {estatus.codigo} - {estatus.descripcion}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
+
         <div className="grid grid-cols-1 gap-4">
           <FormField
             control={form.control}
