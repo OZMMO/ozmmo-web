@@ -27,7 +27,7 @@ export async function GET(request: Request) {
       producto_id ? Number(producto_id) : 0
     );
     criteria.addConditition(
-      "ensamble_id",
+      "id",
       ensamble_id ? Number(ensamble_id) : 0
     );
     criteria.addConditition("numero_serie", numero_serie ? numero_serie : "");

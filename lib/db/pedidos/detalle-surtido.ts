@@ -1,3 +1,6 @@
+import { EnsambleDisponible } from "../almacen/inventario/ensambles-disponibles";
+import { Lote } from "../almacen/lotes/lote";
+
 export interface DetalleSurtido {
   id: number;
   id_orden_instalacion_cliente?: number;
@@ -12,4 +15,6 @@ export interface DetalleSurtido {
   id_lote?: number;
   lote?: string;
   surtido?: boolean;
+  ensambles_disponibles?: EnsambleDisponible[];
+  lotes_disponibles?: Lote[];
 }

@@ -18,7 +18,7 @@ import {
   User,
   EstatusOrdenInstalacion,
 } from "@/lib/db";
-import { MapPin } from "lucide-react";
+import { MapPin, Printer } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 
@@ -76,6 +76,15 @@ export default function OrdenesInstalacionClientPage({
       icon: <MapPin />,
       onClick: (row: OrdenInstalacion) => {
         router.push(`/ventas/ordenes-instalacion/surtir/${row.id}/`);
+      },
+      variant: "default",
+      size: "icon",
+    },
+    {
+      title: "Imprimir",
+      icon: <Printer />,
+      onClick: (row: OrdenInstalacion) => {
+        router.push(`/ventas/ordenes-instalacion/imprimir/${row.id}/`);
       },
       variant: "default",
       size: "icon",

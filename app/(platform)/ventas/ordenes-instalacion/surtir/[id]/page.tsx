@@ -53,8 +53,15 @@ import {
   Lote,
   Empresa,
 } from "@/lib/db";
+import { tryCatch } from "@/lib/try-catch";
+import { surtirOrdenInstalacion } from "../_actions";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 export default function SurtirOrdenInstalacionPage() {
+  const { data: session } = useSession();
+  const UserId = session?.user?.id || "";
+
   const params = useParams();
   const router = useRouter();
   const [orden, setOrden] = useState<OrdenInstalacion | null>(null);
@@ -306,11 +313,23 @@ export default function SurtirOrdenInstalacionPage() {
 
     try {
       // Simular envío a API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
+      const { data, error } = await tryCatch(
+        surtirOrdenInstalacion({
+          id: orden?.id || 0,
+          id_estatus_ordenes_instalacion: null,
+          surtidos: detallesSurtido,
+          UserId: UserId,
+        } as OrdenInstalacion)
+      );
+      console.log("data", data);
+      console.log("error", error);
       // Cerrar diálogo de confirmación y mostrar éxito
       setConfirmDialogOpen(false);
-      setExitoDialogOpen(true);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        setExitoDialogOpen(true);
+      }
     } catch (error) {
       console.error("Error al procesar:", error);
     } finally {
@@ -324,17 +343,10 @@ export default function SurtirOrdenInstalacionPage() {
 
   const handleFinish = () => {
     setExitoDialogOpen(false);
-    router.push("/ordenes-instalacion");
+    router.push("/ventas/ordenes-instalacion");
   };
 
   const todosSurtidos = detallesSurtido.every((detalle) => detalle.surtido);
-
-  // Filtrar lotes por cantidad requerida
-  const getLotesPorCantidad = (cantidadRequerida: number) => {
-    return lotes.filter(
-      (lote) => lote.cantidad_disponible >= cantidadRequerida
-    );
-  };
 
   // Filtrar ensambles por empresa y bodega
   const getEnsamblesDisponibles = () => {
@@ -404,7 +416,7 @@ export default function SurtirOrdenInstalacionPage() {
               <h3 className="font-medium mb-2">Información de Instalación</h3>
               <p>
                 <span className="font-medium">Fecha y hora:</span>{" "}
-                {orden.FechaHoraInstalacion || "No definida"}
+                {orden.FechaHoraInstalacion?.toLocaleString() || "No especificada"}
               </p>
               <p>
                 <span className="font-medium">Instalador:</span>{" "}
@@ -592,12 +604,12 @@ export default function SurtirOrdenInstalacionPage() {
                               <SelectValue placeholder="Seleccionar ensamble" />
                             </SelectTrigger>
                             <SelectContent>
-                              {detalle.ensambles_disponibles.length > 0 ? (
-                                detalle.ensambles_disponibles.map(
+                              {(detalle.ensambles_disponibles ?? []).length  > 0 ? (
+                                detalle.ensambles_disponibles?.map(
                                   (ensamble) => (
                                     <SelectItem
                                       key={ensamble.id}
-                                      value={ensamble.id.toString()}
+                                      value={ensamble.id?.toString() ?? ""}
                                     >
                                       {ensamble.numero_serie} - Lote:{" "}
                                       {ensamble.lote} (Disp:{" "}
@@ -623,7 +635,7 @@ export default function SurtirOrdenInstalacionPage() {
                               <SelectValue placeholder="Seleccionar lote" />
                             </SelectTrigger>
                             <SelectContent>
-                              {detalle.lotes_disponibles?.length > 0 ? (
+                              {(detalle.lotes_disponibles ?? []).length > 0 ? (
                                 detalle.lotes_disponibles?.map((lote) => (
                                   <SelectItem
                                     key={lote.id}
