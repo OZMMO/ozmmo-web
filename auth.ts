@@ -32,10 +32,16 @@ export const {
     }
   },
   callbacks: {
-    async jwt({token, user}) {
-      
+    async jwt({ token, user }) {
+      if (user) {
+        return {
+          ...token,
+          id: user.id,
+          role: user.role
+        }
+      }
       return token
-   },
+    },
     async signIn({ 
         user,
         account, 
@@ -53,19 +59,26 @@ export const {
       return true // Do different verification for other providers that don't have `email_verified`
     },
     async session({ session, token }) {
-      if (token) {
-        session.userId = token.sub as string;
-        session.user.id = token.sub as string;
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id as string,
+          role: token.role as string,
+        },
       }
-      // if (user) {
-      //   session.user.id = user.id;
-      //   session.user.image = user.image // Asegúrate de que el campo image se incluya en la sesión
+      // if (token) {
+      //   session.userId = token.sub as string;
+      //   session.user.id = token.sub as string;
       // }
+      // // if (user) {
+      // //   session.user.id = user.id;
+      // //   session.user.image = user.image // Asegúrate de que el campo image se incluya en la sesión
+      // // }
         
-      return session
+      // return session
     },
   },
   adapter: MSSQLServerAdapter(),
-  session: { strategy: "jwt" },
   ...authConfig,
 })

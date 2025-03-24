@@ -9,6 +9,7 @@ export const publicRoutes = [
   "/api/webhook",
   "/api/cron",
   "/api/cron/employees-history",
+  "/api/security/auth/users"
 ];
 
 /**
@@ -21,7 +22,7 @@ export const authRoutes = [
   "/auth/register",
   "/auth/error",
   "/auth/reset",
-  "/auth/new-password"
+  "/auth/new-password",
 ];
 
 /**

@@ -7,14 +7,22 @@ export const login = async (
   values: z.infer<typeof LoginSchema>,
   callbackUrl?: string | null,
 ) => {
-  return {
-    error: "",
-    success: "",
-    twoFactor: false
-  }
+  const result = await signIn("credentials", {
+    email: values.email,
+    password: values.password,
+    redirect: true,
+    redirectTo: callbackUrl || "/dashboard",
+  })
+
+  return result;
+  // return {
+  //   error: "",
+  //   success: "",
+  //   twoFactor: false
+  // }
 };
 
-import { signOut } from "@/auth";
+import { signIn, signOut } from "@/auth";
 
 export const logout = async () => {
   await signOut();

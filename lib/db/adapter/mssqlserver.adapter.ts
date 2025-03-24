@@ -23,10 +23,11 @@ export function MSSQLServerAdapter(): Adapter {
 
   return {
     createUser: async (user) => {
-      console.log('USER CREATE', {user})
       const newUser: User = {
+        id: user.id,
         UserId: user.id,
         Email: user.email,
+        RoleId: user.role || 'cliente',
         PasswordHash: '', // Auth.js no maneja PasswordHash directamente
         FirstName: user.name?.split(' ')[0] || '',
         SecondName: (user as ExtendedAdapterUser).secondName || '',
@@ -58,10 +59,11 @@ export function MSSQLServerAdapter(): Adapter {
     },
 
     updateUser: async (user) => {
-      console.log('UPDATE USER',{user})
       const updatedUser = await userModel.update({
+        id: user.id,
         UserId: user.id,
         Email: user.email!,
+        RoleId: user.role || 'cliente',
         FirstName: user.name?.split(' ')[0] || '',
         SecondName: (user as ExtendedAdapterUser).secondName || '',
         LastNameFather: user.name?.split(' ')[1] || '', //(user as ExtendedAdapterUser).lastNameFather || '',
@@ -75,11 +77,10 @@ export function MSSQLServerAdapter(): Adapter {
     },
 
     deleteUser: async (userId) => {
-      await userModel.dalete(userId)
+      await userModel.delete(userId)
     },
 
     linkAccount: async (account) => {
-      console.log({account})
       const newAccount: Account = {
         AccountId: (account as ExtendedAdapterAccount).accountId || '',
         UserId: account.userId,
@@ -136,7 +137,7 @@ export function MSSQLServerAdapter(): Adapter {
     },
 
     deleteSession: async (sessionToken) => {
-      await sessionModel.dalete(sessionToken)
+      await sessionModel.delete(sessionToken)
     },
   }
 }
@@ -148,6 +149,7 @@ function adaptUser(user: User): AdapterUser {
     name: `${user.FirstName} ${user.LastNameFather}`.trim(),
     email: user.Email,
     image: user.ImageUrl,
+    role: user.Role?.RoleId || 'cliente',
     emailVerified: null, // Auth.js espera este campo, pero no está en nuestro modelo
   }
 }

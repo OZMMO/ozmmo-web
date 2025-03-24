@@ -21,6 +21,13 @@ import { LoginSchema } from "../_schemas";
 import { CardWrapper } from "./card-wrapper"
 import { login } from "../actions";
 
+// Add this type definition at the top of the file
+type LoginResult = {
+  error?: string;
+  success?: string;
+  twoFactor?: boolean;
+};
+
 function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
@@ -47,7 +54,7 @@ function LoginForm() {
     
     startTransition(() => {
       login(values, callbackUrl)
-        .then((data) => {
+        .then((data: LoginResult) => {
           if (data?.error) {
             form.reset();
             setError(data.error);

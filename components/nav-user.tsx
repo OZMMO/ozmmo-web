@@ -38,6 +38,8 @@ export function NavUser() {
   const session = useSession();
   const user = session?.data?.user;
 
+  console.log({user})
+
   const fallback = ((user?.name?.charAt(0) ?? '') + (user?.name?.charAt(1) ?? '') || (user?.email?.charAt(0) ?? '') + (user?.email?.charAt(1) ?? '')).toUpperCase();
   
   return (
@@ -75,6 +77,7 @@ export function NavUser() {
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{user?.name}</span>
                   <span className="truncate text-xs">{user?.email}</span>
+                  <span className="truncate text-xs">{user?.role}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

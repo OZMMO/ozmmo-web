@@ -74,7 +74,7 @@ export class SessionModel {
     }
   }
 
-  async dalete(SessionId: string): Promise<Session> {
+  async delete(SessionId: string): Promise<Session> {
     try {
       const db = await this.sql.connect();
       const result = await db.request()

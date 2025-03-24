@@ -64,51 +64,23 @@ const data = {
         },
       ],
     },
+   
     {
-      title: "Catálogos",
-      url: "/catalogos",
-      icon: BookOpen,
-      isActive: true,
+      title: "Ventas y Contratos",
+      url: "/ventas",
+      icon: PieChart,
       items: [
         {
-          title: "Empresas",
-          url: "/catalogos/empresas",
-          // items: [
-          //   { title: "CRUD", url: "/catalogos/empresas/crud" },
-          //   {
-          //     title: "Datos Fiscales",
-          //     url: "/catalogos/empresas/datos-fiscales",
-          //   },
-          //   {
-          //     title: "Configuración",
-          //     url: "/catalogos/empresas/configuracion",
-          //   },
-          // ],
-        },
-        // {
-        //   title: "Sucursales",
-        //   url: "/catalogos/sucursales",
-        //   // items: [
-        //   //   { title: "CRUD", url: "/catalogos/sucursales/crud" },
-        //   //   { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
-        //   // ],
-        // },
-        {
-          title: "Clientes",
-          url: "/catalogos/clientes",
-          // items: [
-          //   { title: "CRUD", url: "/catalogos/clientes/crud" },
-          // ],
+          title: "Pedidos Clientes",
+          url: "/ventas/pedidos-clientes",
         },
         {
-          title: "Conceptos",
-          url: "/catalogos/conceptos",
-          // items: [
-          //   { title: "CRUD", url: "/catalogos/conceptos/crud" },
-          // ],
+          title: "Ordenes Instalación",
+          url: "/ventas/ordenes-instalacion",
         },
       ],
     },
+     
     {
       title: "Inventario y Equipos",
       url: "/inventario",
@@ -193,17 +165,47 @@ const data = {
       ],
     },
     {
-      title: "Ventas y Contratos",
-      url: "/ventas",
-      icon: PieChart,
+      title: "Catálogos",
+      url: "/catalogos",
+      icon: BookOpen,
+      isActive: true,
       items: [
         {
-          title: "Pedidos Clientes",
-          url: "/ventas/pedidos-clientes",
+          title: "Empresas",
+          url: "/catalogos/empresas",
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/empresas/crud" },
+          //   {
+          //     title: "Datos Fiscales",
+          //     url: "/catalogos/empresas/datos-fiscales",
+          //   },
+          //   {
+          //     title: "Configuración",
+          //     url: "/catalogos/empresas/configuracion",
+          //   },
+          // ],
+        },
+        // {
+        //   title: "Sucursales",
+        //   url: "/catalogos/sucursales",
+        //   // items: [
+        //   //   { title: "CRUD", url: "/catalogos/sucursales/crud" },
+        //   //   { title: "Vinculación", url: "/catalogos/sucursales/vinculacion" },
+        //   // ],
+        // },
+        {
+          title: "Clientes",
+          url: "/catalogos/clientes",
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/clientes/crud" },
+          // ],
         },
         {
-          title: "Ordenes Instalación",
-          url: "/ventas/ordenes-instalacion",
+          title: "Conceptos",
+          url: "/catalogos/conceptos",
+          // items: [
+          //   { title: "CRUD", url: "/catalogos/conceptos/crud" },
+          // ],
         },
       ],
     },
@@ -259,40 +261,32 @@ const data = {
     //     },
     //   ],
     // },
-    // {
-    //   title: "Seguridad",
-    //   url: "/seguridad",
-    //   icon: Shield,
-    //   items: [
-    //     {
-    //       title: "Roles y Permisos",
-    //       url: "/seguridad/roles",
-    //       items: [
-    //         { title: "Implementación", url: "/seguridad/roles/implementacion" },
-    //         { title: "Auditoría", url: "/seguridad/roles/auditoria" },
-    //       ],
-    //     },
-    //     {
-    //       title: "Control de Usuarios",
-    //       url: "/seguridad/usuarios",
-    //       items: [
-    //         { title: "Gestión", url: "/seguridad/usuarios/gestion" },
-    //         { title: "Accesos", url: "/seguridad/usuarios/accesos" },
-    //       ],
-    //     },
-    //     {
-    //       title: "Logs",
-    //       url: "/seguridad/logs",
-    //       items: [
-    //         {
-    //           title: "Registro de Actividad",
-    //           url: "/seguridad/logs/actividad",
-    //         },
-    //         { title: "Alertas", url: "/seguridad/logs/alertas" },
-    //       ],
-    //     },
-    //   ],
-    // },
+    {
+      title: "Seguridad",
+      url: "/seguridad",
+      icon: Shield,
+      items: [
+        // {
+        //   title: "Roles y Permisos",
+        //   url: "/seguridad/roles",
+        // },
+        {
+          title: "Control de Usuarios",
+          url: "/seguridad/usuarios",
+        },
+        // {
+        //   title: "Logs",
+        //   url: "/seguridad/logs",
+        //   items: [
+        //     {
+        //       title: "Registro de Actividad",
+        //       url: "/seguridad/logs/actividad",
+        //     },
+        //     { title: "Alertas", url: "/seguridad/logs/alertas" },
+        //   ],
+        // },
+      ],
+    },
   ],
   projects: [
     {
