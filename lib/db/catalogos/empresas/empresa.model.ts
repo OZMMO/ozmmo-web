@@ -149,7 +149,7 @@ export class EmpresaModel implements IDBModel<Empresa>{
       const result = await db.request()
         .input('id', this.sql.dataTypes.VarChar, empresa.id)
         .input('UserId', this.sql.dataTypes.VarChar, empresa.UserId)
-        .execute(`[Catalogos].[sp_borrar_tbl_empresas]`);
+        .execute(`[Catalogos].[spBorrarEmpresas]`);
 
         let data =  result.recordset as Empresa[];
 

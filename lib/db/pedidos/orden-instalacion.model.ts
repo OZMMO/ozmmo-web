@@ -20,7 +20,7 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
 
       criteria.toSql(request);
       const result = await request.execute(
-        "[Pedidos].[sp_get_orden_instalacion_cliente]"
+        "[Pedidos].[spGetOrdenInstalacionCliente]"
       );
       const data = result.recordset as OrdenInstalacion[];
 
@@ -54,7 +54,7 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
 
       if (criteria) criteria.toSql(request);
       const result = await request.execute(
-        "[Pedidos].[sp_get_orden_instalacion_cliente]"
+        "[Pedidos].[spGetOrdenInstalacionCliente]"
       );
 
       const data = result.recordset as OrdenInstalacion[];

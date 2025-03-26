@@ -206,7 +206,7 @@ export class BodegaModel implements IDBModel<Bodega> {
         .request()
         .input("id", this.sql.dataTypes.VarChar, bodega.id)
         .input("UserId", this.sql.dataTypes.VarChar, bodega.UserId)
-        .execute(`[Almacen].[sp_borrar_tbl_bodegas]`);
+        .execute(`[Almacen].[spBorrarBodegas]`);
 
       const data = result.recordset as Bodega[];
 

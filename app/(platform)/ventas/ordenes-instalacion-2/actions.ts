@@ -39,26 +39,3 @@ export const deleteOrdenInstalacion = async (
     return { error: { message: error.message, name: error.name } }
   }
 };
-
-
-export async function actualizarEstatusOrden(ordenId: number, nuevoEstatusId: number) {
-  // Simulación de retraso de 2 segundos para simular la comunicación con la base de datos
-  await new Promise((resolve) => setTimeout(resolve, 2000))
-
-  try {
-    // Aquí iría la lógica real para actualizar la base de datos
-    console.log(`[SERVER] Actualizando orden ${ordenId} a estatus ${nuevoEstatusId}`)
-
-    // Simulamos una respuesta exitosa
-    return {
-      success: true,
-      message: `Orden ${ordenId} actualizada correctamente al estatus ${nuevoEstatusId}`,
-    }
-  } catch (error) {
-    console.error("Error al actualizar el estatus de la orden:", error)
-    return {
-      success: false,
-      message: "Error al actualizar el estatus de la orden",
-    }
-  }
-}

@@ -48,9 +48,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </Breadcrumb> */}
           </div>
         </header>
-        <main className="p-2">
+        {/* <main className="p-2">
           {children}
-        </main>
+        </main> */}
+        <div className="h-[100%] overflow-auto">
+          <main className="flex h-full w-full first-letter:first-line:flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto">
+              {children}
+            </div>
+          </main>
+        </div>
       </SidebarInset>
       
     </SidebarProvider>

@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
+import { Role } from "@/lib/db/security/roles.model";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const usuarioSchema = z.object({
   UserId: z.string().optional(),
@@ -27,20 +29,24 @@ const usuarioSchema = z.object({
   SecondName: z.string().optional(),
   LastNameFather: z.string().min(1, "El apellido paterno es requerido"),
   LastNameMother: z.string().optional(),
-  RoleId: z.string().optional(),
+  RoleId: z.string(),
   ImageUrl: z.string().optional(),
   IsActive: z.boolean().default(true),
 });
 
 type UsuarioFormValues = z.infer<typeof usuarioSchema>;
 
+export interface InfoExtraUsuario {
+  roles: Role[];
+}
+
 interface UsuarioFormProps {
   initialData?: User;
   onSubmit: (data: User) => void;
-  infoExtra?: any;
+  infoExtra?: InfoExtraUsuario;
 }
 
-export function UsuarioForm({ initialData, onSubmit }: UsuarioFormProps) {
+export function UsuarioForm({ initialData, onSubmit, infoExtra }: UsuarioFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<UsuarioFormValues>({
@@ -172,6 +178,31 @@ export function UsuarioForm({ initialData, onSubmit }: UsuarioFormProps) {
             )}
           />
         </div>
+
+        <FormField  
+          control={form.control}
+          name="RoleId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Rol</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecciona un rol" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {infoExtra?.roles.map((role) => (
+                      <SelectItem key={role.RoleId} value={role.RoleId}>
+                        {role.Name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}

@@ -1,22 +1,29 @@
 "use client";
 
 import { Column, CRUD } from "@/components/crud";
-import { UsuarioForm } from "./usuario-form";
+import { InfoExtraUsuario, UsuarioForm } from "./usuario-form";
 import { createUsuario, updateUsuario, deleteUsuario } from "./actions";
 import { User } from "@/lib/db/security/user.model";
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Role } from "@/lib/db/security/roles.model";
 
 type UsuariosCRUDProps = {
   initialUsers: User[];
+  initialRoles: Role[];
 };
 
-export function UsuariosCRUD({ initialUsers }: UsuariosCRUDProps) {
+export function UsuariosCRUD({ initialUsers, initialRoles }: UsuariosCRUDProps) {
   const [users, setUsers] = useState<User[]>(initialUsers);
+  const [roles, setRoles] = useState<Role[]>(initialRoles);
 
   useEffect(() => {
     setUsers(initialUsers);
   }, [initialUsers]);
+
+  useEffect(() => {
+    setRoles(initialRoles);
+  }, [initialRoles]);
 
   const columns: Column<User>[] = [
     // { key: "UserId", label: "ID", sortable: true },
@@ -62,7 +69,7 @@ export function UsuariosCRUD({ initialUsers }: UsuariosCRUDProps) {
   ];
 
   return (
-    <CRUD<User, any>
+    <CRUD<User, InfoExtraUsuario>
       title="Administración de Usuarios"
       columns={columns}
       data={users}
@@ -78,6 +85,9 @@ export function UsuariosCRUD({ initialUsers }: UsuariosCRUDProps) {
       formComponent={UsuarioForm}
       searchable={true}
       path="/seguridad/usuarios"
+      infoExtra={{
+        roles: roles,
+      }}
     />
   );
 } 

@@ -1,5 +1,6 @@
 export interface EnsambleDisponible {
   id?: number;
+  ensamble_id?: number;
   numero_serie?: string;
   producto_id?: number;
   producto?: string;

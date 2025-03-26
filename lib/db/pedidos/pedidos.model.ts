@@ -17,7 +17,7 @@ export class PedidoModel implements IDBModel<Pedido> {
       const request = await db.request();
 
       criteria.toSql(request);
-      const result = await request.execute("[Pedidos].[sp_get_pedido_cliente]");
+      const result = await request.execute("[Pedidos].[spGetPedidosCliente]");
       const data = result.recordset as Pedido[];
 
       const parseData = data.map((item) => {
@@ -49,7 +49,7 @@ export class PedidoModel implements IDBModel<Pedido> {
       const request = await db.request();
 
       if (criteria) criteria.toSql(request);
-      const result = await request.execute("[Pedidos].[sp_get_pedido_cliente]");
+      const result = await request.execute("[Pedidos].[spGetPedidosCliente]");
 
       const data = result.recordset as Pedido[];
 
@@ -135,7 +135,7 @@ export class PedidoModel implements IDBModel<Pedido> {
         .request()
         .input("id", pedido.id)
         .input("UserId", pedido.UserId)
-        .execute("[Pedidos].[sp_borrar_tbl_pedidos_clientes]");
+        .execute("[Pedidos].[spBorrarPedidosClientes]");
 
       const data = ((result.recordset[0] || null) as Pedido) || null;
       return Promise.resolve(data);
