@@ -1,4 +1,4 @@
-"use client";
+         "use client";
 
 import { Action, CRUD, Column } from "@/components/crud";
 import { useEffect, useMemo, useState } from "react";
@@ -37,6 +37,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { TabsTrigger } from "@/components/ui/tabs";
 import { TabsList } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import { FieldErrors } from "@/lib/create-safe-action";
 
 const columns: Column<OrdenInstalacion>[] = [
   { key: "cliente_razon_social", label: "Cliente", sortable: true },
@@ -96,6 +98,8 @@ export default function OrdenesInstalacionClientPage({
   const [busquedaInstalador, setBusquedaInstalador] = useState("")
   const [busquedaCliente, setBusquedaCliente] = useState("")
   const [busquedaProducto, setBusquedaProducto] = useState("")
+
+  const [errors, setErrors] = useState<FieldErrors<OrdenInstalacion>>({} as FieldErrors<OrdenInstalacion>);
 
   // useEffect(() => {
   //   setIsClient(true);
@@ -431,6 +435,22 @@ export default function OrdenesInstalacionClientPage({
 
   // Función para abrir el sidebar con la orden seleccionada
   const abrirDetalles = abrirDetallesFunc
+
+  const handleCreate = async (formData: OrdenInstalacion) => {
+    try {
+      const result = await createOrdenInstalacion(formData);
+      if (result.error) throw result.error;
+      toast.success("Item created successfully!");
+      setSidebarOpen(false);
+      router.refresh();
+    } catch (error: any) {
+      console.error("Error creating item:", error);
+      toast.error(error.message);
+      if (error.details) {
+        setErrors({ ...error.details });
+      }
+    }
+  };
 
   const extraActions: Action<OrdenInstalacion>[] = [
     {
@@ -855,7 +875,10 @@ export default function OrdenesInstalacionClientPage({
                 <Button variant="outline" size="icon" onClick={() => filtrarOrdenes()} className="h-7 w-7">
                   <RefreshCw className="h-3.5 w-3.5" />
                 </Button>
-                <Button className="text-xs h-7 px-2.5">
+                <Button className="text-xs h-7 px-2.5" onClick={() => {
+                  setOrdenSeleccionada(null)
+                  setSidebarOpen(true)
+                }}>
                   <Plus className="h-3.5 w-3.5 mr-1.5" />
                   Nueva Orden
                 </Button>
@@ -960,8 +983,33 @@ export default function OrdenesInstalacionClientPage({
         </DragDropContext>
       </main>
 
-      {/* Sidebar para detalles */}
       <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetContent
+          className={cn(
+            "w-[400px] sm:w-[100%] md:w-[80%] lg:w-[60%] overflow-y-auto"
+          )}
+        >
+          <SheetHeader>
+            <SheetTitle>Add new</SheetTitle>
+          </SheetHeader>
+          <div className="py-2">
+            <OrdenInstalacionForm
+              initialData={ordenSeleccionada}
+              onSubmit={handleCreate}
+              infoExtra={{
+                clientes,
+                pedidosClientes,
+                productos,
+                instaladores,
+                estatusOrdenInstalacion,
+              }}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Sidebar para detalles */}
+      {/* <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
           <SheetHeader className="sticky top-0 z-10 bg-white pb-4">
             <div className="flex justify-between items-center">
@@ -1133,7 +1181,7 @@ export default function OrdenesInstalacionClientPage({
             </Tabs>
           )}
         </SheetContent>
-      </Sheet>
+      </Sheet> */}
       {/* Agregar el Toaster al final */}
     </div>
   );
