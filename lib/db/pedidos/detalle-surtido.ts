@@ -13,6 +13,7 @@ export interface DetalleSurtido {
   id_bodega?: number;
   bodega?: string;
   id_lote?: number;
+  codigo_lote?: string;
   lote?: string;
   surtido?: boolean;
   ensambles_disponibles?: EnsambleDisponible[];

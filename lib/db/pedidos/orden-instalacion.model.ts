@@ -165,6 +165,27 @@ export class OrdenInstalacionModel implements IDBModel<OrdenInstalacion> {
     }
   }
 
+  async actualizarEstatus(
+    id: number,
+    id_estatus_ordenes_instalacion: number,
+    userId: string
+  ): Promise<OrdenInstalacion> {
+    try {
+      const db = await this.sql.connect();
+      const result = await db
+        .request()
+        .input("id", id)
+        .input("id_estatus_ordenes_instalacion", id_estatus_ordenes_instalacion)
+        .input("UserId", userId)
+        .execute("[Pedidos].[spActualizarEstatusOrdenInstalacion]");
+
+      const data = ((result.recordset[0] || null) as OrdenInstalacion) || null;
+      return Promise.resolve(data);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   count(criteria?: ICriteria<OrdenInstalacion> | undefined): Promise<number> {
     throw new Error("Method not implemented.");
   }

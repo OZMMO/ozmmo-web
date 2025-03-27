@@ -1,8 +1,8 @@
 import IDBModel from "@/lib/interfaces/db-model.interface";
-import { EstatusOrdenInstalacion } from "./estatatus-orden-instalacion";
 import ICriteria from "@/lib/interfaces/criteria.interface";
 import { IResponseModel } from "@/lib/interfaces/response-model.interface";
 import { MSSQLServer } from "@/lib/mssqlserver";
+import { EstatusOrdenInstalacion } from "./estatus-orden-instalacion";
 
 export class EstatusOrdenInstalacionModel
   implements IDBModel<EstatusOrdenInstalacion>

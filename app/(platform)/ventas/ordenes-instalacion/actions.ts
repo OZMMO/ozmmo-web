@@ -1,5 +1,6 @@
 "use server";
 
+import { auth } from "@/auth";
 import { ActionState } from "@/components/crud";
 import { OrdenInstalacion, OrdenInstalacionModel } from "@/lib/db";
 
@@ -42,17 +43,22 @@ export const deleteOrdenInstalacion = async (
 
 
 export async function actualizarEstatusOrden(ordenId: number, nuevoEstatusId: number) {
-  // Simulación de retraso de 2 segundos para simular la comunicación con la base de datos
-  await new Promise((resolve) => setTimeout(resolve, 2000))
 
   try {
-    // Aquí iría la lógica real para actualizar la base de datos
-    console.log(`[SERVER] Actualizando orden ${ordenId} a estatus ${nuevoEstatusId}`)
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      throw new Error("Usuario no autenticado");
+    }
+
+    const model = new OrdenInstalacionModel();
+    const result = await model.actualizarEstatus(ordenId, nuevoEstatusId, userId);
 
     // Simulamos una respuesta exitosa
     return {
       success: true,
-      message: `Orden ${ordenId} actualizada correctamente al estatus ${nuevoEstatusId}`,
+      message: `Orden ${result.codigo} actualizada correctamente al estatus ${result.estatus_ordenes_instalacion}`,
     }
   } catch (error) {
     console.error("Error al actualizar el estatus de la orden:", error)

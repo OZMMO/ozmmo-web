@@ -8,4 +8,9 @@ export interface DetalleOrdenInstalacion {
   id_ensamble?: number; // Opcional, si el detalle es un ensamble
   ensamble?: string; // Opcional, se puede obtener al consultar
   surtido?: boolean; // Opcional, indica si el detalle ha sido surtido
+  id_bodega?: number;
+  bodega?: string;
+  id_lote?: number;
+  codigo_lote?: string;
+  lote?: string;
 }

@@ -3,6 +3,8 @@ import { Profile } from "next-auth"
 import { UserModel, User } from "../security/user.model"
 import { SessionModel, Session } from "../security/session.model"
 import { AccountModel, Account } from "../security/account.model"
+import { sendInvitationEmail } from "@/lib/email"
+import { randomBytes } from "crypto"
 
 // Interfaces extendidas para cumplir con los requisitos de Auth.js
 interface ExtendedAdapterUser extends AdapterUser {
@@ -23,22 +25,48 @@ export function MSSQLServerAdapter(): Adapter {
 
   return {
     createUser: async (user) => {
-      const newUser: User = {
-        id: user.id,
-        UserId: user.id,
-        Email: user.email,
-        RoleId: user.role || 'cliente',
-        PasswordHash: '', // Auth.js no maneja PasswordHash directamente
-        FirstName: user.name?.split(' ')[0] || '',
-        SecondName: (user as ExtendedAdapterUser).secondName || '',
-        LastNameFather: user.name?.split(' ')[1] || '',// (user as ExtendedAdapterUser).lastNameFather || '',
-        LastNameMother: (user as ExtendedAdapterUser).lastNameMother || '',
-        ImageUrl: user.image || '',
-        IsActive: true,
-        CreatedAt: new Date(),
+      try {
+        // Generar un token de invitación
+        const invitationToken = randomBytes(32).toString('hex');
+        const tokenExpiry = new Date();
+        tokenExpiry.setHours(tokenExpiry.getHours() + 48); // El token expira en 48 horas
+
+        const newUser: User = {
+          id: user.id,
+          UserId: user.id,
+          Email: user.email,
+          RoleId: user.role || 'cliente',
+          PasswordHash: '', // Auth.js no maneja PasswordHash directamente
+          InvitationToken: invitationToken,
+          InvitationTokenExpires: tokenExpiry,
+          FirstName: user.name?.split(' ')[0] || '',
+          SecondName: (user as ExtendedAdapterUser).secondName || '',
+          LastNameFather: user.name?.split(' ')[1] || '',// (user as ExtendedAdapterUser).lastNameFather || '',
+          LastNameMother: (user as ExtendedAdapterUser).lastNameMother || '',
+          ImageUrl: user.image || '',
+          IsActive: true,
+          CreatedAt: new Date(),
+        }
+        const createdUser = await userModel.create(newUser)
+        // console.log('createdUserrrrrrrrrrrrrrrrrrrrr')
+        // // Enviar email de invitación
+        // const invitationUrl = `${process.env.NEXTAUTH_URL}/invite?token=${invitationToken}`;
+        // try {
+        //   await sendInvitationEmail({
+        //     user: createdUser,
+        //     invitationUrl,
+        //     tempPassword: ''
+        //   });
+        // } catch (emailError) {
+        //   console.error('Error al enviar email de invitación:', emailError);
+        //   // No lanzamos el error para no interrumpir el flujo de creación de usuario
+        // }
+
+        return adaptUser(createdUser)
+      } catch (error) {
+        console.error('Error al crear usuario:', error)
+        throw error
       }
-      const createdUser = await userModel.create(newUser)
-      return adaptUser(createdUser)
     },
 
     getUser: async (id) => {

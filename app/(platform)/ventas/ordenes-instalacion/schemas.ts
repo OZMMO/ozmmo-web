@@ -10,9 +10,7 @@ export const ordenInstalacionFormSchema = z.object({
     .int()
     .min(1, "El estatus de la orden de instalación es requerido"),
   Notas: z.string().optional(),
-  FechaHoraInstalacion: z.date({
-    required_error: "La fecha y hora de instalación es requerida",
-  }),
+  FechaHoraInstalacion: z.date().optional(),
   instalador_id: z.string().optional(),
   direccion: direccionSchema.optional(),
   detalles: z

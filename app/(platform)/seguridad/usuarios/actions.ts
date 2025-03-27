@@ -53,8 +53,7 @@ export async function createUsuario(userData: User): Promise<ActionState<User>> 
     // Enviar email de invitación
     const invitationUrl = `${process.env.NEXTAUTH_URL}/invite?token=${invitationToken}`;
     await sendInvitationEmail({
-      to: userData.Email,
-      name: userData.FirstName,
+      user: result,
       invitationUrl,
       tempPassword,
     });

@@ -39,6 +39,7 @@ import { TabsList } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { FieldErrors } from "@/lib/create-safe-action";
+import { formatearFecha } from "@/lib/dates";
 
 const columns: Column<OrdenInstalacion>[] = [
   { key: "cliente_razon_social", label: "Cliente", sortable: true },
@@ -218,53 +219,29 @@ export default function OrdenesInstalacionClientPage({
 
     // Actualizar la lista original de órdenes
     setOrdenesOriginal(ordenesOriginal.map((o) => (o.id === ordenId ? ordenActualizada : o)))
+    let loadingToastId: string | number | undefined = undefined;
 
     // Llamar a la server action para actualizar en la base de datos
     try {
-      // Mostrar un toast de carga
-      // const loadingToast = toast({
-      //   title: "Actualizando...",
-      //   description: `Cambiando orden ${ordenId} al estatus ${estatusOrdenInstalacion.find((e) => e.id === nuevoEstatusId)?.descripcion}`,
-      //   variant: "default",
-      // })
-      toast.loading(`Cambiando orden ${ordenId} al estatus ${estatusOrdenInstalacion.find((e) => e.id === nuevoEstatusId)?.descripcion}`)
+     
+      loadingToastId = toast.loading(`Cambiando orden ${ordenId} al estatus ${estatusOrdenInstalacion.find((e) => e.id === nuevoEstatusId)?.descripcion}`)
 
       // Llamar a la server action
       const resultado = await actualizarEstatusOrden(ordenId, nuevoEstatusId)
 
       if (resultado.success) {
-        // toast({
-        //   title: "Actualización exitosa",
-        //   description: resultado.message,
-        //   variant: "default",
-        // })
-        toast.success(resultado.message)
+        toast.success(resultado.message, { id: loadingToastId })
       } else {
-        // toast({
-        //   title: "Error al actualizar",
-        //   description: resultado.message,
-        //   variant: "destructive",
-        // })
-        toast.error(resultado.message)
+        toast.error(resultado.message, { id: loadingToastId })
         // Aquí podrías revertir el cambio en la UI si lo deseas
       }
     } catch (error) {
-      toast.error("Ocurrió un error al actualizar el estatus de la orden")
+      toast.error("Ocurrió un error al actualizar el estatus de la orden", { id: loadingToastId })
       // Aquí podrías revertir el cambio en la UI si lo deseas
     }
   }
 
-  // Función para formatear la fecha
-  const formatearFecha = (fechaInput: string | Date | undefined | null) => {
-    try {
-      if (!fechaInput) return "Fecha no disponible"
-      
-      const fecha = fechaInput instanceof Date ? fechaInput : new Date(fechaInput)
-      return format(fecha, "dd/MM/yyyy HH:mm", { locale: es })
-    } catch (error) {
-      return "Fecha no disponible"
-    }
-  }
+
 
   // Función para obtener el color del badge según el estatus
   const getColorBadge = (estatusId: number | null) => {
@@ -990,7 +967,7 @@ export default function OrdenesInstalacionClientPage({
           )}
         >
           <SheetHeader>
-            <SheetTitle>Add new</SheetTitle>
+            {/* <SheetTitle>Add new</SheetTitle> */}
           </SheetHeader>
           <div className="py-2">
             <OrdenInstalacionForm

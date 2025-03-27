@@ -33,12 +33,16 @@ import {
   OrdenInstalacion,
   EstatusOrdenInstalacion,
 } from "@/lib/db";
+import { EstatusOrdenInstalacionEnum } from "@/lib/db/pedidos/estatus-orden-instalacion/estatus-orden-instalacion";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
 import { DetalleOrdenInstalacionTable } from "./detalle-orden-instalacion-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ImprimirOrdenComponente } from "./imprimir/[id]/page.imprimir";
+import { SurtirOrdenInstalacionComponent } from "./surtir/[id]/page.surir";
 type OrdenInstalacionFormValues = z.infer<typeof ordenInstalacionFormSchema>;
 
 interface OrdenInstalacionFormProps {
@@ -64,7 +68,7 @@ export function OrdenInstalacionForm({
       id_cliente: initialData?.id_cliente || undefined,
       id_pedido_cliente: initialData?.id_pedido_cliente || undefined,
       id_estatus_ordenes_instalacion:
-        initialData?.id_estatus_ordenes_instalacion || undefined,
+        initialData?.id_estatus_ordenes_instalacion || EstatusOrdenInstalacionEnum.NUEVA,
       instalador_id: initialData?.instalador_id || undefined,
       FechaHoraInstalacion: initialData?.FechaHoraInstalacion || undefined,
       Notas: initialData?.Notas || "",
@@ -143,12 +147,11 @@ export function OrdenInstalacionForm({
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full max-w-6xl mx-auto">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">{initialData?.id > 0 ? "Editar Orden de Instalación" : "Nueva Orden de Instalación"}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {initialData?.id > 0 && (
+        <CardTitle className="text-2xl font-bold flex items-center justify-between">
+          {initialData?.id > 0 ? "Editar Orden de Instalación" : "Nueva Orden de Instalación"}
+          {initialData?.id > 0 && (
           <div className="flex items-center gap-2 mb-4 p-2 bg-gray-50 rounded-md">
             <span className="text-sm font-medium text-gray-600">Código:</span>
             <code className="text-sm bg-white px-2 py-1 rounded border">{initialData.codigo}</code>
@@ -162,12 +165,21 @@ export function OrdenInstalacionForm({
             </Button>
           </div>
         )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
           <Tabs defaultValue="General">
-            <TabsList className="grid grid-cols-2 mb-6">
+            <TabsList className={cn("grid grid-cols-2 mb-2", initialData?.id > 0 && initialData?.id_estatus_ordenes_instalacion >= EstatusOrdenInstalacionEnum.CALENDARIZADA ? "grid-cols-4" : "grid-cols-2")}>
               <TabsTrigger value="General">General</TabsTrigger>
               <TabsTrigger value="Productos">Productos ({form.getValues("detalles")?.length || 0})</TabsTrigger>
+              {initialData?.id > 0 && initialData?.id_estatus_ordenes_instalacion >= EstatusOrdenInstalacionEnum.CALENDARIZADA && (
+                <TabsTrigger value="Surtir">Surtir</TabsTrigger>
+              )}
+              {initialData?.id > 0 && initialData?.id_estatus_ordenes_instalacion >= EstatusOrdenInstalacionEnum.CALENDARIZADA && (
+                <TabsTrigger value="Imprimir">Imprimir</TabsTrigger>
+              )}
             </TabsList>
             <TabsContent value="General">
               <div className="grid grid-cols-2 gap-4">
@@ -275,7 +287,10 @@ export function OrdenInstalacionForm({
                     <FormItem>
                       <FormLabel>Fecha y Hora de Instalación</FormLabel>
                       <FormControl>
-                        <DateTimePicker date={field.value} setDate={field.onChange} />
+                        <DateTimePicker 
+                          date={field.value || new Date(Date.now() + 24*60*60*1000)} 
+                          setDate={field.onChange} 
+                        />
                       </FormControl>
                     </FormItem>
                   )}
@@ -286,12 +301,14 @@ export function OrdenInstalacionForm({
                 <FormField
                   control={form.control}
                   name="id_estatus_ordenes_instalacion"
+                  disabled={!initialData?.id}  
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Estatus de la Orden de Instalación</FormLabel>
                       <Select
                         onValueChange={(value) => field.onChange(Number(value))}
                         defaultValue={field.value?.toString()}
+                        disabled={!initialData?.id}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -312,7 +329,7 @@ export function OrdenInstalacionForm({
                 />
               </div>
 
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-4 mb-2">
                 <FormField
                   control={form.control}
                   name="Notas"
@@ -326,6 +343,11 @@ export function OrdenInstalacionForm({
                   )}
                 />
               </div>
+
+              <DireccionForm
+                selectedDireccion={selectedDireccion}
+                setSelectedDireccion={setSelectedDireccion}
+              />
             </TabsContent>
             <TabsContent value="Productos">
               <FormField
@@ -346,11 +368,18 @@ export function OrdenInstalacionForm({
                 )}
               />
             </TabsContent>
+            {initialData?.id > 0 && initialData?.id_estatus_ordenes_instalacion >= EstatusOrdenInstalacionEnum.CALENDARIZADA && (
+              <TabsContent value="Surtir">
+                <SurtirOrdenInstalacionComponent id={initialData.id} origen="COMPONENT" />
+              </TabsContent>
+            )}
+            {initialData?.id > 0 && initialData?.id_estatus_ordenes_instalacion >= EstatusOrdenInstalacionEnum.CALENDARIZADA && (
+              <TabsContent value="Imprimir">
+                <ImprimirOrdenComponente id={initialData.id} origen="COMPONENT" />
+              </TabsContent>
+            )}
           </Tabs>
-            <DireccionForm
-              selectedDireccion={selectedDireccion}
-              setSelectedDireccion={setSelectedDireccion}
-            />
+            
             <div className="flex justify-end">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Guardando..." : "Guardar"}

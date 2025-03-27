@@ -116,6 +116,9 @@ interface CRUDProps<T extends { id: string | number }, TInfoExtra> {
   infoExtra?: TInfoExtra;
   redirectMode?: boolean;
   extraActions?: Action<T>[];
+  hideSheetTitle?: boolean;
+  defaultOrderColumn?: keyof T;
+  defaultOrderDirection?: "asc" | "desc";
 }
 
 export function CRUD<T extends { id: string | number }, TInfoExtra>({
@@ -135,6 +138,9 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   infoExtra,
   redirectMode = false,
   extraActions = [],
+  hideSheetTitle = false,
+  defaultOrderColumn = columns[0].key,
+  defaultOrderDirection = "desc",
 }: CRUDProps<T, TInfoExtra>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -146,8 +152,8 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
   const [errors, setErrors] = useState<FieldErrors<T>>({} as FieldErrors<T>);
 
   const query = searchParams.get("query") || "";
-  const orderByColumn = (searchParams.get("orderByColumn") as keyof T) || columns[0].key;
-  const orderDirection = (searchParams.get("orderDirection") || "asc") as
+  const orderByColumn = (searchParams.get("orderByColumn") as keyof T) || defaultOrderColumn;
+  const orderDirection = (searchParams.get("orderDirection") || defaultOrderDirection) as
     | "asc"
     | "desc";
 
@@ -321,9 +327,9 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item: T) => (
+            {data.map((item: T, index: number) => (
               <TableRow 
-                key={`${String(item[columns[0].key])}-${String(columns[0].key)}`}
+                key={`${String(item[columns[0].key])}-${String(index)}`}
                 className="hover:bg-sky-200/50"
               >
                 <TableCell className="p-0">
@@ -399,7 +405,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
                 </TableCell>
                 {columns.map((column) => (
                   <TableCell
-                    key={`${String(item[columns[0].key])}-${String(column.key)}`}
+                    key={`${String(item[columns[0].key])}-${String(column.key)}-${String(index)}`}
                     className="p-0"
                   >
                     {renderCellContent(item, column)}
@@ -418,7 +424,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           )}
         >
           <SheetHeader>
-            <SheetTitle>Add new</SheetTitle>
+            {!hideSheetTitle && <SheetTitle>Add new</SheetTitle>}
           </SheetHeader>
           <div className="py-2">
             <FormComponent
@@ -441,7 +447,7 @@ export function CRUD<T extends { id: string | number }, TInfoExtra>({
           )}
         >
           <SheetHeader>
-            <SheetTitle>Editing</SheetTitle>
+            {!hideSheetTitle && <SheetTitle>Editing</SheetTitle>}
           </SheetHeader>
           <div className="py-2">
             <FormComponent

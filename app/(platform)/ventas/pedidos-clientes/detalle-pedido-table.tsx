@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UseFormReturn } from "react-hook-form";
+import { PlusCircle } from "lucide-react";
 interface DetallePedidoTableProps {
   detalles: DetallePedido[];
   onDetallesChange: (detalles: DetallePedido[]) => void;
@@ -68,61 +69,81 @@ export function DetallePedidoTable({
 
   return (
     <div className="space-y-4">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Concepto</TableHead>
-            <TableHead>Cantidad</TableHead>
-            <TableHead>Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-medium">Detalles del Pedido</h3>
+        <Button onClick={handleAddRow} variant="outline" size="sm">
+          <PlusCircle className="h-4 w-4 mr-2" />
+          Agregar Concepto
+        </Button>
+        
+      {/* <Button onClick={handleAddRow}>Agregar Concepto</Button> */}
+      </div>
+      <div className="border rounded-md">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[60%]">Concepto</TableHead>
+              <TableHead className="w-[20%]">Cantidad</TableHead>
+              <TableHead className="w-[20%] text-right">Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
         <TableBody>
-          {localDetalles.map((detalle, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <Select
-                  value={detalle.id_concepto?.toString() || ""}
-                  onValueChange={(value) =>
-                    handleChange(index, "id_concepto", parseInt(value))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccione un concepto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {infoExtra?.conceptos.map((concepto) => (
-                      <SelectItem
-                        key={concepto.id}
-                        value={concepto.id.toString()}
-                      >
-                        {concepto.descripcion}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </TableCell>
-              <TableCell>
-                <Input
-                  type="number"
-                  value={detalle.cantidad}
-                  onChange={(e) =>
-                    handleChange(index, "cantidad", parseInt(e.target.value))
-                  }
-                />
-              </TableCell>
-              <TableCell>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleRemoveRow(index)}
-                >
-                  Eliminar
-                </Button>
+          {localDetalles.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={3} className="text-center text-muted-foreground py-6">
+                No hay conceptos agregados. Haga clic en "Agregar Concepto" para comenzar.
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <Button onClick={handleAddRow}>Agregar Concepto</Button>
+          ) : (
+            localDetalles.map((detalle, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <Select
+                    value={detalle.id_concepto?.toString() || ""}
+                    onValueChange={(value) =>
+                      handleChange(index, "id_concepto", parseInt(value))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un concepto" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {infoExtra?.conceptos.map((concepto) => (
+                        <SelectItem
+                          key={concepto.id}
+                          value={concepto.id.toString()}
+                        >
+                          {concepto.descripcion}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </TableCell>
+                <TableCell>
+                  <Input
+                    type="number"
+                    value={detalle.cantidad}
+                    onChange={(e) =>
+                      handleChange(index, "cantidad", parseInt(e.target.value))
+                    }
+                  />
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveRow(index)}
+                    className="text-destructive hover:text-destructive/90"
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }

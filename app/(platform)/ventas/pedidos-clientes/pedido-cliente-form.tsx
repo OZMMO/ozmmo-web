@@ -28,6 +28,10 @@ import { Cliente, Canal, Pedido, Direccion, Concepto } from "@/lib/db";
 import DireccionForm from "@/components/direccion";
 import { Textarea } from "@/components/ui/textarea";
 import { DetallePedidoTable } from "./detalle-pedido-table";
+import { Switch } from "@/components/ui/switch";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Save } from "lucide-react";
 
 type PedidoClienteFormValues = z.infer<typeof pedidoClienteFormSchema>;
 
@@ -61,8 +65,6 @@ export function PedidoClienteForm({
 
   const { isSubmitting } = form.formState;
 
-  console.log(form.formState);
-
   const [selectedDireccion, setSelectedDireccion] = useState<Direccion | null>(
     initialData?.direccion || null
   );
@@ -78,145 +80,162 @@ export function PedidoClienteForm({
     }
   };
 
-  return (
+  return (    
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="id_cliente"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Cliente</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={field.value?.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un cliente" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {infoExtra?.clientes.map((cliente) => (
-                      <SelectItem
-                        key={cliente.id}
-                        value={cliente.id.toString()}
-                      >
-                        {cliente.razon_social}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="id_canal_venta"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Canal de Venta</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(Number(value))}
-                  defaultValue={field.value?.toString()}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccione un canal de venta" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {infoExtra?.canales.map((canal) => (
-                      <SelectItem key={canal.id} value={canal.id.toString()}>
-                        {canal.descripcion}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="generar_factura"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value || false}
-                    onCheckedChange={field.onChange}
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
+        <div className="container-full mx-auto py-2 max-w-5xl">
+          <Card>
+            <CardHeader className="border-b">
+              <CardTitle className="text-2xl font-bold">Agregar nuevo pedido</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <Tabs defaultValue="details" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                  <TabsTrigger value="details">Detalles del pedido</TabsTrigger>
+                  <TabsTrigger value="address">Dirección de entrega</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="details" className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="id_cliente"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cliente</FormLabel>
+                          <Select
+                            onValueChange={(value) => field.onChange(Number(value))}
+                            defaultValue={field.value?.toString()}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Seleccione un cliente" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {infoExtra?.clientes.map((cliente) => (
+                                <SelectItem
+                                  key={cliente.id}
+                                  value={cliente.id.toString()}
+                                >
+                                  {cliente.razon_social}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="id_canal_venta"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Canal de Venta</FormLabel>
+                          <Select
+                            onValueChange={(value) => field.onChange(Number(value))}
+                            defaultValue={field.value?.toString()}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Seleccione un canal de venta" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {infoExtra?.canales.map((canal) => (
+                                <SelectItem key={canal.id} value={canal.id.toString()}>
+                                  {canal.descripcion}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="generar_factura"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center space-x-2">
+                          <FormControl>
+                            <Switch
+                              checked={field.value || false}
+                              onCheckedChange={field.onChange}
+                              />
+                          </FormControl>
+                          <FormLabel>Generar Factura</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="generar_instalacion"
+                      render={({ field }) => (
+                        <FormItem className="flex items-center space-x-2">
+                          <FormControl>
+                            <Switch
+                              checked={field.value || false}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormLabel>Generar Instalación</FormLabel>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="Notas"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Notas</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="Notas" {...field} />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="detalles"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <DetallePedidoTable
+                            detalles={field.value || []}
+                            onDetallesChange={field.onChange}
+                            infoExtra={infoExtra}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Generar Factura</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="generar_instalacion"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value || false}
-                    onCheckedChange={field.onChange}
+                </TabsContent>
+
+                <TabsContent value="address" className="space-y-6">
+                  <DireccionForm
+                    selectedDireccion={selectedDireccion}
+                    setSelectedDireccion={setSelectedDireccion}
                   />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Generar Instalación</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          <FormField
-            control={form.control}
-            name="Notas"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-                <FormControl>
-                  <Textarea placeholder="Notas" {...field} />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel>Notas</FormLabel>
-                </div>
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="detalles"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Detalles del Pedido</FormLabel>
-              <FormControl>
-                <DetallePedidoTable
-                  detalles={field.value || []}
-                  onDetallesChange={field.onChange}
-                  infoExtra={infoExtra}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <DireccionForm
-          selectedDireccion={selectedDireccion}
-          setSelectedDireccion={setSelectedDireccion}
-        />
-        <div className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Guardando..." : "Guardar"}
-          </Button>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+            <CardFooter className="flex justify-end border-t p-6">
+            <div className="flex justify-end">
+              <Button type="submit" disabled={isSubmitting}>
+                <Save className="h-4 w-4 mr-2" />
+                {isSubmitting ? "Guardando..." : "Guardar"}
+              </Button>
+            </div>
+            </CardFooter>
+          </Card>
         </div>
       </form>
     </Form>

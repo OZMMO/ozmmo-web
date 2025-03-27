@@ -1,27 +1,34 @@
 "use server"
 
 import { Resend } from "resend"
-import InvitationEmail from "@/components/emails/invitation-email"
+import { InvitationEmailCliente, InvitationEmailUser } from "@/components/emails/invitation-email"
+import { User } from "./db/security/user.model"
+import { RoleEnum } from "./db/security/roles.model"
 
 // Inicializar Resend con la API key
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Interfaz para los datos de la invitación
 interface InvitationEmailData {
-  to: string
-  name: string
+  user: User,
   invitationUrl: string
   tempPassword: string
 }
 
 // Función para enviar email de invitación usando Resend con componente React
-export async function sendInvitationEmail({ to, name, invitationUrl, tempPassword }: InvitationEmailData) {
+export async function sendInvitationEmail({ user, invitationUrl, tempPassword }: InvitationEmailData) {
   try {
+    const ReactCompEmail = user.RoleId === RoleEnum.CLIENTE ? InvitationEmailCliente : InvitationEmailUser;
     const { data, error } = await resend.emails.send({
-      from: `${process.env.EMAIL_FROM_NAME || "Sistema"} <${process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev"}>`,
-      to: [to],
-      subject: "Invitación a la plataforma",
-      react: InvitationEmail({ name, invitationUrl, tempPassword }),
+      from: `${process.env.EMAIL_FROM_NAME || "Sistema"} <${process.env.RESEND_FROM_EMAIL || "onboarding@ozmmo.com"}>`,
+      to: [user.Email],
+      subject: "Bienvenido a la plataforma de Ozmmo",
+      react: ReactCompEmail({ 
+        name: user.FirstName, 
+        role: user.Role?.Name || "Desconocido", 
+        invitationUrl, 
+        tempPassword 
+      }),
     })
 
     if (error) {

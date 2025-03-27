@@ -13,8 +13,8 @@ import { PedidoClienteForm } from "./pedido-cliente-form";
 import { Pedido, Cliente, Canal, Concepto } from "@/lib/db";
 
 const columns: Column<Pedido>[] = [
+  { key: "codigo", label: "Codigo", sortable: true },
   { key: "cliente", label: "Cliente", sortable: true },
-  { key: "codigo", label: "codigo", sortable: true },
   { key: "FechaHoraExpedicion", label: "Fecha Expedición", sortable: true },
   {
     key: "generar_factura",
@@ -46,6 +46,7 @@ export default function PedidosClientesClientPage({
   conceptos,
 }: PageProps) {
   const { data, totalCount, totalPages } = payload;
+  console.log({data});
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -66,13 +67,16 @@ export default function PedidosClientesClientPage({
       currentPage={Number(paginationParams.page) || 1}
       pageSize={Number(paginationParams.pageSize) || 10}
       formComponent={PedidoClienteForm}
-      formClassName="w-full xs:w-full sm:w-full md:w-[90%] lg:w-[80%] overflow-y-auto"
+      formClassName="w-full xs:w-full sm:w-full md:w-[60%] lg:w-[50%] overflow-y-auto"
       actions={{
         create: createPedidoCliente,
         update: updatePedidoCliente,
         delete: deletePedidoCliente,
       }}
       infoExtra={{ clientes, canales, conceptos }}
+      hideSheetTitle={true}
+      defaultOrderColumn="FechaHoraExpedicion"
+      defaultOrderDirection="desc"
     />
   );
 }

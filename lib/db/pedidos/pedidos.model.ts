@@ -70,7 +70,7 @@ export class PedidoModel implements IDBModel<Pedido> {
       //console.log(parseData);
       return Promise.resolve({
         data: parseData,
-        totalCount: data.length,
+        totalCount: data[0]?.totalCount || 0,
         totalPages: data[0]?.totalPages || 1,
       });
     } catch (error) {

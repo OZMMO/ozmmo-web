@@ -6,6 +6,14 @@ export interface Role {
   Description: string;
 }
 
+export enum RoleEnum {
+  ADMIN = "admin",
+  ALMACENISTA = "almacenista",
+  VENTAS = "ventas",
+  INSTALADOR = "instalador",
+  CLIENTE = "cliente",
+}
+
 export class RoleModel {
   private sql: MSSQLServer;
 

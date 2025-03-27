@@ -12,7 +12,7 @@ import {
 import { CriteriaSqlServer } from "@/lib/db";
 import { ClienteModel, CanalModel } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 interface PageProps {
   searchParams: IPageSearchPaginationParams;
@@ -33,18 +33,18 @@ export default async function PedidosClientesPage({ searchParams }: PageProps) {
   criteria.addConditition("query", searchParams.query || "");
   criteria.addConditition(
     "orderByColumn",
-    searchParams.orderByColumn || "Name"
+    searchParams.orderByColumn || "FechaHoraExpedicion"
   );
   criteria.addConditition(
     "orderDirection",
-    searchParams.orderDirection || "asc"
+    searchParams.orderDirection || "desc"
   );
   criteria.addConditition("UserId", userId);
 
   // Obtener datos de pedidos
   const pedidoModel = new PedidoModel();
   const pedidosResponse = await pedidoModel.findMany(criteria);
-
+  console.log({pedidosResponse});
   // Obtener lista de clientes
 
   const criteriaCliente = new CriteriaSqlServer<Cliente>();
@@ -59,8 +59,7 @@ export default async function PedidosClientesPage({ searchParams }: PageProps) {
   const criteriaConcepto = new CriteriaSqlServer<Concepto>();
   criteriaConcepto.addConditition("UserId", userId);
   const conceptoModel = new ConceptoModel();
-  const { data: dataConceptos } =
-    await conceptoModel.findMany(criteriaConcepto);
+  const { data: dataConceptos } = await conceptoModel.findMany(criteriaConcepto);
 
   return (
     <PedidosClientesClientPage
